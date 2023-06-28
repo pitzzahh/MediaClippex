@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Components\" />
+      <Folder Include="MVVM\Model\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="MVVM\View\MediaClippexView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+      <PackageReference Include="Russkyc.ModernControls.WPF" Version="1.9.18" />
+      <PackageReference Include="VideoLibrary" Version="3.2.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\Icon.ico" />
+      <Resource Include="Resources\Icon.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,81 @@
+﻿<moderncontrols:ModernWindow x:Class="MediaClippex.MVVM.View.MediaClippexView"
+                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                             xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
+                             xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
+                             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                             mc:Ignorable="d"
+                             d:DataContext="{d:DesignInstance Type=viewModel:MediaClippexViewModel, IsDesignTimeCreatable=True}"
+                             Title="MediaClippex"
+                             Height="700"
+                             Icon="../../Resources/Icon.ico"
+                             TitleBarBackground="{DynamicResource bg-000}"
+                             Background="{DynamicResource bg-000}"
+                             WindowStartupLocation="CenterScreen"
+                             Width="650">
+    <Window.Resources>
+        <system:Double x:Key="Short">200</system:Double>
+        <system:Double x:Key="Medium">300</system:Double>
+        <system:Double x:Key="Long">500</system:Double>
+    </Window.Resources>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="MediaClippex"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontWeight="Bold"
+                   FontSize="26"
+                   Foreground="{DynamicResource fg-000}" />
+
+        <moderncontrols:ModernTextBox Grid.Row="1"
+                                      Placeholder="Enter a URL"
+                                      Margin="0 5"
+                                      Text="{Binding Url, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" />
+        <!-- View preview -->
+        <Grid Grid.Row="2" Visibility="{Binding ShowPreview}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Image Source="{Binding ImagePreview}"/>
+        </Grid>
+        
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0 5">
+            <StackPanel Margin="0 0 5 0">
+                <TextBlock Text="Media Format" Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
+                <moderncontrols:ModernComboBox Width="{StaticResource Short}"
+                                               ItemsSource="{Binding Formats}" />
+            </StackPanel>
+            <StackPanel Margin="5 0">
+                <TextBlock Text="Quality" Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
+                <moderncontrols:ModernComboBox Width="{StaticResource Short}"
+                                               ItemsSource="{Binding Qualities}" />
+            </StackPanel>
+        </StackPanel>
+
+        <moderncontrols:ModernButton Grid.Row="4"
+                                     Content="Download"
+                                     FontSize="18"
+                                     IsEnabled="{Binding CanDownload}"
+                                     Margin="0 5 0 0"
+                                     Command="{Binding DownloadCommand}"
+                                     Foreground="{DynamicResource fg-000}" />
+        <TextBlock Grid.Row="5"
+                   Margin="0 5"
+                   Foreground="{DynamicResource fg-000}"
+                   Text="{Binding Status}" />
+    </Grid>
+</moderncontrols:ModernWindow>
