@@ -30,7 +30,7 @@ jobs:
         with:
           name: MediaClippex-Artifacts
           path: |
-            ${{ github.workspace }}/MediaClippex/bin/Release/net6.0-windows/win-x64/publish/*.exe
+            ${{ github.workspace }}/MediaClippex/bin/Release/net7.0-windows/win-x64/publish/*.exe
 
       - name: Create Release
         id: create_release
