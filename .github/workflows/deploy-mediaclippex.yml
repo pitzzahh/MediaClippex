@@ -1,11 +1,11 @@
-﻿name: "Deploy ${${repo_full_name#*/}#*/}"
+﻿name: "Deploy MediaClippex"
 on:
   push:
     tags:
-      - "${${repo_full_name#*/}#*/}/v*"
+      - MediaClippex/v*
 
 env:
-  PROJECT_PATH: "${${repo_full_name#*/}#*/}/${${repo_full_name#*/}#*/}.csproj"
+  PROJECT_PATH: "MediaClippex/MediaClippex.csproj"
 
 jobs:
   deploy:
@@ -17,7 +17,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: "6.0"
+          dotnet-version: "7.0"
 
       - name: Restore NuGet packages
         run: dotnet restore ${{ env.PROJECT_PATH }}
@@ -28,9 +28,9 @@ jobs:
       - name: Deploy artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${${repo_full_name#*/}#*/}-Artifacts
+          name: MediaClippex-Artifacts
           path: |
-            ${{ github.workspace }}/${${repo_full_name#*/}#*/}/bin/Release/net6.0-windows/win-x64/publish/*.exe
+            ${{ github.workspace }}/MediaClippex/bin/Release/net6.0-windows/win-x64/publish/*.exe
 
       - name: Create Release
         id: create_release
@@ -47,6 +47,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${${repo_full_name#*/}#*/}/bin/Release/net6.0-windows/win-x64/publish/${${repo_full_name#*/}#*/}.exe
-          asset_name: ${${repo_full_name#*/}#*/}.exe
+          asset_path: MediaClippex/bin/Release/net6.0-windows/win-x64/publish/MediaClippex.exe
+          asset_name: MediaClippex.exe
           asset_content_type: application/octet-stream
