@@ -2,7 +2,7 @@
 on:
   push:
     tags:
-      - "${${repo_full_name#*/}#*/} v*"
+      - "${${repo_full_name#*/}#*/}/v*"
 
 env:
   PROJECT_PATH: "${${repo_full_name#*/}#*/}/${${repo_full_name#*/}#*/}.csproj"
