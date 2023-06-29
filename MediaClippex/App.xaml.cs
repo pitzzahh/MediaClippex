@@ -1,4 +1,7 @@
-﻿using MediaClippex.Factory;
+﻿using System.Windows;
+using MediaClippex.MVVM.View;
+using MediaClippex.Services;
+using Russkyc.DependencyInjection.Implementations;
 
 namespace MediaClippex;
 
@@ -9,7 +12,12 @@ public partial class App
 {
     public App()
     {
-        InitializeComponent();
-        ViewFactory.CreateMediaClippexView();
+        BuilderServices.BuildWithContainer(BuildContainer.ConfigureServices());
+    }
+
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        BuilderServices.Resolve<MediaClippexView>().Show();
+        base.OnStartup(e);
     }
 }

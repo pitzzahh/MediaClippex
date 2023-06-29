@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-public partial class MediaClippexViewModel : ObservableValidator
+public partial class MediaClippexViewModel : BaseViewModel
 {
     [ObservableProperty]
     [Required(ErrorMessage = "Please enter a URL.")]
@@ -17,7 +17,7 @@ public partial class MediaClippexViewModel : ObservableValidator
     private string? _status;
     
     [ObservableProperty]
-    private string? _showPreview = "Hidden";
+    private bool _showPreview;
     
     [ObservableProperty]
     private string? _quality = "Quality";
@@ -60,12 +60,14 @@ public partial class MediaClippexViewModel : ObservableValidator
             return;
         }
         IsResolved = true;
+        ShowPreview = true;
     }
 
     [RelayCommand]
     private void Download()
     {
-        
+        IsResolved = false;
+        ShowPreview = false;
     }
     
 }

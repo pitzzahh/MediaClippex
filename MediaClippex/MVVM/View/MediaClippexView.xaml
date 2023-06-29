@@ -4,22 +4,21 @@
                              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
-                             xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
                              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                             xmlns:components="clr-namespace:MediaClippex.Components"
                              mc:Ignorable="d"
-                             d:DataContext="{d:DesignInstance Type=viewModel:MediaClippexViewModel, IsDesignTimeCreatable=True}"
                              Title="MediaClippex"
                              Height="700"
+                             ExtendClientAreaToChrome="True"
                              Icon="../../Resources/Icon.ico"
                              TitleBarBackground="{DynamicResource bg-000}"
                              Background="{DynamicResource bg-000}"
                              WindowStartupLocation="CenterScreen"
-                             Width="650">
+                             Width="750">
     <Window.Resources>
         <system:Double x:Key="Shortest">130</system:Double>
         <system:Double x:Key="Short">200</system:Double>
-        <system:Double x:Key="Medium">300</system:Double>
-        <system:Double x:Key="Long">500</system:Double>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
 
     <Grid Margin="5">
@@ -43,12 +42,13 @@
         
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" /> <!-- Width adjusts based on child widths -->
-                <ColumnDefinition Width="Auto" /> <!-- Width adjusts based on child widths -->
+                <ColumnDefinition Width="*" /> 
+                <ColumnDefinition Width="Auto" /> 
             </Grid.ColumnDefinitions>
 
             <moderncontrols:ModernTextBox
                 Grid.Column="0"
+                HelperText="Required"
                 Placeholder="Enter a URL"
                 Margin="0 5 2 5"
                 Text="{Binding Url, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" />
@@ -64,13 +64,11 @@
         </Grid>
 
         <!-- View preview -->
-        <Grid Grid.Row="2" Visibility="{Binding ShowPreview}">
+        <Grid Grid.Row="2" Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <Image Source="{Binding ImagePreview}" />
+            <components:VideoInfoCard />
         </Grid>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0 5">

@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="MediaClippex.Components.VideoInfoCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignWidth="650"
+             Height="150"
+             Background="{DynamicResource bg-000}">
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Video Image -->
+        <Image Source="{Binding ImageUrl}"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Left" />
+
+        <!-- Video Info -->
+        <Grid Grid.Column="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Foreground="{DynamicResource fg-000}"
+                       FontSize="16">
+                <Span>
+                    <Bold>Title: </Bold>
+                    <Run Text="{Binding Title}" />
+                </Span>
+            </TextBlock>
+
+            <TextBlock Grid.Row="1" Foreground="{DynamicResource fg-000}"
+                       FontSize="16">
+                <TextBlock.Inlines>
+                    <Bold>Duration: </Bold>
+                    <Run Text="{Binding Duration}" />
+                </TextBlock.Inlines>
+            </TextBlock>
+            <TextBlock Grid.Row="2" Foreground="{DynamicResource fg-000}"
+                       FontSize="16">
+                <TextBlock.Inlines>
+                    <Bold>Description: </Bold>
+                    <Run Text="{Binding Description}" />
+                </TextBlock.Inlines>
+            </TextBlock>
+        </Grid>
+
+    </Grid>
+</UserControl>
