@@ -29,6 +29,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -39,11 +40,11 @@
                    FontSize="26"
                    Margin="0 10 0 30"
                    Foreground="{DynamicResource fg-000}" />
-        
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" /> 
-                <ColumnDefinition Width="Auto" /> 
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <moderncontrols:ModernTextBox
@@ -58,20 +59,59 @@
                 Width="{StaticResource Shortest}"
                 Content="Resolve"
                 FontSize="16"
-                Margin="5"
+                Height="40"
+                Margin="0 5 0 0"
+                VerticalAlignment="Top"
                 Command="{Binding ResolveCommand}"
-                FontWeight="Bold" />
+                FontWeight="Medium" />
         </Grid>
 
+        <TextBlock Grid.Row="2"
+                   Visibility="{Binding IsResolved, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   Margin="0 5"
+                   Foreground="{DynamicResource danger}"
+                   Text="{Binding Status}" />
+
         <!-- View preview -->
-        <Grid Grid.Row="2" Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid Grid.Row="3" Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                    <VisualState x:Name="Visible">
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames
+                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="100" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0" />
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Collapsed">
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames
+                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="100" />
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+            <Grid.RenderTransform>
+                <TranslateTransform />
+            </Grid.RenderTransform>
             <components:VideoInfoCard />
         </Grid>
+        
+        <Grid Grid.Row="4" Margin="0 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0 5">
             <StackPanel Margin="0 0 5 0">
                 <TextBlock Text="Media Format"
                            FontWeight="Medium"
@@ -81,27 +121,81 @@
                                                Width="{StaticResource Short}"
                                                IsEnabled="{Binding IsResolved}" />
             </StackPanel>
-            <StackPanel Margin="5 0">
+            <StackPanel Grid.Column="1" Margin="5 0">
                 <TextBlock Text="Quality"
                            FontWeight="Medium"
                            Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
                 <moderncontrols:ModernComboBox ItemsSource="{Binding Qualities}"
+                                               HorizontalAlignment="Left"
                                                SelectedItem="{Binding SelectedQuality}"
                                                Width="{StaticResource Short}"
                                                IsEnabled="{Binding IsResolved}" />
             </StackPanel>
-        </StackPanel>
+            <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-        <moderncontrols:ModernButton Grid.Row="4"
+                <moderncontrols:ModernButton Content="Cancel Download"
+                                             FontWeight="Heavy"
+                                             Height="40"
+                                             Width="130"
+                                             IsEnabled="{Binding IsDownloading}"
+                                             Command="{Binding CancelDownloadCommand}"
+                                             VerticalAlignment="Bottom"
+                                             DefaultBackground="{DynamicResource danger-lighten}"
+                                             HoverBackground="{DynamicResource danger}"
+                                             PressedBackground="{DynamicResource danger-darken}"
+                                             DefaultForeground="{DynamicResource fg-200}" />
+            </Grid>
+        </Grid>
+
+        <moderncontrols:ModernButton Grid.Row="5"
                                      Content="Download"
                                      FontSize="18"
+                                     FontWeight="Bold"
                                      IsEnabled="{Binding IsResolved}"
                                      Margin="0 5 0 0"
                                      Command="{Binding DownloadCommand}"
                                      Foreground="{DynamicResource fg-000}" />
-        <TextBlock Grid.Row="5"
-                   Margin="0 5"
-                   Foreground="{DynamicResource danger}"
-                   Text="{Binding Status}" />
+
+        <StackPanel Grid.Row="6" Margin="0 5"
+                    Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ProgressBar Value="{Binding CurrentProgress}" Maximum="{Binding MaxProgress}" Height="20">
+                <ProgressBar.Style>
+                    <Style TargetType="ProgressBar">
+                        <Setter Property="Foreground" Value="Blue" />
+                        <Setter Property="Background" Value="LightGray" />
+                        <Setter Property="BorderBrush" Value="Gray" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ProgressBar">
+                                    <Grid x:Name="PART_Track">
+                                        <Rectangle x:Name="PART_Indicator" HorizontalAlignment="Left">
+                                            <Rectangle.Fill>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                    <GradientStop Color="DodgerBlue" Offset="0" />
+                                                    <GradientStop Color="LightBlue" Offset="1" />
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ProgressBar.Style>
+            </ProgressBar>
+
+            <TextBlock Foreground="{DynamicResource fg-000}"
+                       FontSize="16">
+                <TextBlock.Inlines>
+                    <Bold>Downloading...</Bold>
+                    <Run Text="{Binding ProgressInfo}" />
+                </TextBlock.Inlines>
+            </TextBlock>
+        </StackPanel>
     </Grid>
 </moderncontrols:ModernWindow>
