@@ -21,36 +21,42 @@
                HorizontalAlignment="Left" />
 
         <!-- Video Info -->
-        <Grid Grid.Column="1" Margin="5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" 
+                      Margin="7"
+                      HorizontalScrollBarVisibility="Hidden">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <TextBlock Foreground="{DynamicResource fg-000}"
-                       FontSize="16">
-                <Span>
-                    <Bold>Title: </Bold>
-                    <Run Text="{Binding Title}" />
-                </Span>
-            </TextBlock>
+                <TextBlock Foreground="{DynamicResource fg-000}"
+                           TextWrapping="Wrap"
+                           FontSize="16">
+                    <Span>
+                        <Bold>Title: </Bold>
+                        <Run Text="{Binding Title}" />
+                    </Span>
+                </TextBlock>
 
-            <TextBlock Grid.Row="1" Foreground="{DynamicResource fg-000}"
-                       FontSize="16">
-                <TextBlock.Inlines>
-                    <Bold>Duration: </Bold>
-                    <Run Text="{Binding Duration}" />
-                </TextBlock.Inlines>
-            </TextBlock>
-            <TextBlock Grid.Row="2" Foreground="{DynamicResource fg-000}"
-                       FontSize="16">
-                <TextBlock.Inlines>
-                    <Bold>Description: </Bold>
-                    <Run Text="{Binding Description}" />
-                </TextBlock.Inlines>
-            </TextBlock>
-        </Grid>
+                <TextBlock Grid.Row="1" Foreground="{DynamicResource fg-000}"
+                           FontSize="16">
+                    <TextBlock.Inlines>
+                        <Bold>Duration: </Bold>
+                        <Run Text="{Binding Duration}" />
+                    </TextBlock.Inlines>
+                </TextBlock>
+                <TextBlock Grid.Row="2" Foreground="{DynamicResource fg-000}"
+                           TextWrapping="Wrap"
+                           FontSize="16">
+                    <TextBlock.Inlines>
+                        <Bold>Description: </Bold>
+                        <Run Text="{Binding Description}" />
+                    </TextBlock.Inlines>
+                </TextBlock>
+            </Grid>
+        </ScrollViewer>
 
     </Grid>
 </UserControl>

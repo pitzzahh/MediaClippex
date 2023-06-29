@@ -3,6 +3,7 @@
                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                             xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
                              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
                              xmlns:system="clr-namespace:System;assembly=System.Runtime"
                              xmlns:components="clr-namespace:MediaClippex.Components"
@@ -14,10 +15,11 @@
                              TitleBarBackground="{DynamicResource bg-000}"
                              Background="{DynamicResource bg-000}"
                              WindowStartupLocation="CenterScreen"
-                             Width="750">
+                             Width="850">
     <Window.Resources>
         <system:Double x:Key="Shortest">130</system:Double>
         <system:Double x:Key="Short">200</system:Double>
+        <system:Double x:Key="Medium">300</system:Double>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
 
@@ -52,6 +54,7 @@
                 HelperText="Required"
                 Placeholder="Enter a URL"
                 Margin="0 5 2 5"
+                LeftIcon="{materialIcons:MaterialIconExt Kind=Link}"
                 Text="{Binding Url, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" />
 
             <moderncontrols:ModernButton
@@ -59,11 +62,12 @@
                 Width="{StaticResource Shortest}"
                 Content="Resolve"
                 FontSize="16"
-                Height="40"
+                IconSize="20"
+                Height="38"
+                LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Search}"
                 Margin="0 5 0 0"
                 VerticalAlignment="Top"
-                Command="{Binding ResolveCommand}"
-                FontWeight="Medium" />
+                Command="{Binding ResolveCommand}"/>
         </Grid>
 
         <TextBlock Grid.Row="2"
@@ -104,23 +108,16 @@
             </Grid.RenderTransform>
             <components:VideoInfoCard />
         </Grid>
-        
+
         <Grid Grid.Row="4" Margin="0 5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Margin="0 0 5 0">
-                <TextBlock Text="Media Format"
-                           FontWeight="Medium"
-                           Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
-                <moderncontrols:ModernComboBox ItemsSource="{Binding Formats}"
-                                               SelectedItem="{Binding SelectedFormat}"
-                                               Width="{StaticResource Short}"
-                                               IsEnabled="{Binding IsResolved}" />
-            </StackPanel>
+
             <StackPanel Grid.Column="1" Margin="5 0">
                 <TextBlock Text="Quality"
                            FontWeight="Medium"
@@ -131,16 +128,25 @@
                                                Width="{StaticResource Short}"
                                                IsEnabled="{Binding IsResolved}" />
             </StackPanel>
-            <Grid Grid.Column="2">
+            <moderncontrols:ModernSwitch HorizontalAlignment="Left"
+                                         Content="Audio Only"
+                                         VerticalAlignment="Bottom"
+                                         Grid.Column="2" Margin="5 0"
+                                         Width="{StaticResource Short}"
+                                         IsChecked="{Binding IsAudioOnly}"
+                                         IsEnabled="{Binding IsResolved}" />
+            <Grid Grid.Column="3" HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <moderncontrols:ModernButton Content="Cancel Download"
+                <moderncontrols:ModernButton Content="Cancel"
                                              FontWeight="Heavy"
                                              Height="40"
                                              Width="130"
+                                             IconSize="20"
+                                             LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
                                              IsEnabled="{Binding IsDownloading}"
                                              Command="{Binding CancelDownloadCommand}"
                                              VerticalAlignment="Bottom"
@@ -154,7 +160,9 @@
         <moderncontrols:ModernButton Grid.Row="5"
                                      Content="Download"
                                      FontSize="18"
-                                     FontWeight="Bold"
+                                     IconSize="24"
+                                     FontWeight="Medium"
+                                     LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Download}"
                                      IsEnabled="{Binding IsResolved}"
                                      Margin="0 5 0 0"
                                      Command="{Binding DownloadCommand}"

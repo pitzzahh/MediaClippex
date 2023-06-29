@@ -5,7 +5,7 @@ namespace MediaClippex.Services;
 
 public static partial class StringService
 {
-    public static string ConvertToTimeFormat(int? duration) => $"{duration / 3600:D2}:{duration % 3600 / 60:D2}:{duration % 60:D2}";
+    public static string ConvertToTimeFormat(TimeSpan timeSpan) => $"{timeSpan.Hours:00}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}";
     
     public static string ConvertBytesToFormattedString(long bytes)
     {
@@ -47,7 +47,16 @@ public static partial class StringService
 
         return videoId;
     }
+    
+    public static bool IsYouTubeVideoUrl(string url) => YoutubeUrlRegex().Match(url).Success;
+
+    public static string FixFileName(string fileName)
+    {
+        return fileName.Replace("|", "or");
+    }
 
     [GeneratedRegex("(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|shorts/|watch\\?v=|watch\\?.+&v=))([^?&\"'>]+)")]
     private static partial Regex MyRegex();
+    [GeneratedRegex("^(https?://)?(www\\.)?(youtube\\.com/|youtu\\.be/|youtube\\.com/shorts/)(watch\\?v=|v/|shorts/)?[a-zA-Z0-9_-]{11}$")]
+    private static partial Regex YoutubeUrlRegex();
 }
