@@ -16,6 +16,7 @@
                              WindowStartupLocation="CenterScreen"
                              Width="650">
     <Window.Resources>
+        <system:Double x:Key="Shortest">130</system:Double>
         <system:Double x:Key="Short">200</system:Double>
         <system:Double x:Key="Medium">300</system:Double>
         <system:Double x:Key="Long">500</system:Double>
@@ -37,45 +38,72 @@
                    VerticalAlignment="Center"
                    FontWeight="Bold"
                    FontSize="26"
+                   Margin="0 10 0 30"
                    Foreground="{DynamicResource fg-000}" />
+        
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" /> <!-- Width adjusts based on child widths -->
+                <ColumnDefinition Width="Auto" /> <!-- Width adjusts based on child widths -->
+            </Grid.ColumnDefinitions>
 
-        <moderncontrols:ModernTextBox Grid.Row="1"
-                                      Placeholder="Enter a URL"
-                                      Margin="0 5"
-                                      Text="{Binding Url, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" />
+            <moderncontrols:ModernTextBox
+                Grid.Column="0"
+                Placeholder="Enter a URL"
+                Margin="0 5 2 5"
+                Text="{Binding Url, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" />
+
+            <moderncontrols:ModernButton
+                Grid.Column="1"
+                Width="{StaticResource Shortest}"
+                Content="Resolve"
+                FontSize="16"
+                Margin="5"
+                Command="{Binding ResolveCommand}"
+                FontWeight="Bold" />
+        </Grid>
+
         <!-- View preview -->
         <Grid Grid.Row="2" Visibility="{Binding ShowPreview}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
-            <Image Source="{Binding ImagePreview}"/>
+
+            <Image Source="{Binding ImagePreview}" />
         </Grid>
-        
+
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0 5">
             <StackPanel Margin="0 0 5 0">
-                <TextBlock Text="Media Format" Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
-                <moderncontrols:ModernComboBox Width="{StaticResource Short}"
-                                               ItemsSource="{Binding Formats}" />
+                <TextBlock Text="Media Format"
+                           FontWeight="Medium"
+                           Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
+                <moderncontrols:ModernComboBox ItemsSource="{Binding Formats}"
+                                               SelectedItem="{Binding SelectedFormat}"
+                                               Width="{StaticResource Short}"
+                                               IsEnabled="{Binding IsResolved}" />
             </StackPanel>
             <StackPanel Margin="5 0">
-                <TextBlock Text="Quality" Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
-                <moderncontrols:ModernComboBox Width="{StaticResource Short}"
-                                               ItemsSource="{Binding Qualities}" />
+                <TextBlock Text="Quality"
+                           FontWeight="Medium"
+                           Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
+                <moderncontrols:ModernComboBox ItemsSource="{Binding Qualities}"
+                                               SelectedItem="{Binding SelectedQuality}"
+                                               Width="{StaticResource Short}"
+                                               IsEnabled="{Binding IsResolved}" />
             </StackPanel>
         </StackPanel>
 
         <moderncontrols:ModernButton Grid.Row="4"
                                      Content="Download"
                                      FontSize="18"
-                                     IsEnabled="{Binding CanDownload}"
+                                     IsEnabled="{Binding IsResolved}"
                                      Margin="0 5 0 0"
                                      Command="{Binding DownloadCommand}"
                                      Foreground="{DynamicResource fg-000}" />
         <TextBlock Grid.Row="5"
                    Margin="0 5"
-                   Foreground="{DynamicResource fg-000}"
+                   Foreground="{DynamicResource danger}"
                    Text="{Binding Status}" />
     </Grid>
 </moderncontrols:ModernWindow>
