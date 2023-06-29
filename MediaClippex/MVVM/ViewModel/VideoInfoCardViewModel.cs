@@ -2,17 +2,18 @@
 
 namespace MediaClippex.MVVM.ViewModel;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public partial class VideoInfoCardViewModel : BaseViewModel
 {
     [ObservableProperty]
-    private string? _imageUrl;
+    public string? _imageUrl;
 
     [ObservableProperty]
-    private string? _title;
+    public string? _title;
     
     [ObservableProperty]
-    private string? _duration;
+    public string? _duration;
     
     [ObservableProperty]
-    private string? _description;
+    public string? _description;
 }
