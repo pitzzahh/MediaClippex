@@ -124,6 +124,10 @@ public partial class MediaClippexViewModel : BaseViewModel
             InitializeVideoResolutions(manifest);
             InitializeAudioResolutions(manifest);
         }
+        catch (Exception e)
+        {
+            MessageBox.Show($"Something went wrong: {e.Message}");
+        }
         finally
         {
             ProgressInfo = "";
@@ -167,6 +171,10 @@ public partial class MediaClippexViewModel : BaseViewModel
             {
                 await VideoService.DownloadMuxed(filePath, Url, SelectedQuality, new Progress<double>(p => Progress += p));
             }
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show($"Something went wrong: {e.Message}");
         }
         finally
         {
