@@ -41,7 +41,7 @@ public static partial class StringService
     {
         var videoId = "";
 
-        var match = MyRegex().Match(link);
+        var match = YoutubeUrlRegex().Match(link);
         if (match.Success)
         {
             videoId = match.Groups[1].Value;
@@ -57,8 +57,6 @@ public static partial class StringService
         return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, invalidChar) => current.Replace(invalidChar, '_'));
     }
 
-    [GeneratedRegex("(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|shorts/|watch\\?v=|watch\\?.+&v=))([^?&\"'>]+)")]
-    private static partial Regex MyRegex();
-    [GeneratedRegex("^(https?://)?(www\\.)?(youtube\\.com/|youtu\\.be/|youtube\\.com/shorts/)(watch\\?v=|v/|shorts/)?[a-zA-Z0-9_-]{11}$")]
+    [GeneratedRegex("(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|shorts/|watch\\?v=|watch\\?.+&v=))([^?&\"'>]+)(?:&list=([^?&\"'>]+))?")]
     private static partial Regex YoutubeUrlRegex();
 }
