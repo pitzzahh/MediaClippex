@@ -76,7 +76,7 @@ public static class VideoService
         var conversionRequestBuilder = new ConversionRequestBuilder($"{path}.mp3");
         conversionRequestBuilder
             .SetContainer("mp3")
-            .SetFFmpegPath("Resources/ffmpeg.exe");
+            .SetFFmpegPath("ffmpeg.exe");
         await Youtube.Videos.DownloadAsync(streamInfos, conversionRequestBuilder.Build(), progressHandler);
     }
 
@@ -96,7 +96,7 @@ public static class VideoService
 
         var streamInfos = new[] { audioStreamInfo, videoStreamInfo };
         var conversionRequestBuilder = new ConversionRequestBuilder($"{path}.{videoStreamInfo.Container}");
-        conversionRequestBuilder.SetFFmpegPath("Resources/ffmpeg.exe");
+        conversionRequestBuilder.SetFFmpegPath("ffmpeg.exe");
         await Youtube.Videos.DownloadAsync(streamInfos, conversionRequestBuilder.Build(), progressHandler);
     }
 }
