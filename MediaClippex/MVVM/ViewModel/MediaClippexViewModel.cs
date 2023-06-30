@@ -53,6 +53,7 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     private bool _isAudioOnly;
 
+    // ReSharper disable once MemberCanBePrivate.Global
     public bool IsAudioOnly
     {
         get => _isAudioOnly;
@@ -116,11 +117,11 @@ public partial class MediaClippexViewModel : BaseViewModel
                     MessageBox.Show("Could not extract video ID.");
                     return;
                 }
-
                 videoInfoCardViewModel.ImageUrl = _video.Thumbnails.GetWithHighestResolution().Url;
                 videoInfoCardViewModel.Duration = StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault());
                 videoInfoCardViewModel.Description = _video.Description;
             });
+            IsResolved = true;
             InitializeVideoResolutions(manifest);
             InitializeAudioResolutions(manifest);
         }
@@ -132,7 +133,6 @@ public partial class MediaClippexViewModel : BaseViewModel
         {
             ProgressInfo = "";
             IsProgressIndeterminate = false;
-            IsResolved = true;
             IsProcessing = !IsResolved;
             ShowPreview = true;
         }
@@ -165,11 +165,11 @@ public partial class MediaClippexViewModel : BaseViewModel
         {
             if (IsAudioOnly)
             {
-                await VideoService.DownloadAudioOnly(filePath, Url, SelectedQuality, new Progress<double>(p => Progress += p));
+                await VideoService.DownloadAudioOnly(filePath, Url, SelectedQuality, new Progress<double>(p => Progress = p));
             }
             else
             {
-                await VideoService.DownloadMuxed(filePath, Url, SelectedQuality, new Progress<double>(p => Progress += p));
+                await VideoService.DownloadMuxed(filePath, Url, SelectedQuality, new Progress<double>(p => Progress = p));
             }
             MessageBox.Show("Download completed. Saved to Downloads folder.");
         }
@@ -184,6 +184,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             IsProcessing = false;
             ShowPreview = false;
             Progress = 0;
+            IsAudioOnly = false;
             IsResolved = false;
         }
     }
