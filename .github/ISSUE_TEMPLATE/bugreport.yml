@@ -33,10 +33,10 @@ body:
   - type: dropdown
     id: browsers
     attributes:
-      label: What browsers common problems did you encounter?
+      label: What common problems did you encounter?
       multiple: true
       options:
-        - Resolving url
+        - Resolving URL
         - Selecting Video Quality
         - Selecting Audio Quality
         - Selecting audio only
