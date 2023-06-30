@@ -34,13 +34,11 @@
       <Resource Include="Resources\Icon.ico">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Resource>
+        
       <None Remove="Resources\ffmpeg.exe" />
+        <AdditionalFiles Include="Resources\ffmpeg.exe">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AdditionalFiles>
     </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Resources\ffmpeg.exe">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-    </ItemGroup>
-
+    
 </Project>
