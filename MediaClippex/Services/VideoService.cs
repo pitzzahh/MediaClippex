@@ -73,7 +73,7 @@ public static class VideoService
             .GetAudioStreams()
             .First(s => s.Bitrate.ToString() == quality);
         var streamInfos = new[] { audioStreamInfo };
-        var conversionRequestBuilder = new ConversionRequestBuilder($"{path}.{audioStreamInfo.Container}");
+        var conversionRequestBuilder = new ConversionRequestBuilder($"{path}.mp3");
         conversionRequestBuilder
             .SetContainer("mp3")
             .SetFFmpegPath("Resources/ffmpeg.exe");
