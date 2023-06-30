@@ -1,9 +1,9 @@
-﻿name: Bug Report
+name: Bug Report
 description: File a bug report
 title: "[Bug]: "
 labels: [bug, triage]
 assignees:
-  - pitzzahh
+  - octocat
 body:
   - type: markdown
     attributes:
@@ -13,8 +13,8 @@ body:
     id: contact
     attributes:
       label: Contact Details
-      description: How can we get in touch with you if we need more info? (github username, email, etc.)
-      placeholder: ex. pitzzahh
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
     validations:
       required: false
   - type: textarea
@@ -32,26 +32,31 @@ body:
       label: Version
       description: What version of our software are you running?
       options:
-        - 0.0.6.0
-        - 0.0.7.0
-        - 0.0.8.0
-        - 0.0.9.0 (Latest)
+        - 1.0.2 (Default)
+        - 1.0.3 (Edge)
     validations:
       required: true
   - type: dropdown
-    id: problems
+    id: browsers
     attributes:
-      label: What common problems did you encounter?
+      label: What browsers are you seeing the problem on?
       multiple: true
       options:
-        - Resolving URL
-        - Selecting Video Quality
-        - Selecting Audio Quality
-        - Selecting audio only
-        - Downloading
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
   - type: textarea
     id: logs
     attributes:
-      label: Relevant error output
-      description: If applicable, paste any relevant error output here.
-      render: Text
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
