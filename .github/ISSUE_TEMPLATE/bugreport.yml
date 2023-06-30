@@ -9,6 +9,14 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info? (github username, email, etc.)
+      placeholder: ex. pitzzahh
+    validations:
+      required: false
   - type: textarea
     id: what-happened
     attributes:
@@ -31,7 +39,7 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: browsers
+    id: problems
     attributes:
       label: What common problems did you encounter?
       multiple: true
@@ -47,7 +55,3 @@ body:
       label: Relevant error output
       description: If applicable, paste any relevant error output here.
       render: Text
-  - type: markdown
-    attributes:
-      value: |
-        Thank you for taking the time to fill out this bug report! We will look into it as soon as possible.
