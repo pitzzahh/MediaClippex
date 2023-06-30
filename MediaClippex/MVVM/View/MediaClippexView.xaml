@@ -170,7 +170,7 @@
                                      Foreground="{DynamicResource fg-000}" />
 
         <ProgressBar Grid.Row="6" Margin="0 5"
-                     Minimum="{Binding Progress, Mode=OneWay}"
+                     Value="{Binding Progress, Mode=OneWay}"
                      Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}"
                      IsIndeterminate="{Binding IsProgressIndeterminate}" Height="20">
             <ProgressBar.Style>
