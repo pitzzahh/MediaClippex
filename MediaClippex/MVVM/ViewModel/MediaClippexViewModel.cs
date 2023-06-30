@@ -171,6 +171,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             {
                 await VideoService.DownloadMuxed(filePath, Url, SelectedQuality, new Progress<double>(p => Progress += p));
             }
+            MessageBox.Show("Download completed. Saved to Downloads folder.");
         }
         catch (Exception e)
         {
@@ -184,7 +185,6 @@ public partial class MediaClippexViewModel : BaseViewModel
             ShowPreview = false;
             Progress = 0;
             IsResolved = false;
-            MessageBox.Show("Download completed. Saved to Downloads folder.");
         }
     }
 
