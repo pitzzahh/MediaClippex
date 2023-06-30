@@ -1,11 +1,12 @@
 ﻿name: "Deploy MediaClippex"
 on:
-  push:
-    tags:
-      - MediaClippex/v*
+  pull_request:
+    branches:
+      - main
 
 env:
   PROJECT_PATH: "MediaClippex/MediaClippex.csproj"
+  CHANGELOG_PATH: "CHANGELOG.md"
 
 jobs:
   deploy:
@@ -33,25 +34,31 @@ jobs:
           path: |
             ${{ github.workspace }}/MediaClippex/bin/Release/net7.0-windows/win-x64/publish/*.exe
 
+      - name: Get Changelog
+        id: get_changelog
+        run: |
+          changelog=$(cat ${{ env.CHANGELOG_PATH }} | awk '/## \[Unreleased\]/,/## \[[0-9]+\.[0-9]+\.[0-9]+\]/ {print}')
+          echo "::set-output name=changelog::$changelog"
+
+      - name: Get Version
+        id: get_version
+        run: |
+          version=$(echo "${{ steps.get_changelog.outputs.changelog }}" | awk '/## \[[0-9]+\.[0-9]+\.[0-9]+\]/ {match($0, /\[[0-9]+\.[0-9]+\.[0-9]+\]/); print substr($0, RSTART+1, RLENGTH-2)}' | head -n 1)
+          echo "::set-output name=version::$version"
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: ${{ github.ref_name }}
+          tag_name: ${{ steps.get_version.outputs.version }}
+          release_name: ${{ steps.get_version.outputs.version }}
           body: |
-            Pull Requests included in this release:
-            ${{ steps.list_pull_requests.outputs.pull_requests }}
-            
-      - name: List Pull Requests
-        id: list_pull_requests
-        run: |
-          pull_requests=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&per_page=10" | \
-            jq -r '.[] | "* " + .html_url')
-          echo "::set-output name=pull_requests::$pull_requests"
+            Version: ${{ steps.get_version.outputs.version }}
+
+            Changelog:
+            ${{ steps.get_changelog.outputs.changelog }}
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
