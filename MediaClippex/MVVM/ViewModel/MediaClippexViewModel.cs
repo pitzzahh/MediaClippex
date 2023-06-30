@@ -184,7 +184,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     [RelayCommand]
     private void CancelDownload()
     {
-        _cancellationTokenSource?.Cancel();
+        MessageBox.Show("This feature is not implemented yet.");
     }
 
     private void InitializeVideoResolutions(StreamManifest manifest)
