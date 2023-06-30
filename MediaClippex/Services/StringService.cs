@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace MediaClippex.Services;
@@ -52,7 +54,7 @@ public static partial class StringService
 
     public static string FixFileName(string fileName)
     {
-        return fileName.Replace("|", "or");
+        return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, invalidChar) => current.Replace(invalidChar, '_'));
     }
 
     [GeneratedRegex("(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|shorts/|watch\\?v=|watch\\?.+&v=))([^?&\"'>]+)")]
