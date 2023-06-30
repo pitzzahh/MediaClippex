@@ -30,9 +30,11 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     [ObservableProperty] private string? _progressInfo;
 
-    [ObservableProperty] private long _currentProgress;
-
-    [ObservableProperty] private long _maxProgress;
+    [ObservableProperty] private double _progress;
+    
+    [ObservableProperty] private bool _isProgressIndeterminate;
+    
+    [ObservableProperty] private bool _isProcessing;
 
     [ObservableProperty] private string? _quality = "Quality";
 
@@ -48,9 +50,9 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     [ObservableProperty] private string? _selectedQuality;
 
-    private List<string> _videoQualities = new();
-    
-    private List<string> _audioQualities = new();
+    private readonly List<string> _videoQualities = new();
+
+    private readonly List<string> _audioQualities = new();
 
     private bool _isAudioOnly;
 
@@ -69,6 +71,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             {
                 _videoQualities.ForEach(q => Qualities.Add(q));
             }
+
             SelectedQuality = Qualities.First();
         }
     }
@@ -97,9 +100,10 @@ public partial class MediaClippexViewModel : BaseViewModel
             MessageBox.Show("Please enter a valid YouTube URL.");
             return;
         }
-
         try
         {
+            IsProgressIndeterminate = true;
+            IsProcessing = true;
             _video = await VideoService.GetVideo(Url);
 
             if (_video == null)
@@ -107,7 +111,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                 MessageBox.Show("Video not found.");
                 return;
             }
-            
+
             var manifest = await VideoService.GetManifest(Url);
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -126,20 +130,21 @@ public partial class MediaClippexViewModel : BaseViewModel
                 videoInfoCardViewModel.Duration =
                     StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault());
                 videoInfoCardViewModel.Description = _video.Description;
-                IsResolved = true;
-                ShowPreview = true;
             });
             InitializeVideoResolutions(manifest);
             InitializeAudioResolutions(manifest);
         }
-        catch (Exception e)
+        finally
         {
-            Console.WriteLine(e);
+            IsProgressIndeterminate = false;
+            IsResolved = true;
+            IsProcessing = !IsResolved;
+            ShowPreview = true;
         }
     }
 
     [RelayCommand]
-    private void Download()
+    private async Task Download()
     {
         if (_video == null) return;
         if (string.IsNullOrWhiteSpace(SelectedQuality))
@@ -147,51 +152,39 @@ public partial class MediaClippexViewModel : BaseViewModel
             MessageBox.Show("Please select a quality.");
             return;
         }
-        IsResolved = false;
-        var userPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var filePath = Path.Combine(userPath, $"{StringService.FixFileName(_video.Title)}");
+
+
+        var userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        var filePath = Path.Combine(userPath, "Downloads", $"{StringService.FixFileName(_video.Title)}");
 
         _cancellationTokenSource = new CancellationTokenSource();
 
         if (string.IsNullOrWhiteSpace(Url)) return;
 
-        Task.Run(async () =>
+        IsDownloading = true;
+        Progress = 0;
+        IsProcessing = true;
+        
+        try
         {
-            IsDownloading = true;
             if (IsAudioOnly)
             {
-                await VideoService.DownloadAudioOnly(filePath, Url, SelectedQuality);
+                await VideoService.DownloadAudioOnly(filePath, Url, SelectedQuality, new Progress<double>(p => Progress += p));
             }
             else
             {
-                await VideoService.DownloadMuxed(filePath, Url, SelectedQuality);
+                await VideoService.DownloadMuxed(filePath, Url, SelectedQuality, new Progress<double>(p => Progress += p));
             }
-            
-        }, _cancellationTokenSource.Token).ContinueWith(task =>
+        }
+        finally
         {
-            if (task.IsCanceled)
-            {
-                // Clean up resources if download was canceled
-                IsDownloading = false;
-                ShowPreview = false;
-                File.Delete(filePath);
-                MessageBox.Show("Download canceled.");
-            }
-            else if (task.IsFaulted)
-            {
-                // Handle any exceptions that occurred during the download
-                IsDownloading = false;
-                ShowPreview = false;
-                MessageBox.Show("An error occurred during download: " + task.Exception?.Message);
-            }
-            else
-            {
-                // Download completed successfully
-                IsDownloading = false;
-                ShowPreview = false;
-                MessageBox.Show("File Downloaded!");
-            }
-        }, TaskScheduler.FromCurrentSynchronizationContext());
+            IsDownloading = false;
+            IsProcessing = false;
+            ShowPreview = false;
+            Progress = 0;
+            IsResolved = false;
+            MessageBox.Show("Download completed.");
+        }
     }
 
 
@@ -204,11 +197,12 @@ public partial class MediaClippexViewModel : BaseViewModel
     private void InitializeVideoResolutions(StreamManifest manifest)
     {
         if (string.IsNullOrWhiteSpace(Url)) return;
-        _audioQualities.Clear();
+        _videoQualities.Clear();
         manifest.GetVideoOnlyStreams()
+            .Select(s => s.VideoQuality.Label)
             .Distinct()
             .ToList()
-            .ForEach(s => _videoQualities.Add(s.VideoQuality.Label));
+            .ForEach(s => _videoQualities.Add(s));
         _videoQualities.ForEach(q => Qualities.Add(q));
         SelectedQuality = Qualities.First();
     }
@@ -218,8 +212,9 @@ public partial class MediaClippexViewModel : BaseViewModel
         if (string.IsNullOrWhiteSpace(Url)) return;
         _audioQualities.Clear();
         manifest.GetAudioOnlyStreams()
+            .Select(a => a.Bitrate.ToString())
             .Distinct()
             .ToList()
-            .ForEach(s => _audioQualities.Add(s.Bitrate.ToString()));
+            .ForEach(s => _audioQualities.Add(s));
     }
 }
