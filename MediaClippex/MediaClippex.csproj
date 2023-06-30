@@ -5,6 +5,10 @@
         <TargetFramework>net7.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <Company>pitzzahh</Company>
+        <FileVersion>0.0.7-beta</FileVersion>
+        <ProductVersion>0.0.7-beta</ProductVersion>
+        <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -38,6 +42,6 @@
     
     <ItemGroup>
         <None Remove="Resources\ffmpeg.exe" />
-        <Resource Include="Resources\ffmpeg.exe" />
+        <ClInclude Include="Resources\ffmpeg.exe" />
     </ItemGroup>
 </Project>
