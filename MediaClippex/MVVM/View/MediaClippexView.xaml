@@ -19,7 +19,6 @@
     <Window.Resources>
         <system:Double x:Key="Shortest">130</system:Double>
         <system:Double x:Key="Short">200</system:Double>
-        <system:Double x:Key="Medium">300</system:Double>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
 
@@ -50,8 +49,10 @@
             </Grid.ColumnDefinitions>
 
             <moderncontrols:ModernTextBox
+                x:Name="UrlTextBox"
                 Grid.Column="0"
                 HelperText="Required"
+                Focusable="True"
                 Placeholder="Enter a URL"
                 Margin="0 5 2 5"
                 LeftIcon="{materialIcons:MaterialIconExt Kind=Link}"
@@ -67,7 +68,7 @@
                 LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Search}"
                 Margin="0 5 0 0"
                 VerticalAlignment="Top"
-                Command="{Binding ResolveCommand}"/>
+                Command="{Binding ResolveCommand}" />
         </Grid>
 
         <TextBlock Grid.Row="2"
@@ -168,42 +169,34 @@
                                      Command="{Binding DownloadCommand}"
                                      Foreground="{DynamicResource fg-000}" />
 
-        <StackPanel Grid.Row="6" Margin="0 5"
-                    Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <ProgressBar Value="{Binding CurrentProgress}" Maximum="{Binding MaxProgress}" Height="20">
-                <ProgressBar.Style>
-                    <Style TargetType="ProgressBar">
-                        <Setter Property="Foreground" Value="Blue" />
-                        <Setter Property="Background" Value="LightGray" />
-                        <Setter Property="BorderBrush" Value="Gray" />
-                        <Setter Property="BorderThickness" Value="1" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ProgressBar">
-                                    <Grid x:Name="PART_Track">
-                                        <Rectangle x:Name="PART_Indicator" HorizontalAlignment="Left">
-                                            <Rectangle.Fill>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                    <GradientStop Color="DodgerBlue" Offset="0" />
-                                                    <GradientStop Color="LightBlue" Offset="1" />
-                                                </LinearGradientBrush>
-                                            </Rectangle.Fill>
-                                        </Rectangle>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ProgressBar.Style>
-            </ProgressBar>
-
-            <TextBlock Foreground="{DynamicResource fg-000}"
-                       FontSize="16">
-                <TextBlock.Inlines>
-                    <Bold>Downloading...</Bold>
-                    <Run Text="{Binding ProgressInfo}" />
-                </TextBlock.Inlines>
-            </TextBlock>
-        </StackPanel>
+        <ProgressBar Grid.Row="6" Margin="0 5"
+                     Value="{Binding Progress, Mode=OneWay}"
+                     Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}"
+                     IsIndeterminate="{Binding IsProgressIndeterminate}" Height="20">
+            <ProgressBar.Style>
+                <Style TargetType="ProgressBar">
+                    <Setter Property="Foreground" Value="Blue" />
+                    <Setter Property="Background" Value="LightGray" />
+                    <Setter Property="BorderBrush" Value="Gray" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ProgressBar">
+                                <Grid x:Name="PART_Track">
+                                    <Rectangle x:Name="PART_Indicator" HorizontalAlignment="Left">
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                <GradientStop Color="DodgerBlue" Offset="0" />
+                                                <GradientStop Color="LightBlue" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ProgressBar.Style>
+        </ProgressBar>
     </Grid>
 </moderncontrols:ModernWindow>
