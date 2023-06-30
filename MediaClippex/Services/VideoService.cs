@@ -74,7 +74,9 @@ public static class VideoService
             .First(s => s.Bitrate.ToString() == quality);
         var streamInfos = new[] { audioStreamInfo };
         var conversionRequestBuilder = new ConversionRequestBuilder($"{path}.{audioStreamInfo.Container}");
-        conversionRequestBuilder.SetFFmpegPath("Resources/ffmpeg.exe");
+        conversionRequestBuilder
+            .SetContainer("mp3")
+            .SetFFmpegPath("Resources/ffmpeg.exe");
         await Youtube.Videos.DownloadAsync(streamInfos, conversionRequestBuilder.Build(), progressHandler);
     }
 
