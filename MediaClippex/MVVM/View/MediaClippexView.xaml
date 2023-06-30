@@ -169,39 +169,32 @@
                                      Command="{Binding DownloadCommand}"
                                      Foreground="{DynamicResource fg-000}" />
 
-        <ProgressBar Grid.Row="6" Margin="0 5"
-                     Value="{Binding Progress, Mode=OneWay}"
-                     Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}"
-                     IsIndeterminate="{Binding IsProgressIndeterminate}" Height="20">
-            <ProgressBar.Style>
-                <Style TargetType="ProgressBar">
-                    <Setter Property="Foreground" Value="Blue" />
-                    <Setter Property="Background" Value="LightGray" />
-                    <Setter Property="BorderBrush" Value="Gray" />
-                    <Setter Property="BorderThickness" Value="1" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ProgressBar">
-                                <Grid x:Name="PART_Track">
-                                    <Rectangle x:Name="PART_Indicator" HorizontalAlignment="Left">
-                                        <Rectangle.Fill>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                                <GradientStop Color="DodgerBlue" Offset="0" />
-                                                <GradientStop Color="LightBlue" Offset="1" />
-                                            </LinearGradientBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                    <TextBlock HorizontalAlignment="Center" 
-                                               Foreground="{DynamicResource fg-000}"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center" Text="{Binding ProgressInfo}" />
-                                </Grid>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ProgressBar.Style>
-        </ProgressBar>
+        <Grid Grid.Row="6" Margin="0 5"
+              Background="Transparent"
+              Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ProgressBar
+                Value="{Binding Progress, Mode=OneWay}"
+                Background="{DynamicResource bg-400}"
+                BorderBrush="Transparent"
+                IsIndeterminate="{Binding IsProgressIndeterminate}"
+                Height="20">
+                <ProgressBar.Style>
+                    <Style TargetType="ProgressBar">
+                        <Setter Property="Foreground" Value="{DynamicResource fg-000}" />
+                        <Style.Triggers>
+                            <Trigger Property="IsIndeterminate" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource success-darken}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ProgressBar.Style>
+            </ProgressBar>
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource fg-000}"
+                       FontWeight="Medium"
+                       Text="{Binding ProgressInfo}" />
+        </Grid>
 
     </Grid>
 </moderncontrols:ModernWindow>
