@@ -6,8 +6,8 @@
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <Company>pitzzahh</Company>
-        <FileVersion>0.0.9.3</FileVersion>
-        <ProductVersion>0.0.9.3</ProductVersion>
+        <FileVersion>0.0.9.4</FileVersion>
+        <ProductVersion>0.0.9.4</ProductVersion>
         <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     </PropertyGroup>
 
@@ -38,12 +38,5 @@
       <Resource Include="Resources\Icon.ico">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Resource>
-    </ItemGroup>
-    
-    <ItemGroup>
-        <None Remove="Resources\ffmpeg.exe" />
-        <Content Include="Resources\ffmpeg.exe">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
     </ItemGroup>
 </Project>
