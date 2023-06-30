@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaClippex.Services;
 using Russkyc.DependencyInjection.Implementations;
+using YoutubeExplode.Common;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
 
@@ -102,6 +103,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         }
         try
         {
+            ProgressInfo = "Processing URL...";
             IsProgressIndeterminate = true;
             IsProcessing = true;
             _video = await VideoService.GetVideo(Url);
@@ -126,9 +128,8 @@ public partial class MediaClippexViewModel : BaseViewModel
                     return;
                 }
 
-                videoInfoCardViewModel.ImageUrl = _video.Thumbnails[0].Url;
-                videoInfoCardViewModel.Duration =
-                    StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault());
+                videoInfoCardViewModel.ImageUrl = _video.Thumbnails.GetWithHighestResolution().Url;
+                videoInfoCardViewModel.Duration = StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault());
                 videoInfoCardViewModel.Description = _video.Description;
             });
             InitializeVideoResolutions(manifest);
@@ -136,6 +137,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         }
         finally
         {
+            ProgressInfo = "";
             IsProgressIndeterminate = false;
             IsResolved = true;
             IsProcessing = !IsResolved;
@@ -161,6 +163,7 @@ public partial class MediaClippexViewModel : BaseViewModel
 
         if (string.IsNullOrWhiteSpace(Url)) return;
 
+        ProgressInfo = "Downloading...";
         IsDownloading = true;
         Progress = 0;
         IsProcessing = true;
@@ -178,6 +181,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         }
         finally
         {
+            ProgressInfo = "";
             IsDownloading = false;
             IsProcessing = false;
             ShowPreview = false;
