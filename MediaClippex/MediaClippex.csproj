@@ -6,8 +6,8 @@
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <Company>pitzzahh</Company>
-        <FileVersion>0.0.9-beta</FileVersion>
-        <ProductVersion>0.0.9-beta</ProductVersion>
+        <FileVersion>0.0.9.0</FileVersion>
+        <ProductVersion>0.0.9.0</ProductVersion>
         <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     </PropertyGroup>
 
@@ -42,6 +42,8 @@
     
     <ItemGroup>
         <None Remove="Resources\ffmpeg.exe" />
-        <ClInclude Include="Resources\ffmpeg.exe" />
+        <Content Include="Resources\ffmpeg.exe">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 </Project>
