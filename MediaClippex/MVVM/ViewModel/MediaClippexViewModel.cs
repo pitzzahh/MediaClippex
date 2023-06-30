@@ -32,9 +32,9 @@ public partial class MediaClippexViewModel : BaseViewModel
     [ObservableProperty] private string? _progressInfo;
 
     [ObservableProperty] private double _progress;
-    
+
     [ObservableProperty] private bool _isProgressIndeterminate;
-    
+
     [ObservableProperty] private bool _isProcessing;
 
     [ObservableProperty] private string? _quality = "Quality";
@@ -91,6 +91,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             MessageBox.Show("Please enter a valid YouTube URL.");
             return;
         }
+
         try
         {
             ProgressInfo = "Processing URL...";
@@ -117,8 +118,10 @@ public partial class MediaClippexViewModel : BaseViewModel
                     MessageBox.Show("Could not extract video ID.");
                     return;
                 }
+
                 videoInfoCardViewModel.ImageUrl = _video.Thumbnails.GetWithHighestResolution().Url;
-                videoInfoCardViewModel.Duration = StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault());
+                videoInfoCardViewModel.Duration =
+                    StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault());
                 videoInfoCardViewModel.Description = _video.Description;
             });
             IsResolved = true;
@@ -160,17 +163,19 @@ public partial class MediaClippexViewModel : BaseViewModel
         IsDownloading = true;
         Progress = 0;
         IsProcessing = true;
-        
+
         try
         {
+            var progressHandler = new Progress<double>(p => Progress = p * 100);
             if (IsAudioOnly)
             {
-                await VideoService.DownloadAudioOnly(filePath, Url, SelectedQuality, new Progress<double>(p => Progress = p));
+                await VideoService.DownloadAudioOnly(filePath, Url, SelectedQuality, progressHandler);
             }
             else
             {
-                await VideoService.DownloadMuxed(filePath, Url, SelectedQuality, new Progress<double>(p => Progress = p));
+                await VideoService.DownloadMuxed(filePath, Url, SelectedQuality, progressHandler);
             }
+
             MessageBox.Show("Download completed. Saved to Downloads folder.");
         }
         catch (Exception e)
