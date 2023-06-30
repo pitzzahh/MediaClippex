@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -64,26 +65,26 @@ public static class VideoService
             .First(s => s.Bitrate.ToString() == quality);
     }
 
-    public static async Task DownloadAudioOnly(string path, string url, string quality)
+    public static async Task DownloadAudioOnly(string path, string url, string quality, Progress<double> progressHandler)
     {
         var streamManifest = await GetManifest(url);
         // Select best audio stream (highest bitrate)
+        var audioStreamInfo = streamManifest
+            .GetAudioStreams()
+            .First(s => s.Bitrate.ToString() == quality);
+        var streamInfos = new[] { audioStreamInfo };
+        var conversionRequestBuilder = new ConversionRequestBuilder($"{path}.{audioStreamInfo.Container}");
+        conversionRequestBuilder.SetFFmpegPath("Resources/ffmpeg.exe");
+        await Youtube.Videos.DownloadAsync(streamInfos, conversionRequestBuilder.Build(), progressHandler);
+    }
+
+    public static async Task DownloadMuxed(string path, string url, string quality, Progress<double> progressHandler)
+    {
+        var streamManifest = await GetManifest(url);
+
         var audioStreamInfo = streamManifest
             .GetAudioStreams()
             .Where(s => s.Container == Container.Mp4)
-            .First(s => s.Bitrate.ToString().Equals(quality));
-
-        // Download and mux streams into a single file
-        var streamInfos = new[] { audioStreamInfo };
-        await Youtube.Videos.DownloadAsync(streamInfos, new ConversionRequestBuilder($"{path}.{audioStreamInfo.Container}").Build());
-    }
-
-    public static async Task DownloadMuxed(string path, string url, string quality)
-    {
-        var streamManifest = await GetManifest(url);
-        // Select best audio stream (highest bitrate)
-        var audioStreamInfo = streamManifest
-            .GetAudioStreams()
             .GetWithHighestBitrate();
 
         var videoStreamInfo = streamManifest
@@ -91,8 +92,9 @@ public static class VideoService
             .Where(s => s.Container == Container.Mp4)
             .First(s => s.VideoQuality.Label == quality);
 
-        // Download and mux streams into a single file
         var streamInfos = new[] { audioStreamInfo, videoStreamInfo };
-        await Youtube.Videos.DownloadAsync(streamInfos, new ConversionRequestBuilder($"{path}.mp4").Build());
+        var conversionRequestBuilder = new ConversionRequestBuilder($"{path}.{videoStreamInfo.Container}");
+        conversionRequestBuilder.SetFFmpegPath("Resources/ffmpeg.exe");
+        await Youtube.Videos.DownloadAsync(streamInfos, conversionRequestBuilder.Build(), progressHandler);
     }
 }
