@@ -13,8 +13,8 @@ body:
     id: contact
     attributes:
       label: Contact Details
-      description: How can we get in touch with you if we need more info?
-      placeholder: ex. email@example.com
+      description: How can we get in touch with you if we need more info? (github username, email, etc.)
+      placeholder: ex. pitzzahh
     validations:
       required: false
   - type: textarea
@@ -32,31 +32,26 @@ body:
       label: Version
       description: What version of our software are you running?
       options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
+        - 0.0.6.0
+        - 0.0.7.0
+        - 0.0.8.0
+        - 0.0.9.0 (Latest)
     validations:
       required: true
   - type: dropdown
-    id: browsers
+    id: problems
     attributes:
-      label: What browsers are you seeing the problem on?
+      label: What common problems did you encounter?
       multiple: true
       options:
-        - Firefox
-        - Chrome
-        - Safari
-        - Microsoft Edge
+        - Resolving URL
+        - Selecting Video Quality
+        - Selecting Audio Quality
+        - Selecting audio only
+        - Downloading
   - type: textarea
     id: logs
     attributes:
       label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-      render: shell
-  - type: checkboxes
-    id: terms
-    attributes:
-      label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
-      options:
-        - label: I agree to follow this project's Code of Conduct
-          required: true
+      description: If applicable, paste any relevant error output here.
+      render: Text
