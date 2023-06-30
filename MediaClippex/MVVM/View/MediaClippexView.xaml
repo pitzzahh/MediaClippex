@@ -170,7 +170,7 @@
                                      Foreground="{DynamicResource fg-000}" />
 
         <ProgressBar Grid.Row="6" Margin="0 5"
-                     Value="{Binding Progress, Mode=OneWay}"
+                     Minimum="{Binding Progress, Mode=OneWay}"
                      Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}"
                      IsIndeterminate="{Binding IsProgressIndeterminate}" Height="20">
             <ProgressBar.Style>
@@ -191,6 +191,10 @@
                                             </LinearGradientBrush>
                                         </Rectangle.Fill>
                                     </Rectangle>
+                                    <TextBlock HorizontalAlignment="Center" 
+                                               Foreground="{DynamicResource fg-000}"
+                                               FontWeight="Medium"
+                                               VerticalAlignment="Center" Text="{Binding ProgressInfo}" />
                                 </Grid>
                             </ControlTemplate>
                         </Setter.Value>
@@ -198,5 +202,6 @@
                 </Style>
             </ProgressBar.Style>
         </ProgressBar>
+
     </Grid>
 </moderncontrols:ModernWindow>
