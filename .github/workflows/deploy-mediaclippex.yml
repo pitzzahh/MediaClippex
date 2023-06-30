@@ -26,6 +26,7 @@ jobs:
         run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:PublishReadyToRun=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DeleteExistingFiles=true
 
       - name: Deploy artifacts
+        id: deploy_artifacts
         uses: actions/upload-artifact@v2
         with:
           name: MediaClippex-Artifacts
@@ -40,6 +41,17 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           release_name: ${{ github.ref_name }}
+          body: |
+            Pull Requests included in this release:
+            ${{ steps.list_pull_requests.outputs.pull_requests }}
+            
+      - name: List Pull Requests
+        id: list_pull_requests
+        run: |
+          pull_requests=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls?state=closed&per_page=10" | \
+            jq -r '.[] | "* " + .html_url')
+          echo "::set-output name=pull_requests::$pull_requests"
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -50,47 +62,3 @@ jobs:
           asset_path: MediaClippex/bin/Release/net7.0-windows/win-x64/publish/MediaClippex.exe
           asset_name: MediaClippex.exe
           asset_content_type: application/octet-stream
-
-      - name: Include ffmpeg.exe in Release
-        uses: actions/github-script@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          script: |
-            const fs = require('fs');
-            const request = require('node-fetch');
-            
-            const downloadUrl = 'https://github.com/pitzzahh/MediaClippex/raw/main/MediaClippex/Resources/ffmpeg.exe';
-            const assetName = 'ffmpeg.exe';
-            const assetContentType = 'application/octet-stream';
-            
-            // Download the file
-            request.get(downloadUrl)
-              .on('response', function(response) {
-                // Determine the file path to save
-                const filePath = `${process.env.GITHUB_WORKSPACE}/${assetName}`;
-            
-                // Create a write stream to save the file
-                const fileStream = fs.createWriteStream(filePath);
-            
-                // Pipe the response to the write stream
-                response.pipe(fileStream);
-            
-                // Wait for the file to finish downloading
-                fileStream.on('finish', function() {
-                  fileStream.close();
-            
-                  // Upload the downloaded file as a release asset
-                  github.repos.uploadReleaseAsset({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    release_id: context.payload.release.id,
-                    name: assetName,
-                    data: fs.readFileSync(filePath),
-                    headers: {
-                      'content-type': assetContentType,
-                      'content-length': fs.statSync(filePath).size
-                    }
-                  });
-                });
-              });
