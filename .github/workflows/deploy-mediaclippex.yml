@@ -50,3 +50,13 @@ jobs:
           asset_path: MediaClippex/bin/Release/net7.0-windows/win-x64/publish/MediaClippex.exe
           asset_name: MediaClippex.exe
           asset_content_type: application/octet-stream
+
+      - name: Include ffmpeg.exe in Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: MediaClippex/bin/Release/net7.0-windows/win-x64/Resources/ffmpeg.exe
+          asset_name: ffmpeg.exe
+          asset_content_type: application/octet-stream
