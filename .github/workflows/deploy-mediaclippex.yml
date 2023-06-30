@@ -52,11 +52,45 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Include ffmpeg.exe in Release
-        uses: actions/upload-release-asset@v1
+        uses: actions/github-script@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: MediaClippex/bin/Release/net7.0-windows/win-x64/Resources/ffmpeg.exe
-          asset_name: ffmpeg.exe
-          asset_content_type: application/octet-stream
+          script: |
+            const fs = require('fs');
+            const request = require('request');
+            
+            const downloadUrl = 'https://github.com/pitzzahh/MediaClippex/raw/main/MediaClippex/Resources/ffmpeg.exe';
+            const assetName = 'ffmpeg.exe';
+            const assetContentType = 'application/octet-stream';
+            
+            // Download the file
+            request.get(downloadUrl)
+              .on('response', function(response) {
+                // Determine the file path to save
+                const filePath = `${process.env.GITHUB_WORKSPACE}/${assetName}`;
+            
+                // Create a write stream to save the file
+                const fileStream = fs.createWriteStream(filePath);
+            
+                // Pipe the response to the write stream
+                response.pipe(fileStream);
+            
+                // Wait for the file to finish downloading
+                fileStream.on('finish', function() {
+                  fileStream.close();
+            
+                  // Upload the downloaded file as a release asset
+                  github.repos.uploadReleaseAsset({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    release_id: context.payload.release.id,
+                    name: assetName,
+                    data: fs.readFileSync(filePath),
+                    headers: {
+                      'content-type': assetContentType,
+                      'content-length': fs.statSync(filePath).size
+                    }
+                  });
+                });
+              });
