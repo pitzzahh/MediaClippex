@@ -43,10 +43,6 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     [ObservableProperty] private bool _isResolved;
 
-    [ObservableProperty] private ObservableCollection<string> _formats = new();
-
-    [ObservableProperty] private string _selectedFormat;
-
     [ObservableProperty] private ObservableCollection<string> _qualities = new();
 
     [ObservableProperty] private string? _selectedQuality;
@@ -79,13 +75,6 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     private Video? _video;
     private CancellationTokenSource? _cancellationTokenSource;
-
-    public MediaClippexViewModel()
-    {
-        Formats.Add("mp4");
-        Formats.Add("mp3");
-        SelectedFormat = Formats.First();
-    }
 
     [RelayCommand]
     private async Task Resolve()
