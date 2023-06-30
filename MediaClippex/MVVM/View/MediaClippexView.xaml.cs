@@ -12,6 +12,7 @@ public partial class MediaClippexView
     public MediaClippexView()
     {
         InitializeComponent();
+        UrlTextBox.Focus();
         DataContext = BuilderServices.Resolve<MediaClippexViewModel>();
     }
 }
