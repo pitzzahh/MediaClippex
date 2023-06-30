@@ -39,11 +39,4 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Resource>
     </ItemGroup>
-    
-    <ItemGroup>
-        <None Remove="Resources\ffmpeg.exe" />
-        <Content Include="Resources\ffmpeg.exe">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
 </Project>
