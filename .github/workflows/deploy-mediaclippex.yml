@@ -35,21 +35,15 @@ jobs:
           path: |
             ${{ github.workspace }}/MediaClippex/bin/Release/net7.0-windows/win-x64/publish/*.exe
 
-      - name: Get Previous Release Tag
-        id: get_previous_release
-        run: |
-          $previousTag = git describe --tags (git rev-list --tags --skip=1 --max-count=1)
-          echo "::set-output name=previous_tag::$previousTag"
-
-      - name: Get Pull Requests
-        id: get_pull_requests
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/${{ github.repository }}/pulls?base=${{ steps.get_previous_release.outputs.previous_tag }}&head=${{ github.ref }}
-          mediaType: "application/vnd.github.v3+json"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Check if Changelog Exists
+        id: check_changelog
+        run: echo "::set-output name=exists::$(test -f changelog.md && echo true || echo false)"
+    
+      - name: Read Changelog
+        id: read_changelog
+        if: steps.check_changelog.outputs.exists == 'true'
+        run: echo "::set-output name=changelog::$(cat changelog.md)"
+    
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -60,7 +54,7 @@ jobs:
           release_name: ${{ github.ref_name }}
           body: |
             Changes 🚀:
-            ${{ join(steps.get_pull_requests.outputs.data.*.title, '\n') }}
+            ${{ steps.read_changelog.outputs.changelog }}
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
