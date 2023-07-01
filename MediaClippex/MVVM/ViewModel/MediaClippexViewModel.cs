@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MediaClippex.MVVM.View;
 using MediaClippex.Services;
+using org.russkyc.moderncontrols;
+using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Implementations;
 using YoutubeExplode.Common;
 using YoutubeExplode.Videos;
@@ -47,11 +50,29 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     [ObservableProperty] private string? _selectedQuality;
 
+    [ObservableProperty] private ObservableCollection<string>? _themes = new();
+
     private readonly List<string> _videoQualities = new();
 
     private readonly List<string> _audioQualities = new();
 
+    private int _selectedIndex;
+    private bool _nightMode = true;
     private bool _isAudioOnly;
+    private Video? _video;
+    private CancellationTokenSource? _cancellationTokenSource;
+    private ModernWindow updateWindow = new CheckForUpdatesView();
+
+    public MediaClippexViewModel()
+    {
+        ThemeManager.Instance
+            .GetColorThemes()
+            .ToList()
+            .ForEach(Themes.Add);
+
+        NightMode = false;
+        SelectedIndex = 0;
+    }
 
     // ReSharper disable once MemberCanBePrivate.Global
     public bool IsAudioOnly
@@ -74,8 +95,43 @@ public partial class MediaClippexViewModel : BaseViewModel
         }
     }
 
-    private Video? _video;
-    private CancellationTokenSource? _cancellationTokenSource;
+    // ReSharper disable once MemberCanBePrivate.Global
+    public int SelectedIndex
+    {
+        get => _selectedIndex;
+        // ReSharper disable once PropertyCanBeMadeInitOnly.Global
+        set
+        {
+            _selectedIndex = value;
+            OnPropertyChanged();
+            ChangeColorTheme();
+        }
+    }
+
+    // ReSharper disable once MemberCanBePrivate.Global
+    public bool NightMode
+    {
+        get => _nightMode;
+        // ReSharper disable once PropertyCanBeMadeInitOnly.Global
+        set
+        {
+            _nightMode = value;
+            OnPropertyChanged();
+            ChangeBaseTheme();
+        }
+    }
+
+    private void ChangeBaseTheme()
+    {
+        ThemeManager.Instance
+            .SetBaseTheme(NightMode ? "Dark" : "Light");
+    }
+
+    private void ChangeColorTheme()
+    {
+        ThemeManager.Instance
+            .SetColorTheme(Themes![SelectedIndex]);
+    }
 
     [RelayCommand]
     private async Task Resolve()
@@ -192,6 +248,14 @@ public partial class MediaClippexViewModel : BaseViewModel
             IsAudioOnly = false;
             IsResolved = false;
         }
+    }
+
+    [RelayCommand]
+    private void CheckForUpdates()
+    {
+        if (updateWindow.IsVisible) updateWindow.Close();
+        updateWindow = new CheckForUpdatesView();
+        updateWindow.Show();
     }
 
 
