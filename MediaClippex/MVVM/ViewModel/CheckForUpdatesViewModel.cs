@@ -43,6 +43,14 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
             IsProcessing = "Visible";
             ProgressInfo = "Checking for updates...";
             IsProgressIndeterminate = true;
+            
+            if (LatestVersion != null && CurrentVersion != null && !ShouldUpdate(CurrentVersion, LatestVersion))
+            {
+                IsProgressIndeterminate = false;
+                MessageBox.Show("You have the latest version of the application.", "No Updates Available");
+                return;
+            }
+            
             var latestRelease = await new GitHubClient(new ProductHeaderValue(Repo))
                 .Repository
                 .Release
@@ -118,14 +126,14 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
         return Assembly.GetExecutingAssembly().GetName().Version?.ToString();
     }
 
-    private async Task DownloadAndInstallUpdate(ReleaseAsset downloadUrl)
+    private async Task DownloadAndInstallUpdate(ReleaseAsset releaseAsset)
     {
         using var httpClient = new HttpClient();
         var tempFilePath = Path.GetTempFileName();
 
         try
         {
-            using (var response = await httpClient.GetAsync(downloadUrl.BrowserDownloadUrl,
+            using (var response = await httpClient.GetAsync(releaseAsset.BrowserDownloadUrl,
                        HttpCompletionOption.ResponseHeadersRead))
             await using (var stream = await response.Content.ReadAsStreamAsync())
             await using (var fileStream = File.Create(tempFilePath))
@@ -146,7 +154,7 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
             }
 
             // Install the update by replacing the current executable with the downloaded one
-            var currentAssemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var currentAssemblyLocation = AppContext.BaseDirectory;
             var newAssemblyLocation =
                 Path.Combine(Path.GetDirectoryName(currentAssemblyLocation) ?? throw new InvalidOperationException(),
                     "MediaClippex_new.exe");
