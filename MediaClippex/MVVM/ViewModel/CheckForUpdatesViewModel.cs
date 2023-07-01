@@ -25,6 +25,7 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
     [ObservableProperty] private string _isProcessing = "Collapsed";
     [ObservableProperty] private bool _enableCheckForUpdateButton = true;
     [ObservableProperty] private string? _changeLog;
+    [ObservableProperty] private string? _progressInfo;
     [ObservableProperty] private double _progress;
     [ObservableProperty] private bool _isProgressIndeterminate;
 
@@ -39,6 +40,7 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
         try
         {
             IsProcessing = "Visible";
+            ProgressInfo = "Checking for updates...";
             IsProgressIndeterminate = true;
             var latestRelease = await new GitHubClient(new ProductHeaderValue(Repo))
                 .Repository
@@ -69,6 +71,7 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
 
             if (ShouldUpdate(CurrentVersion, LatestVersion))
             {
+                ProgressInfo = "";
                 ShowChangeLog = "Visible";
                 IsProcessing = "Collapsed";
                 IsProgressIndeterminate = false;
@@ -77,6 +80,7 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
                 if (result == MessageBoxResult.Yes)
                 {
                     IsProcessing = "Visible";
+                    ProgressInfo = "Downloading update...";
                     EnableCheckForUpdateButton = false;
                     await DownloadAndInstallUpdate(downloadUrl);
                 }
@@ -89,12 +93,13 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error occurred while checking for updates: {ex.Message}", "Update Error");
+            MessageBox.Show($"Error occurred while checking for updates: {ex.Message} Captured Latest Version: {LatestVersion}", "Update Error");
         }
         finally
         {
             ShowChangeLog = "Collapsed";
             IsProcessing = "Collapsed";
+            ProgressInfo = "";
             IsProgressIndeterminate = false;
             EnableCheckForUpdateButton = true;
         }
