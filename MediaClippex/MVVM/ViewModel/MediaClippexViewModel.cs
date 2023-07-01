@@ -56,7 +56,7 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     private readonly List<string> _audioQualities = new();
 
-    private int _selectedIndex;
+    private int _selectedIndex = 0;
     private bool _nightMode = true;
     private bool _isAudioOnly;
     private Video? _video;
@@ -69,9 +69,6 @@ public partial class MediaClippexViewModel : BaseViewModel
             .GetColorThemes()
             .ToList()
             .ForEach(Themes.Add);
-
-        NightMode = false;
-        SelectedIndex = 0;
     }
 
     // ReSharper disable once MemberCanBePrivate.Global
