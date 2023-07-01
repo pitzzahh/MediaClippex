@@ -1,5 +1,8 @@
 ﻿# Changelog
 
+## Version 0.0.9.12
+- 🔄 Fix issue where the app would crash and won't start
+
 ## Version 0.0.9.8
 - 🔄 Code Cleanup
 - ✨ Redesign some components
