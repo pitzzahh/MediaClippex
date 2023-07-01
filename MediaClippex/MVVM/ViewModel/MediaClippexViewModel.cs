@@ -61,7 +61,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     private bool _isAudioOnly;
     private Video? _video;
     private CancellationTokenSource? _cancellationTokenSource;
-    private ModernWindow updateWindow = new CheckForUpdatesView();
+    private Window updateWindow = new CheckForUpdatesView();
 
     public MediaClippexViewModel()
     {
