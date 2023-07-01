@@ -1,6 +1,8 @@
 ﻿name: Deploy MediaClippex
 on:
   push:
+    branches:
+      - main
     tags:
       - "*.*.*.*"
 
@@ -36,8 +38,8 @@ jobs:
       - name: Get Previous Release Tag
         id: get_previous_release
         run: |
-          PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1))
-          echo "::set-output name=previous_tag::$PREVIOUS_TAG"
+          $previousTag = git describe --tags (git rev-list --tags --skip=1 --max-count=1)
+          echo "::set-output name=previous_tag::$previousTag"
 
       - name: Get Pull Requests
         id: get_pull_requests
