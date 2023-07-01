@@ -9,7 +9,6 @@
                              xmlns:components="clr-namespace:MediaClippex.Components"
                              mc:Ignorable="d"
                              Title="MediaClippex"
-                             Height="700"
                              Icon="../../Resources/Icon.ico"
                              TitleBarBackground="{DynamicResource bg-000}"
                              Background="{DynamicResource bg-000}"
@@ -63,7 +62,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <TextBlock Text="MediaClippex"
