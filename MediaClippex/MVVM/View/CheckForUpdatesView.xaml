@@ -15,21 +15,23 @@
 
     <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <TextBlock Text="Check for Update"
-                   FontSize="16"
+                   FontSize="24"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"
                    Margin="0 20 0 0" />
 
         <TextBlock Grid.Row="1"
-                   Margin="0 10 0 0"
+                   Margin="0 5 0 0"
                    TextWrapping="Wrap">
             <Span>
                 <Bold FontWeight="Bold">Current Version: </Bold>
@@ -37,36 +39,28 @@
             </Span>
         </TextBlock>
 
-        <Grid Grid.Row="2"
-              Visibility="{Binding ShowChangeLog}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="2"
+                   Margin="0 0 0 10"
+                   TextWrapping="Wrap">
+            <Span>
+                <Bold FontWeight="Bold">Latest Version: </Bold>
+                <Run Text="{Binding LatestVersion}" />
+            </Span>
+        </TextBlock>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+        <moderncontrols:ModernButton
+            Grid.Row="3"
+            FontWeight="Medium"
+            LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Update}"
+            IsEnabled="{Binding EnableCheckForUpdateButton}"
+            Command="{Binding CheckForUpdateCommand}"
+            Content="Check for update" />
 
-            <TextBlock Text="Changelog"
-                       Margin="0 0 0 5"
-                       FontWeight="Bold" />
-            <TextBox Grid.Row="1"
-                     Text="{Binding Changelog}"
-                     VerticalScrollBarVisibility="Auto"
-                     HorizontalScrollBarVisibility="Auto"
-                     IsReadOnly="True"
-                     TextWrapping="Wrap"
-                     Background="Transparent"
-                     Foreground="{DynamicResource fg-000}"
-                     MinHeight="200"
-                     MaxHeight="200" />
-        </Grid>
-
-        <Grid Grid.Row="3" Background="Transparent"
+        <Grid Grid.Row="4"
+              Margin="0 5"
+              Background="Transparent"
               Visibility="{Binding IsProcessing}">
             <ProgressBar
-                Margin="5"
                 Value="{Binding Progress, Mode=OneWay}"
                 IsIndeterminate="{Binding IsProgressIndeterminate}"
                 Height="20">
@@ -90,12 +84,21 @@
                        Text="{Binding ProgressInfo}" />
         </Grid>
 
-        <moderncontrols:ModernButton Grid.Row="4"
-                                     FontWeight="Medium"
-                                     LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Update}"
-                                     IsEnabled="{Binding EnableCheckForUpdateButton}"
-                                     Command="{Binding CheckForUpdateCommand}"
-                                     Content="Check for update" />
-
+        <TextBlock Grid.Row="5" Text="Changelog"
+                   Visibility="{Binding ShowChangeLog}"
+                   Margin="0 0 0 5"
+                   FontWeight="Bold" />
+        <TextBox Grid.Row="6"
+                 Visibility="{Binding ShowChangeLog}"
+                 Text="{Binding Changelog}"
+                 VerticalScrollBarVisibility="Auto"
+                 HorizontalScrollBarVisibility="Auto"
+                 IsReadOnly="True"
+                 TextWrapping="Wrap"
+                 Background="Transparent"
+                 VerticalAlignment="Top"
+                 Foreground="{DynamicResource fg-000}"
+                 MinHeight="200"
+                 MaxHeight="200" />
     </Grid>
 </moderncontrols:ModernWindow>

@@ -11,7 +11,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaClippex.MVVM.View;
 using MediaClippex.Services;
-using org.russkyc.moderncontrols;
 using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Implementations;
 using YoutubeExplode.Common;
@@ -23,45 +22,46 @@ namespace MediaClippex.MVVM.ViewModel;
 // ReSharper disable once ClassNeverInstantiated.Global
 public partial class MediaClippexViewModel : BaseViewModel
 {
-    [ObservableProperty] [Required(ErrorMessage = "Please enter a URL.")]
-    private string? _url;
+    private readonly List<string> _audioQualities = new();
 
-    [ObservableProperty] private string? _status;
+    private readonly List<string> _videoQualities = new();
+    private CancellationTokenSource? _cancellationTokenSource;
 
-    [ObservableProperty] private bool _showPreview;
+    [ObservableProperty] private string? _imagePreview;
+    private bool _isAudioOnly;
 
     [ObservableProperty] private bool _isDownloading;
 
-    [ObservableProperty] private string? _progressInfo;
-
-    [ObservableProperty] private double _progress;
+    [ObservableProperty] private bool _isProcessing;
 
     [ObservableProperty] private bool _isProgressIndeterminate;
 
-    [ObservableProperty] private bool _isProcessing;
-
-    [ObservableProperty] private string? _quality = "Quality";
-
-    [ObservableProperty] private string? _imagePreview;
-
     [ObservableProperty] private bool _isResolved;
+    private bool _nightMode = true;
+
+    [ObservableProperty] private double _progress;
+
+    [ObservableProperty] private string? _progressInfo;
 
     [ObservableProperty] private ObservableCollection<string> _qualities = new();
 
-    [ObservableProperty] private string? _selectedQuality;
-
-    [ObservableProperty] private ObservableCollection<string>? _themes = new();
-
-    private readonly List<string> _videoQualities = new();
-
-    private readonly List<string> _audioQualities = new();
+    [ObservableProperty] private string? _quality = "Quality";
 
     private int _selectedIndex;
-    private bool _nightMode = true;
-    private bool _isAudioOnly;
+
+    [ObservableProperty] private string? _selectedQuality;
+
+    [ObservableProperty] private bool _showPreview;
+
+    [ObservableProperty] private string? _status;
+
+    [ObservableProperty] private ObservableCollection<string> _themes = new();
+
+    [ObservableProperty] [Required(ErrorMessage = "Please enter a URL.")]
+    private string? _url;
+
     private Video? _video;
-    private CancellationTokenSource? _cancellationTokenSource;
-    private ModernWindow updateWindow = new CheckForUpdatesView();
+    private Window _updateWindow = new CheckForUpdatesView();
 
     public MediaClippexViewModel()
     {
@@ -69,9 +69,6 @@ public partial class MediaClippexViewModel : BaseViewModel
             .GetColorThemes()
             .ToList()
             .ForEach(Themes.Add);
-
-        NightMode = false;
-        SelectedIndex = 0;
     }
 
     // ReSharper disable once MemberCanBePrivate.Global
@@ -83,13 +80,9 @@ public partial class MediaClippexViewModel : BaseViewModel
             _isAudioOnly = value;
             Qualities.Clear();
             if (_isAudioOnly)
-            {
                 _audioQualities.ForEach(q => Qualities.Add(q));
-            }
             else
-            {
                 _videoQualities.ForEach(q => Qualities.Add(q));
-            }
 
             SelectedQuality = Qualities.First();
         }
@@ -130,7 +123,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     private void ChangeColorTheme()
     {
         ThemeManager.Instance
-            .SetColorTheme(Themes![SelectedIndex]);
+            .SetColorTheme(Themes[SelectedIndex]);
     }
 
     [RelayCommand]
@@ -224,13 +217,9 @@ public partial class MediaClippexViewModel : BaseViewModel
         {
             var progressHandler = new Progress<double>(p => Progress = p * 100);
             if (IsAudioOnly)
-            {
                 await VideoService.DownloadAudioOnly(filePath, Url, SelectedQuality, progressHandler);
-            }
             else
-            {
                 await VideoService.DownloadMuxed(filePath, Url, SelectedQuality, progressHandler);
-            }
 
             MessageBox.Show("Download completed. Saved to Downloads folder.");
         }
@@ -253,9 +242,9 @@ public partial class MediaClippexViewModel : BaseViewModel
     [RelayCommand]
     private void CheckForUpdates()
     {
-        if (updateWindow.IsVisible) updateWindow.Close();
-        updateWindow = new CheckForUpdatesView();
-        updateWindow.Show();
+        if (_updateWindow.IsVisible) _updateWindow.Close();
+        _updateWindow = new CheckForUpdatesView();
+        _updateWindow.Show();
     }
 
 

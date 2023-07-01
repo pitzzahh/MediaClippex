@@ -17,21 +17,23 @@ namespace MediaClippex.MVVM.ViewModel;
 // ReSharper disable once ClassNeverInstantiated.Global
 public partial class CheckForUpdatesViewModel : BaseViewModel
 {
-    private static string Owner => "pitzzahh";
-    private static string Repo => "MediaClippex";
-    [ObservableProperty] private string? _currentVersion;
-    [ObservableProperty] private string? _latestVersion;
-    [ObservableProperty] private string _showChangeLog = "Collapsed";
-    [ObservableProperty] private string _isProcessing = "Collapsed";
-    [ObservableProperty] private bool _enableCheckForUpdateButton = true;
     [ObservableProperty] private string? _changeLog;
-    [ObservableProperty] private double _progress;
+    [ObservableProperty] private string? _currentVersion;
+    [ObservableProperty] private bool _enableCheckForUpdateButton = true;
+    [ObservableProperty] private string _isProcessing = "Collapsed";
     [ObservableProperty] private bool _isProgressIndeterminate;
+    [ObservableProperty] private string? _latestVersion;
+    [ObservableProperty] private double _progress;
+    [ObservableProperty] private string? _progressInfo;
+    [ObservableProperty] private string _showChangeLog = "Collapsed";
 
     public CheckForUpdatesViewModel()
     {
         CurrentVersion = ReadCurrentVersion();
     }
+
+    private static string Owner => "pitzzahh";
+    private static string Repo => "MediaClippex";
 
     [RelayCommand]
     private async Task CheckForUpdate()
@@ -39,6 +41,7 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
         try
         {
             IsProcessing = "Visible";
+            ProgressInfo = "Checking for updates...";
             IsProgressIndeterminate = true;
             var latestRelease = await new GitHubClient(new ProductHeaderValue(Repo))
                 .Repository
@@ -69,6 +72,7 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
 
             if (ShouldUpdate(CurrentVersion, LatestVersion))
             {
+                ProgressInfo = "";
                 ShowChangeLog = "Visible";
                 IsProcessing = "Collapsed";
                 IsProgressIndeterminate = false;
@@ -77,6 +81,7 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
                 if (result == MessageBoxResult.Yes)
                 {
                     IsProcessing = "Visible";
+                    ProgressInfo = "Downloading update...";
                     EnableCheckForUpdateButton = false;
                     await DownloadAndInstallUpdate(downloadUrl);
                 }
@@ -89,12 +94,15 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error occurred while checking for updates: {ex.Message}", "Update Error");
+            MessageBox.Show(
+                $"Error occurred while checking for updates: {ex.Message} Captured Latest Version: {LatestVersion}",
+                "Update Error");
         }
         finally
         {
             ShowChangeLog = "Collapsed";
             IsProcessing = "Collapsed";
+            ProgressInfo = "";
             IsProgressIndeterminate = false;
             EnableCheckForUpdateButton = true;
         }
@@ -149,7 +157,7 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
             ShowChangeLog = "Collapsed";
             EnableCheckForUpdateButton = true;
             BuilderServices.Resolve<CheckForUpdatesView>().Close();
-            
+
             MessageBox.Show("Update installed successfully. Please restart the application.", "Update Installed");
         }
         catch (Exception ex)
@@ -159,10 +167,7 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
         }
         finally
         {
-            if (File.Exists(tempFilePath))
-            {
-                File.Delete(tempFilePath);
-            }
+            if (File.Exists(tempFilePath)) File.Delete(tempFilePath);
         }
     }
 

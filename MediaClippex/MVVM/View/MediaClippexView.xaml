@@ -9,7 +9,6 @@
                              xmlns:components="clr-namespace:MediaClippex.Components"
                              mc:Ignorable="d"
                              Title="MediaClippex"
-                             Height="700"
                              Icon="../../Resources/Icon.ico"
                              TitleBarBackground="{DynamicResource bg-000}"
                              Background="{DynamicResource bg-000}"
@@ -20,7 +19,7 @@
         <system:Double x:Key="Short">200</system:Double>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
-    
+
     <moderncontrols:ModernWindow.TitleBarTemplate>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -31,12 +30,12 @@
             </Grid.ColumnDefinitions>
 
             <moderncontrols:ModernButton Grid.Column="1"
-                                               Margin="5,5,0,5"
-                                               Padding="5,3"
-                                               Content="Check for updates"
-                                               Command="{Binding CheckForUpdatesCommand}"
-                                               LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Update}" />
-            
+                                         Margin="5,5,0,5"
+                                         Padding="5,3"
+                                         Content="Check for updates"
+                                         Command="{Binding CheckForUpdatesCommand}"
+                                         LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Update}" />
+
             <moderncontrols:ModernToggleButton Grid.Column="2"
                                                Margin="5,5,0,5"
                                                Padding="5,3"
@@ -63,7 +62,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <TextBlock Text="MediaClippex"
@@ -209,9 +207,9 @@
                 Height="20">
                 <ProgressBar.Style>
                     <Style TargetType="ProgressBar">
-                        <Setter Property="Background" Value="{DynamicResource bg-400}"/>
+                        <Setter Property="Background" Value="{DynamicResource bg-400}" />
                         <Setter Property="Foreground" Value="{DynamicResource fg-000}" />
-                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="BorderBrush" Value="Transparent" />
                         <Style.Triggers>
                             <Trigger Property="IsIndeterminate" Value="True">
                                 <Setter Property="Foreground" Value="{DynamicResource success-darken}" />

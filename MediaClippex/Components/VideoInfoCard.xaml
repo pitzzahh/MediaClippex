@@ -21,7 +21,7 @@
                HorizontalAlignment="Left" />
 
         <!-- Video Info -->
-        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" 
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"
                       Margin="7"
                       HorizontalScrollBarVisibility="Hidden">
             <Grid>
