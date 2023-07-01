@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace MediaClippex.Services;
 
-public static partial class StringService
+public static class StringService
 {
     public static string ConvertToTimeFormat(TimeSpan timeSpan)
     {
@@ -65,7 +65,8 @@ public static partial class StringService
             .Aggregate(fileName, (current, invalidChar) => current.Replace(invalidChar, '_'));
     }
 
-    [GeneratedRegex(
-        "(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|shorts/|watch\\?v=|watch\\?.+&v=))([^?&\"'>]+)(?:&list=([^?&\"'>]+))?")]
-    private static partial Regex YoutubeUrlRegex();
+    private static Regex YoutubeUrlRegex()
+    {
+        return new Regex("(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|shorts/|watch\\?v=|watch\\?.+&v=))([^?&\"'>]+)(?:&list=([^?&\"'>]+))?");
+    }
 }
