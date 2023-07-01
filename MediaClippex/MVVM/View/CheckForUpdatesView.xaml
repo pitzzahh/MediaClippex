@@ -1,0 +1,101 @@
+﻿<moderncontrols:ModernWindow x:Class="MediaClippex.MVVM.View.CheckForUpdatesView"
+                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                             xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+                             xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
+                             mc:Ignorable="d"
+                             Icon="../../Resources/Icon.ico"
+                             Title="Check for Updates"
+                             WindowStartupLocation="CenterScreen"
+                             Background="{DynamicResource bg-400}"
+                             Foreground="{DynamicResource fg-300}"
+                             Width="400">
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Check for Update"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0 20 0 0" />
+
+        <TextBlock Grid.Row="1"
+                   Margin="0 10 0 0"
+                   TextWrapping="Wrap">
+            <Span>
+                <Bold FontWeight="Bold">Current Version: </Bold>
+                <Run Text="{Binding CurrentVersion}" />
+            </Span>
+        </TextBlock>
+
+        <Grid Grid.Row="2"
+              Visibility="{Binding ShowChangeLog}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Changelog"
+                       Margin="0 0 0 5"
+                       FontWeight="Bold" />
+            <TextBox Grid.Row="1"
+                     Text="{Binding Changelog}"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Auto"
+                     IsReadOnly="True"
+                     TextWrapping="Wrap"
+                     Background="Transparent"
+                     Foreground="{DynamicResource fg-000}"
+                     MinHeight="200"
+                     MaxHeight="200" />
+        </Grid>
+
+        <Grid Grid.Row="3" Background="Transparent"
+              Visibility="{Binding IsProcessing}">
+            <ProgressBar
+                Margin="5"
+                Value="{Binding Progress, Mode=OneWay}"
+                IsIndeterminate="{Binding IsProgressIndeterminate}"
+                Height="20">
+                <ProgressBar.Style>
+                    <Style TargetType="ProgressBar">
+                        <Setter Property="Background" Value="{DynamicResource bg-400}" />
+                        <Setter Property="Foreground" Value="{DynamicResource fg-000}" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Style.Triggers>
+                            <Trigger Property="IsIndeterminate" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource success-darken}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ProgressBar.Style>
+            </ProgressBar>
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource fg-000}"
+                       FontWeight="Medium"
+                       Text="{Binding ProgressInfo}" />
+        </Grid>
+
+        <moderncontrols:ModernButton Grid.Row="4"
+                                     FontWeight="Medium"
+                                     LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Update}"
+                                     IsEnabled="{Binding EnableCheckForUpdateButton}"
+                                     Command="{Binding CheckForUpdateCommand}"
+                                     Content="Check for update" />
+
+    </Grid>
+</moderncontrols:ModernWindow>
