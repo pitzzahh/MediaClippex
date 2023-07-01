@@ -1,4 +1,4 @@
-﻿name: "Deploy MediaClippex"
+﻿name: Deploy MediaClippex
 on:
   push:
     tags:
@@ -33,17 +33,24 @@ jobs:
           path: |
             ${{ github.workspace }}/MediaClippex/bin/Release/net7.0-windows/win-x64/publish/*.exe
 
-      - name: Get pull requests
-        id: get_pull_requests
+      - name: Get Previous Release Tag
+        id: get_previous_release
         run: |
-          PR_LIST=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/pulls?state=closed")
-          PR_BODY=""
-          for (pr in $echo "${PR_LIST}" | jq -r '.[] | .number, .title'); do
-            PR_BODY+="PR #$pr: $pr\n"
-          done
-          echo "::set-output name=pull_requests::${PR_BODY}"
-          
+          PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1))
+          echo "::set-output name=previous_tag::$PREVIOUS_TAG"
+
+      - name: Get Pull Requests
+        id: get_pull_requests
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/${{ github.repository }}/pulls
+          headers: |
+            Accept: application/vnd.github.v3+json
+          query: |
+            base=${{ steps.get_previous_release.outputs.previous_tag }}&head=${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -53,8 +60,8 @@ jobs:
           tag_name: ${{ github.ref_name }}
           release_name: Version ${{ github.ref_name }}
           body: |
-            Pull Requests:
-            ${{ steps.get_pull_requests.outputs.pull_requests }}
+            Changes 🚀:
+            ${{ join(steps.get_pull_requests.outputs.data.*.title, '\n') }}
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
