@@ -2,7 +2,8 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net7.0-windows</TargetFramework>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <Company>pitzzahh</Company>
@@ -13,8 +14,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Converters\"/>
-        <Folder Include="Interfaces\"/>
+        <Folder Include="Converters\" />
+        <Folder Include="Interfaces\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,17 +27,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0"/>
-        <PackageReference Include="Material.Icons.WPF" Version="2.0.0"/>
-        <PackageReference Include="Octokit" Version="6.2.1"/>
-        <PackageReference Include="Russkyc.DependencyInjection" Version="0.9.7"/>
-        <PackageReference Include="Russkyc.ModernControls.WPF" Version="1.9.18"/>
-        <PackageReference Include="YoutubeExplode" Version="6.2.16"/>
-        <PackageReference Include="YoutubeExplode.Converter" Version="6.2.16"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+        <PackageReference Include="Material.Icons.WPF" Version="2.0.0" />
+        <PackageReference Include="Octokit" Version="6.2.1" />
+        <PackageReference Include="Russkyc.DependencyInjection" Version="0.9.7" />
+        <PackageReference Include="Russkyc.ModernControls.WPF" Version="1.9.18" />
+        <PackageReference Include="YoutubeExplode" Version="6.2.16" />
+        <PackageReference Include="YoutubeExplode.Converter" Version="6.2.16" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Resources\Icon.ico"/>
+        <None Remove="Resources\Icon.ico" />
         <Resource Include="Resources\Icon.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Resource>
