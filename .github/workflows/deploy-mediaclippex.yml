@@ -36,18 +36,15 @@ jobs:
       - name: Get Previous Release Tag
         id: get_previous_release
         run: |
-          $previousTag = git describe --tags (git rev-list --tags --skip=1 --max-count=1)
-          echo "::set-output name=previous_tag::$previousTag"
-      
+          PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1))
+          echo "::set-output name=previous_tag::$PREVIOUS_TAG"
+
       - name: Get Pull Requests
         id: get_pull_requests
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/${{ github.repository }}/pulls
-          headers: |
-            Accept: application/vnd.github.v3+json
-          query: |
-            base=${{ steps.get_previous_release.outputs.previous_tag }}&head=${{ github.ref }}
+          route: GET /repos/${{ github.repository }}/pulls?base=${{ steps.get_previous_release.outputs.previous_tag }}&head=${{ github.ref }}
+          mediaType: "application/vnd.github.v3+json"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -58,7 +55,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: Version ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
           body: |
             Changes 🚀:
             ${{ join(steps.get_pull_requests.outputs.data.*.title, '\n') }}
