@@ -8,6 +8,5 @@ public partial class CheckForUpdatesView
     {
         InitializeComponent();
         DataContext = new CheckForUpdatesViewModel();
-
     }
 }
