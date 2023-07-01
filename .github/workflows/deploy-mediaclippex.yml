@@ -39,7 +39,7 @@ jobs:
           PR_LIST=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           "https://api.github.com/repos/${{ github.repository }}/pulls?state=closed")
           PR_BODY=""
-          for pr in $(echo "${PR_LIST}" | jq -r '.[] | .number, .title'); do
+          for (pr in $echo "${PR_LIST}" | jq -r '.[] | .number, .title'); do
             PR_BODY+="PR #$pr: $pr\n"
           done
           echo "::set-output name=pull_requests::${PR_BODY}"
