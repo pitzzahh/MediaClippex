@@ -15,11 +15,11 @@
 
     <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
         <TextBlock Text="Check for Update"
@@ -27,8 +27,8 @@
                    FontWeight="Bold"
                    HorizontalAlignment="Center"
                    Margin="0 20 0 0" />
-        
-        <TextBlock Grid.Row="1" 
+
+        <TextBlock Grid.Row="1"
                    Margin="0 10 0 0"
                    TextWrapping="Wrap">
             <Span>
@@ -51,7 +51,7 @@
             <TextBlock Text="Changelog"
                        Margin="0 0 0 5"
                        FontWeight="Bold" />
-            <TextBox Grid.Row="1" 
+            <TextBox Grid.Row="1"
                      Text="{Binding Changelog}"
                      VerticalScrollBarVisibility="Auto"
                      HorizontalScrollBarVisibility="Auto"
@@ -60,7 +60,7 @@
                      Background="Transparent"
                      Foreground="{DynamicResource fg-000}"
                      MinHeight="200"
-                     MaxHeight="200"/> 
+                     MaxHeight="200" />
         </Grid>
 
         <Grid Grid.Row="3" Background="Transparent"
