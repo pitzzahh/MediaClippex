@@ -4,5 +4,4 @@ namespace MediaClippex.MVVM.ViewModel;
 
 public class BaseViewModel : ObservableValidator
 {
-    
 }

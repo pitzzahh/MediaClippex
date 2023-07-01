@@ -65,7 +65,8 @@ public static class VideoService
             .First(s => s.Bitrate.ToString() == quality);
     }
 
-    public static async Task DownloadAudioOnly(string path, string url, string quality, Progress<double> progressHandler)
+    public static async Task DownloadAudioOnly(string path, string url, string quality,
+        Progress<double> progressHandler)
     {
         var streamManifest = await GetManifest(url);
         // Select best audio stream (highest bitrate)

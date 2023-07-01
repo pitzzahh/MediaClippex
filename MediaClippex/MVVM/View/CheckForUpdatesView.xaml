@@ -38,7 +38,7 @@
                 <Run Text="{Binding CurrentVersion}" />
             </Span>
         </TextBlock>
-        
+
         <TextBlock Grid.Row="2"
                    Margin="0 0 0 10"
                    TextWrapping="Wrap">
