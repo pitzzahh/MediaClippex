@@ -93,6 +93,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         get => _selectedIndex;
         // ReSharper disable once PropertyCanBeMadeInitOnly.Global
+        // ReSharper disable once UnusedMember.Global
         set
         {
             _selectedIndex = value;
@@ -106,6 +107,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         get => _nightMode;
         // ReSharper disable once PropertyCanBeMadeInitOnly.Global
+        // ReSharper disable once UnusedMember.Global
         set
         {
             _nightMode = value;
