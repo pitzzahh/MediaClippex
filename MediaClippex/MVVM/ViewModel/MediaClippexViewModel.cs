@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -25,7 +24,6 @@ public partial class MediaClippexViewModel : BaseViewModel
     private readonly List<string> _audioQualities = new();
 
     private readonly List<string> _videoQualities = new();
-    private CancellationTokenSource? _cancellationTokenSource;
 
     [ObservableProperty] private string? _imagePreview;
     private bool _isAudioOnly;
@@ -61,7 +59,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     private string? _url;
 
     private Video? _video;
-    private Window _updateWindow = new CheckForUpdatesView();
+    public static Window UpdateWindow = new CheckUpdateView();
 
     public MediaClippexViewModel()
     {
@@ -93,6 +91,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         get => _selectedIndex;
         // ReSharper disable once PropertyCanBeMadeInitOnly.Global
+        // ReSharper disable once UnusedMember.Global
         set
         {
             _selectedIndex = value;
@@ -106,6 +105,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         get => _nightMode;
         // ReSharper disable once PropertyCanBeMadeInitOnly.Global
+        // ReSharper disable once UnusedMember.Global
         set
         {
             _nightMode = value;
@@ -204,8 +204,6 @@ public partial class MediaClippexViewModel : BaseViewModel
         var userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         var filePath = Path.Combine(userPath, "Downloads", $"{StringService.FixFileName(_video.Title)}");
 
-        _cancellationTokenSource = new CancellationTokenSource();
-
         if (string.IsNullOrWhiteSpace(Url)) return;
 
         ProgressInfo = "Downloading...";
@@ -242,14 +240,15 @@ public partial class MediaClippexViewModel : BaseViewModel
     [RelayCommand]
     private void CheckForUpdates()
     {
-        if (_updateWindow.IsVisible) _updateWindow.Close();
-        _updateWindow = new CheckForUpdatesView();
-        _updateWindow.Show();
+        if (UpdateWindow.IsVisible) UpdateWindow.Close();
+        UpdateWindow = new CheckUpdateView();
+        UpdateWindow.Show();
+        Task.Run(((CheckUpdateViewModel)UpdateWindow.DataContext).CheckForUpdate);
     }
 
 
     [RelayCommand]
-    private void CancelDownload()
+    private static void CancelDownload()
     {
         MessageBox.Show("This feature is not implemented yet.");
     }

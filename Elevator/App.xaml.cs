@@ -1,16 +1,15 @@
 ﻿using System.Windows;
-using MediaClippex.MVVM.View;
-using MediaClippex.Services;
+using Elevator.MVVM.View;
+using Elevator.Services;
 using Russkyc.DependencyInjection.Implementations;
 
-namespace MediaClippex;
+namespace Elevator;
 
 /// <summary>
 ///     Interaction logic for App.xaml
 /// </summary>
 public partial class App
 {
-    
     public App()
     {
         BuilderServices.BuildWithContainer(BuildContainer.ConfigureServices());
@@ -18,9 +17,7 @@ public partial class App
 
     protected override void OnStartup(StartupEventArgs e)
     {
-        var mediaClippexView = BuilderServices.Resolve<MediaClippexView>();
-        MainWindow = mediaClippexView;
-        mediaClippexView.Show();
+        BuilderServices.Resolve<MediaClippexUpdater>().Show();
         base.OnStartup(e);
     }
 
