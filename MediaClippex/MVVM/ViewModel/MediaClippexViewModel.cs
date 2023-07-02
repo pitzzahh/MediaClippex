@@ -61,7 +61,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     private string? _url;
 
     private Video? _video;
-    private Window _updateWindow = new CheckForUpdatesView();
+    public static Window UpdateWindow = new CheckUpdateView();
 
     public MediaClippexViewModel()
     {
@@ -242,14 +242,15 @@ public partial class MediaClippexViewModel : BaseViewModel
     [RelayCommand]
     private void CheckForUpdates()
     {
-        if (_updateWindow.IsVisible) _updateWindow.Close();
-        _updateWindow = new CheckForUpdatesView();
-        _updateWindow.Show();
+        if (UpdateWindow.IsVisible) UpdateWindow.Close();
+        UpdateWindow = new CheckUpdateView();
+        UpdateWindow.Show();
+        Task.Run(((CheckUpdateViewModel)UpdateWindow.DataContext).CheckForUpdate);
     }
 
 
     [RelayCommand]
-    private void CancelDownload()
+    private static void CancelDownload()
     {
         MessageBox.Show("This feature is not implemented yet.");
     }
