@@ -29,6 +29,7 @@
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
         <PackageReference Include="Material.Icons.WPF" Version="2.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.8" />
         <PackageReference Include="Octokit" Version="6.2.1" />
         <PackageReference Include="Russkyc.DependencyInjection" Version="0.9.7" />
         <PackageReference Include="Russkyc.ModernControls.WPF" Version="1.9.18" />
