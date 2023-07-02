@@ -9,7 +9,7 @@
         <Version>0.0.10.10</Version>
         <FileVersion>0.0.10.10</FileVersion>
         <ProductVersion>0.0.10.10</ProductVersion>
-        <ApplicationIcon>Icon.ico</ApplicationIcon>
+        <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,6 +18,11 @@
             <XamlRuntime>Wpf</XamlRuntime>
             <SubType>Designer</SubType>
         </Page>
+        <Page Update="MVVM\View\MediaClippexUpdater.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
     
     <ItemGroup>
@@ -25,6 +30,17 @@
         <PackageReference Include="Russkyc.DependencyInjection" Version="0.9.7" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
         <PackageReference Include="Octokit" Version="6.2.1" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="MVVM\Model\" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <None Remove="Resources\Icon.ico" />
+      <Resource Include="Resources\Icon.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
     </ItemGroup>
     
 </Project>
