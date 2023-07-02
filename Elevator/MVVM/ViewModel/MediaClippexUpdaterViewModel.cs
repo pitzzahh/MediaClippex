@@ -5,7 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -51,13 +51,9 @@ public partial class MediaClippexUpdaterViewModel : ObservableObject
             ProgressInfo = "Getting Changelog...";
             IsProgressIndeterminate = true;
             
-            var rawContent = await gitHubClient.Repository
-                .Content
-                .GetRawContent(Owner, Repo, "changelog.md");
-            
             ProgressBarVisibility = "Collapsed";
             
-            ChangeLog = Encoding.UTF8.GetString(rawContent).Replace("#", "");
+            ChangeLog = latestRelease.Body.Replace("#", "");
             
             try
             {

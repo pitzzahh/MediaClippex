@@ -180,7 +180,7 @@
                                              LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
                                              Command="{Binding CancelDownloadCommand}"
                                              VerticalAlignment="Bottom"
-                                             Visibility="{Binding IDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                             Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"
                                              DefaultBackground="{DynamicResource danger-lighten}"
                                              HoverBackground="{DynamicResource danger}"
                                              PressedBackground="{DynamicResource danger-darken}"

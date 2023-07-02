@@ -81,7 +81,6 @@ public partial class MediaClippexViewModel : BaseViewModel
                 _audioQualities.ForEach(q => Qualities.Add(q));
             else
                 _videoQualities.ForEach(q => Qualities.Add(q));
-
             SelectedQuality = Qualities.First();
         }
     }
@@ -238,12 +237,12 @@ public partial class MediaClippexViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private void CheckForUpdates()
+    private async Task CheckForUpdates()
     {
         if (UpdateWindow.IsVisible) UpdateWindow.Close();
         UpdateWindow = new CheckUpdateView();
         UpdateWindow.Show();
-        Task.Run(((CheckUpdateViewModel)UpdateWindow.DataContext).CheckForUpdate);
+        await ((CheckUpdateViewModel)UpdateWindow.DataContext).CheckForUpdate();
     }
 
 
