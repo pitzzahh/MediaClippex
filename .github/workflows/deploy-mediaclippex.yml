@@ -27,14 +27,14 @@ jobs:
 
       - name: Zip Files
         run: |
-          Compress-Archive -Path MediaClippex/MediaClippex/bin/Release/net6.0-windows/win-x64/MediaClippex.* -DestinationPath MediaClippex/Update.zip
+          Compress-Archive -Path ${{ github.workspace }}/MediaClippex/bin/Release/net6.0-windows/win-x64/MediaClippex.* -DestinationPath ${{ github.workspace }}/MediaClippex/Update.zip
 
       - name: Deploy Update File
         id: deploy_artifacts
         uses: actions/upload-artifact@v2
         with:
           name: MediaClippex-Update
-          path: MediaClippex/Update.zip
+          path: ${{ github.workspace }}/MediaClippex/Update.zip
 
       - name: Check if Changelog Exists
         id: check_changelog
@@ -63,6 +63,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: MediaClippex/Update.zip
+          asset_path: ${{ github.workspace }}/MediaClippex/Update.zip
           asset_name: Update.zip
           asset_content_type: application/zip
