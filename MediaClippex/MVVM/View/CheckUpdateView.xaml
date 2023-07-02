@@ -7,8 +7,11 @@
                              mc:Ignorable="d"
                              Icon="../../Resources/Icon.ico"
                              WindowStartupLocation="CenterScreen"
+                             WindowStyle="ToolWindow"
                              Background="{DynamicResource bg-000}"
-                             Title="Check Updates" Height="300" Width="300">
+                             Title="Checking for Update" 
+                             Height="300" 
+                             Width="300">
     <Grid Background="Transparent">
         <ProgressBar IsIndeterminate="{Binding IsProgressIndeterminate}">
             <ProgressBar.Style>
