@@ -71,6 +71,7 @@ public partial class CheckUpdateViewModel : BaseViewModel
             }
             else
             {
+                IsProgressIndeterminate = false;
                 MessageBox.Show("You have the latest version of the application.", "No Updates Available");
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -81,17 +82,11 @@ public partial class CheckUpdateViewModel : BaseViewModel
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"Error occurred while checking for updates: {ex.Message} Captured Latest Version: {_latestVersion}",
-                "Update Error");
+                $"Error occurred while checking for updates: {ex.Message} Captured Latest Version: {_latestVersion}", "Update Error");
             Application.Current.Dispatcher.Invoke(() =>
             {
                 MediaClippexViewModel.UpdateWindow.Close();
             });
-        }
-        finally
-        {
-            IsProgressIndeterminate = false;
-            ProgressInfo = "";
         }
     }
 
