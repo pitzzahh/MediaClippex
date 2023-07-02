@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Windows;
+﻿using System.Windows;
 using MediaClippex.MVVM.View;
 using MediaClippex.Services;
 using Russkyc.DependencyInjection.Implementations;
@@ -12,7 +10,6 @@ namespace MediaClippex;
 /// </summary>
 public partial class App
 {
-    private static Mutex? _mutex;
     
     public App()
     {
@@ -21,32 +18,8 @@ public partial class App
 
     protected override void OnStartup(StartupEventArgs e)
     {
-        _mutex = new Mutex(true, "MediaClippexViewMutex", out var createdNew);
-
-        if (!createdNew)
-        {
-            // An instance of the application is already running, bring it to foreground and exit.
-            NativeMethods.BringWindowToForeground(NativeMethods.FindWindow("MediaClippexView", "MediaClippex"));
-            Current.Shutdown();
-            return;
-        }
         BuilderServices.Resolve<MediaClippexView>().Show();
         base.OnStartup(e);
     }
-    
-    protected override void OnExit(ExitEventArgs e)
-    {
-        _mutex?.ReleaseMutex();
-        _mutex?.Dispose();
-        base.OnExit(e);
-    }
-    
-    internal static class NativeMethods
-    {
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        internal static extern bool BringWindowToForeground(IntPtr hWnd);
 
-        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
-        internal static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-    }
 }
