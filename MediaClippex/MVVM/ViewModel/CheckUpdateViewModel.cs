@@ -65,6 +65,10 @@ public partial class CheckUpdateViewModel : BaseViewModel
             else
             {
                 MessageBox.Show("You have the latest version of the application.", "No Updates Available");
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MediaClippexViewModel.UpdateWindow.Close();
+                });
             }
         }
         catch (Exception ex)
