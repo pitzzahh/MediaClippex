@@ -1,9 +1,9 @@
 ﻿using System.Windows;
-using MediaClippex.Updater.MVVM.View;
-using MediaClippex.Updater.Services;
+using Elevator.MVVM.View;
+using Elevator.Services;
 using Russkyc.DependencyInjection.Implementations;
 
-namespace MediaClippex.Updater;
+namespace Elevator;
 
 /// <summary>
 ///     Interaction logic for App.xaml

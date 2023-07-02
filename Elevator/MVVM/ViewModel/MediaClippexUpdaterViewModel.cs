@@ -12,7 +12,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Octokit;
 using Application = System.Windows.Application;
 
-namespace MediaClippex.Updater.MVVM.ViewModel;
+namespace Elevator.MVVM.ViewModel;
 
 public partial class MediaClippexUpdaterViewModel : ObservableObject
 {

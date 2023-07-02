@@ -1,4 +1,4 @@
-﻿<Application x:Class="MediaClippex.Updater.App"
+﻿<Application x:Class="Elevator.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>

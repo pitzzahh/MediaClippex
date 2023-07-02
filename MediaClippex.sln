@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaClippex", "MediaClippex\MediaClippex.csproj", "{9930BDFB-52BD-4D79-B2AE-24E1125CDA9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaClippex.Updater", "MediaClippex.Updater\MediaClippex.Updater.csproj", "{CFA35A99-8C3F-4285-9129-6100A49FAB07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elevator", "Elevator\Elevator.csproj", "{CFA35A99-8C3F-4285-9129-6100A49FAB07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

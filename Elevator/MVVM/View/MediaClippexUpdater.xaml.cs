@@ -1,6 +1,6 @@
-﻿using MediaClippex.Updater.MVVM.ViewModel;
+﻿using MediaClippexUpdaterViewModel = Elevator.MVVM.ViewModel.MediaClippexUpdaterViewModel;
 
-namespace MediaClippex.Updater.MVVM.View;
+namespace Elevator.MVVM.View;
 
 public partial class MediaClippexUpdater
 {

@@ -1,9 +1,9 @@
-﻿using MediaClippex.Updater.MVVM.View;
-using MediaClippex.Updater.MVVM.ViewModel;
+﻿using Elevator.MVVM.View;
 using Russkyc.DependencyInjection.Implementations;
 using Russkyc.DependencyInjection.Interfaces;
+using MediaClippexUpdaterViewModel = Elevator.MVVM.ViewModel.MediaClippexUpdaterViewModel;
 
-namespace MediaClippex.Updater.Services;
+namespace Elevator.Services;
 
 // Container builder
 public static class BuildContainer
