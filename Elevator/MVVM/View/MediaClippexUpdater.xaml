@@ -4,6 +4,7 @@
                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
+                             xmlns:viewModel="clr-namespace:Elevator.MVVM.ViewModel"
                              mc:Ignorable="d"
                              Title="MediaClippex Updater"
                              WindowStyle="ToolWindow"
@@ -12,6 +13,10 @@
                              Background="{DynamicResource bg-400}"
                              Foreground="{DynamicResource fg-300}"
                              Width="400">
+    
+    <Window.DataContext>
+        <viewModel:MediaClippexUpdaterViewModel />
+    </Window.DataContext>
 
     <Grid Margin="5">
         <Grid.RowDefinitions>
