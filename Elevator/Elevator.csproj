@@ -6,9 +6,9 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
-        <Version>0.1.11.28</Version>
-        <FileVersion>0.1.11.28</FileVersion>
-        <ProductVersion>0.1.11.28</ProductVersion>
+        <Version>0.1.12.29</Version>
+        <FileVersion>0.1.12.29</FileVersion>
+        <ProductVersion>0.1.12.29</ProductVersion>
         <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     </PropertyGroup>
 
@@ -27,7 +27,6 @@
     
     <ItemGroup>
         <PackageReference Include="Russkyc.ModernControls.WPF" Version="1.9.18" />
-        <PackageReference Include="Russkyc.DependencyInjection" Version="0.9.7" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
         <PackageReference Include="Octokit" Version="6.2.1" />
     </ItemGroup>
