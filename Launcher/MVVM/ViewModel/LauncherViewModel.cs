@@ -1,6 +1,8 @@
-﻿namespace Launcher.MVVM.ViewModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-public class LauncherViewModel
+namespace Launcher.MVVM.ViewModel;
+
+public partial class LauncherViewModel : ObservableObject
 {
     
 }

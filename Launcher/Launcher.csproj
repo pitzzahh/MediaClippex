@@ -2,9 +2,14 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <Version>0.0.1.1</Version>
+        <FileVersion>0.0.1.1</FileVersion>
+        <ProductVersion>0.0.1.1</ProductVersion>
+        <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -27,6 +32,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MediaClippex\MediaClippex.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="Resources\Icon.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
     </ItemGroup>
 
 </Project>
