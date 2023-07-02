@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows;
 using MediaClippex.Updater.MVVM.View;
+using MediaClippex.Updater.Services;
 using Russkyc.DependencyInjection.Implementations;
 
 namespace MediaClippex.Updater;
