@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
+using MediaClippex.Updater.MVVM.View;
 using Russkyc.DependencyInjection.Implementations;
 
 namespace MediaClippex.Updater;
@@ -23,11 +24,11 @@ public partial class App
         if (!createdNew)
         {
             // An instance of the application is already running, bring it to foreground and exit.
-            NativeMethods.BringWindowToForeground(NativeMethods.FindWindow("Updater", "MediaClippex Updater"));
+            NativeMethods.BringWindowToForeground(NativeMethods.FindWindow("MediaClippexUpdater", "MediaClippex Updater"));
             Current.Shutdown();
             return;
         }
-        BuilderServices.Resolve<MainWindow>().Show();
+        BuilderServices.Resolve<MediaClippexUpdater>().Show();
         base.OnStartup(e);
     }
     
@@ -43,7 +44,7 @@ public partial class App
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         internal static extern bool BringWindowToForeground(IntPtr hWnd);
 
-        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
         internal static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
     }
 }
