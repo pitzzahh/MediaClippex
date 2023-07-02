@@ -18,7 +18,9 @@ public partial class App
 
     protected override void OnStartup(StartupEventArgs e)
     {
-        BuilderServices.Resolve<MediaClippexView>().Show();
+        var mediaClippexView = BuilderServices.Resolve<MediaClippexView>();
+        MainWindow = mediaClippexView;
+        mediaClippexView.Show();
         base.OnStartup(e);
     }
 
