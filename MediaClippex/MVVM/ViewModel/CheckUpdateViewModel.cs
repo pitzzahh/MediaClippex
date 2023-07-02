@@ -17,8 +17,7 @@ public partial class CheckUpdateViewModel : BaseViewModel
     [ObservableProperty] private bool _isProgressIndeterminate;
     [ObservableProperty] private string _progressInfo = null!;
 
-    private static string? _latestVersion;
-    
+    private static string? _latestVersion = "?";
 
     public async Task CheckForUpdate()
     {
@@ -49,9 +48,17 @@ public partial class CheckUpdateViewModel : BaseViewModel
                     MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
-                    Process.Start(new ProcessStartInfo(latestRelease.Assets[0].BrowserDownloadUrl)
+                    var startInfo = new ProcessStartInfo
                     {
-                        UseShellExecute = true
+                        FileName = "MediaClippex.Updater.exe",
+                        UseShellExecute = true,
+                        Verb = "runas" // Set the Verb property to "runas" for elevated permissions
+                    };
+
+                    Process.Start(startInfo);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        Application.Current.Shutdown();
                     });
                 }
                 else
