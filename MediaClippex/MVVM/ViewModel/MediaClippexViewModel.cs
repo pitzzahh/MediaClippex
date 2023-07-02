@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -25,7 +24,6 @@ public partial class MediaClippexViewModel : BaseViewModel
     private readonly List<string> _audioQualities = new();
 
     private readonly List<string> _videoQualities = new();
-    private CancellationTokenSource? _cancellationTokenSource;
 
     [ObservableProperty] private string? _imagePreview;
     private bool _isAudioOnly;
@@ -205,8 +203,6 @@ public partial class MediaClippexViewModel : BaseViewModel
 
         var userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         var filePath = Path.Combine(userPath, "Downloads", $"{StringService.FixFileName(_video.Title)}");
-
-        _cancellationTokenSource = new CancellationTokenSource();
 
         if (string.IsNullOrWhiteSpace(Url)) return;
 
