@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MediaClippex.MVVM.View;
+using MediaClippex.Updater.MVVM.View;
 using Octokit;
 using Russkyc.DependencyInjection.Implementations;
+using Application = System.Windows.Application;
 
-namespace MediaClippex.MVVM.ViewModel;
+namespace MediaClippex.Updater.MVVM.ViewModel;
 
-// ReSharper disable once ClassNeverInstantiated.Global
-public partial class CheckForUpdatesViewModel : BaseViewModel
+public partial class MediaClippexUpdaterViewModel: ObservableObject
 {
     [ObservableProperty] private string? _changeLog;
     [ObservableProperty] private string? _currentVersion;
@@ -27,7 +27,7 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
     [ObservableProperty] private string? _progressInfo;
     [ObservableProperty] private string _showChangeLog = "Collapsed";
 
-    public CheckForUpdatesViewModel()
+    public MediaClippexUpdaterViewModel()
     {
         CurrentVersion = ReadCurrentVersion();
     }
@@ -43,15 +43,16 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
             IsProcessing = "Visible";
             ProgressInfo = "Checking for updates...";
             IsProgressIndeterminate = true;
-            
+
             if (LatestVersion != null && CurrentVersion != null && !ShouldUpdate(CurrentVersion, LatestVersion))
             {
                 IsProgressIndeterminate = false;
                 MessageBox.Show("You have the latest version of the application.", "No Updates Available");
                 return;
             }
-            
-            var latestRelease = await new GitHubClient(new ProductHeaderValue(Repo))
+
+            var gitHubClient = new GitHubClient(new ProductHeaderValue(Repo));
+            var latestRelease = await gitHubClient
                 .Repository
                 .Release
                 .GetLatest(Owner, Repo);
@@ -153,23 +154,29 @@ public partial class CheckForUpdatesViewModel : BaseViewModel
                 }
             }
 
-            // Install the update by replacing the current executable with the downloaded one
+            // Backup the current executable
             var currentAssemblyLocation = AppContext.BaseDirectory;
-            var newAssemblyLocation =
-                Path.Combine(Path.GetDirectoryName(currentAssemblyLocation) ?? throw new InvalidOperationException(),
-                    "MediaClippex_new.exe");
 
-            File.Move(currentAssemblyLocation, newAssemblyLocation);
-            File.Move(tempFilePath, currentAssemblyLocation);
-            IsProcessing = "Collapsed";
-            ShowChangeLog = "Collapsed";
-            EnableCheckForUpdateButton = true;
-            BuilderServices.Resolve<CheckForUpdatesView>().Close();
+            // Replace the current executable with the downloaded one
+            var newAssemblyLocation = Path.Combine(currentAssemblyLocation, "MediaClippex_new.exe");
+
+            File.Move(tempFilePath, newAssemblyLocation);
+            File.Replace(newAssemblyLocation, currentAssemblyLocation, Path.Combine(currentAssemblyLocation, "MediaClippex.exe.bak"));
+
+            // UI updates (execute on UI thread)
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                IsProcessing = "Collapsed";
+                ShowChangeLog = "Collapsed";
+                EnableCheckForUpdateButton = true;
+                BuilderServices.Resolve<MediaClippexUpdater>().Close();
+            });
 
             MessageBox.Show("Update installed successfully. Please restart the application.", "Update Installed");
         }
         catch (Exception ex)
         {
+            // Log or handle the error appropriately
             MessageBox.Show($"Error occurred while downloading and installing the update: {ex.Message}",
                 "Update Error");
         }
