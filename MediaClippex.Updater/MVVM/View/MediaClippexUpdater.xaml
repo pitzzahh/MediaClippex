@@ -20,11 +20,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Installing Update"
+        <TextBlock Text="{Binding TitleName}"
                    FontSize="24"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"
@@ -35,6 +34,7 @@
               Background="Transparent">
             <ProgressBar
                 Value="{Binding Progress, Mode=OneWay}"
+                Visibility="{Binding ProgressBarVisibility}"
                 IsIndeterminate="{Binding IsProgressIndeterminate}"
                 Height="20">
                 <ProgressBar.Style>
@@ -67,18 +67,15 @@
         </TextBlock>
 
         <TextBlock Grid.Row="3"
+                   Margin="0 0 0 5"
                    TextWrapping="Wrap">
             <Span>
                 <Bold FontWeight="Bold">Latest Version: </Bold>
                 <Run Text="{Binding LatestVersion}" />
             </Span>
         </TextBlock>
-
-        <TextBlock Grid.Row="4" Text="Changelog"
-                   Margin="0 0 0 5"
-                   FontWeight="Bold" />
         <TextBox Grid.Row="5"
-                 Text="{Binding Changelog}"
+                 Text="{Binding ChangeLog}"
                  VerticalScrollBarVisibility="Auto"
                  BorderBrush="Transparent"
                  HorizontalScrollBarVisibility="Auto"
@@ -86,8 +83,6 @@
                  TextWrapping="Wrap"
                  Background="Transparent"
                  VerticalAlignment="Top"
-                 Foreground="{DynamicResource fg-000}"
-                 MinHeight="200"
-                 MaxHeight="200" />
+                 Foreground="{DynamicResource fg-000}"/>
     </Grid>
 </moderncontrols:ModernWindow>
