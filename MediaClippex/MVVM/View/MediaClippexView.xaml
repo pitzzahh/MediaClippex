@@ -7,6 +7,7 @@
                              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
                              xmlns:system="clr-namespace:System;assembly=System.Runtime"
                              xmlns:components="clr-namespace:MediaClippex.Components"
+                             xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
                              mc:Ignorable="d"
                              Title="MediaClippex"
                              Icon="../../Resources/Icon.ico"
@@ -14,6 +15,11 @@
                              Background="{DynamicResource bg-000}"
                              WindowStartupLocation="CenterScreen"
                              Width="850">
+    
+    <Window.DataContext>
+        <viewModel:MediaClippexViewModel />
+    </Window.DataContext>
+    
     <Window.Resources>
         <system:Double x:Key="Shortest">130</system:Double>
         <system:Double x:Key="Short">200</system:Double>
@@ -189,7 +195,7 @@
         </Grid>
 
         <moderncontrols:ModernButton Grid.Row="5"
-                                     Content="Download"
+                                     Content="{Binding DownloadButtonContent}"
                                      FontSize="18"
                                      IconSize="24"
                                      FontWeight="Medium"
