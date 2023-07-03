@@ -12,8 +12,6 @@ ___
 ![Forks](https://img.shields.io/github/forks/pitzzahh/MediaClippex)
 ![Stars](https://img.shields.io/github/stars/pitzzahh/MediaClippex)
 ![License](https://img.shields.io/github/license/pitzzahh/MediaClippex)
-![Forks](https://img.shields.io/github/forks/pitzzahh/MediaClippex)
-![Stars](https://img.shields.io/github/stars/pitzzahh/MediaClippex)
 ![Contributors](https://img.shields.io/github/contributors/pitzzahh/MediaClippex)
 ![Last Commit](https://img.shields.io/github/last-commit/pitzzahh/MediaClippex)
 ![Code size](https://img.shields.io/github/languages/code-size/pitzzahh/MediaClippex)
