@@ -9,9 +9,10 @@
                              mc:Ignorable="d"
                              Background="{DynamicResource bg-000}"
                              Foreground="{DynamicResource fg-000}"
+                             TitleBarBackground="{DynamicResource fg-000}"
                              Title="Launcher"
-                             d:DesignHeight="450"
-                             d:DesignWidth="500">
+                             Width="350"
+                             Height="400">
 
 
     <Window.DataContext>

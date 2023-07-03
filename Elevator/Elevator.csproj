@@ -42,8 +42,4 @@
       </Resource>
     </ItemGroup>
     
-    <ItemGroup>
-      <ProjectReference Include="..\MediaClippex\MediaClippex.csproj" />
-    </ItemGroup>
-    
 </Project>

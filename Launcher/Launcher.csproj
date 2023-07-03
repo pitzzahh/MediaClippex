@@ -23,13 +23,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MediaClippex\MediaClippex.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Resource Include="Resources\Icon.ico">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Resource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Elevator\Elevator.csproj" />
+      <ProjectReference Include="..\MediaClippex\MediaClippex.csproj" />
     </ItemGroup>
 
 </Project>
