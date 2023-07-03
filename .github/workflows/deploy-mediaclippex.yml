@@ -23,7 +23,7 @@ jobs:
         run: dotnet restore ${{ env.PROJECT_PATH }}
 
       - name: Build the project
-        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 -p:PublishReadyToRun=true -p:DeleteExistingFiles=true
+        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 --no-self-contained -p:PublishReadyToRun=true -p:DeleteExistingFiles=true
 
       - name: Zip Files
         run: |
