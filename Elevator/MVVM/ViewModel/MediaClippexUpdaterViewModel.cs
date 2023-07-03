@@ -10,6 +10,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Octokit;
 using Application = System.Windows.Application;
+using FileMode = System.IO.FileMode;
 
 namespace Elevator.MVVM.ViewModel;
 
@@ -82,10 +83,9 @@ public partial class MediaClippexUpdaterViewModel : ObservableObject
         });
     }
 
-
     private static string? ReadCurrentVersion()
     {
-        return Assembly.GetExecutingAssembly().GetName().Version?.ToString();
+        return Assembly.LoadFile("MediaClippex.dll").GetName().Version?.ToString();
     }
 
     private async Task DownloadAndInstallUpdate(ReleaseAsset releaseAsset)
@@ -122,16 +122,6 @@ public partial class MediaClippexUpdaterViewModel : ObservableObject
             
             ProgressInfo = "Installing Update...";
             await Installation(tempFilePath);
-            
-            var result = MessageBox.Show("Update installed successfully. Do you want to open the application now?", "Update Installed", MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
-            {
-                Process.Start("MediaClippex.exe");
-            }
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Application.Current.Shutdown();
-            });
         }
         catch (Exception ex)
         {
@@ -149,18 +139,52 @@ public partial class MediaClippexUpdaterViewModel : ObservableObject
 
             await Task.Run(() =>
             {
-                using var archive = ZipFile.OpenRead(zipFilePath);
-                var entryCount = archive.Entries.Count;
-                var processedCount = 0;
-
-                foreach (var entry in archive.Entries)
+                using (var archive = ZipFile.OpenRead(zipFilePath))
                 {
-                    entry.ExtractToFile(Path.Combine(extractionPath, entry.FullName), true);
-                    processedCount++;
+                    var entryCount = archive.Entries.Count;
+                    var processedCount = 0;
 
-                    // Calculate and report progress based on the number of processed entries
-                    OnDownloadProgress(processedCount, entryCount);
+                    foreach (var entry in archive.Entries)
+                    {
+                        var targetFilePath = Path.Combine(extractionPath, entry.FullName);
+
+                        // Check if the target file is in use
+                        bool fileInUse;
+                        try
+                        {
+                            using var fs = new FileStream(targetFilePath, FileMode.Open, FileAccess.Read, FileShare.None);
+                            // The file is not in use
+                            fileInUse = false;
+                        }
+                        catch (IOException)
+                        {
+                            // The file is in use
+                            fileInUse = true;
+                        }
+
+                        if (!fileInUse)
+                        {
+                            // Replace the file
+                            entry.ExtractToFile(targetFilePath, true);
+                        }
+
+                        processedCount++;
+
+                        // Calculate and report progress based on the number of processed entries
+                        OnDownloadProgress(processedCount, entryCount);
+                    }
                 }
+
+                var result = MessageBox.Show("Update installed successfully. Do you want to open the application now?", "Update Installed", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Process.Start("MediaClippex.exe");
+                }
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Application.Current.Shutdown();
+                });
             });
         }
         catch (Exception ex)
