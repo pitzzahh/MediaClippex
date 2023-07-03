@@ -14,7 +14,7 @@ public partial class MediaClippexView
     {
         InitializeComponent();
         UrlTextBox.Focus();
-        DataContext = BuilderServices.Resolve<MediaClippexViewModel>();
+        DataContext = new MediaClippexViewModel();
     }
 
     protected override void OnClosing(CancelEventArgs e)
