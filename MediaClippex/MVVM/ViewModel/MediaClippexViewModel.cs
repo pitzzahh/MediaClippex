@@ -28,6 +28,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     [ObservableProperty] private string? _imagePreview;
     private bool _isAudioOnly;
 
+    [ObservableProperty] private string _downloadButtonContent = "Download";
     [ObservableProperty] private bool _isDownloading;
 
     [ObservableProperty] private bool _isProcessing;
@@ -47,7 +48,7 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     private int _selectedIndex;
 
-    [ObservableProperty] private string? _selectedQuality;
+    private string _selectedQuality = string.Empty;
 
     [ObservableProperty] private bool _showPreview;
 
@@ -67,6 +68,18 @@ public partial class MediaClippexViewModel : BaseViewModel
             .GetColorThemes()
             .ToList()
             .ForEach(Themes.Add);
+    }
+
+    public string SelectedQuality
+    {
+        get => _selectedQuality;
+        set
+        {
+            _selectedQuality = value;
+            GetDownloadSize();
+            OnPropertyChanged(SelectedQuality);
+            OnPropertyChanged(DownloadButtonContent);
+        }
     }
 
     // ReSharper disable once MemberCanBePrivate.Global
@@ -160,13 +173,6 @@ public partial class MediaClippexViewModel : BaseViewModel
                 if (_video == null) return;
                 var videoInfoCardViewModel = BuilderServices.Resolve<VideoInfoCardViewModel>();
                 videoInfoCardViewModel.Title = _video.Title;
-                var extractVideoId = StringService.ExtractVideoId(Url);
-                if (extractVideoId.Equals(""))
-                {
-                    MessageBox.Show("Could not extract video ID.");
-                    return;
-                }
-
                 videoInfoCardViewModel.ImageUrl = _video.Thumbnails.GetWithHighestResolution().Url;
                 videoInfoCardViewModel.Duration =
                     StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault());
@@ -174,6 +180,9 @@ public partial class MediaClippexViewModel : BaseViewModel
             });
             IsResolved = true;
             InitializeVideoResolutions(manifest);
+            GetDownloadSize();
+            OnPropertyChanged(SelectedQuality);
+            OnPropertyChanged(DownloadButtonContent);
             InitializeAudioResolutions(manifest);
         }
         catch (Exception e)
@@ -199,7 +208,6 @@ public partial class MediaClippexViewModel : BaseViewModel
             return;
         }
 
-
         var userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         var filePath = Path.Combine(userPath, "Downloads", $"{StringService.FixFileName(_video.Title)}");
 
@@ -213,10 +221,20 @@ public partial class MediaClippexViewModel : BaseViewModel
         try
         {
             var progressHandler = new Progress<double>(p => Progress = p * 100);
+            var manifest = await VideoService.GetManifest(Url);
+
             if (IsAudioOnly)
-                await VideoService.DownloadAudioOnly(filePath, Url, SelectedQuality, progressHandler);
+            {
+                var audioStreamInfo = VideoService.GetAudioOnlyStream(manifest, SelectedQuality);
+
+                await VideoService.DownloadAudioOnly(audioStreamInfo, filePath, progressHandler);
+            }
             else
-                await VideoService.DownloadMuxed(filePath, Url, SelectedQuality, progressHandler);
+            {
+                var audioStreamInfo = manifest.GetAudioOnlyStreams().GetWithHighestBitrate();
+                var videoStreamInfo = VideoService.GetVideoOnlyStreamInfo(manifest, SelectedQuality);
+                await VideoService.DownloadMuxed(audioStreamInfo, videoStreamInfo, filePath, progressHandler);
+            }
 
             MessageBox.Show("Download completed. Saved to Downloads folder.");
         }
@@ -237,7 +255,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task CheckForUpdates()
+    private static async Task CheckForUpdates()
     {
         if (UpdateWindow.IsVisible) UpdateWindow.Close();
         UpdateWindow = new CheckUpdateView();
@@ -274,5 +292,44 @@ public partial class MediaClippexViewModel : BaseViewModel
             .Distinct()
             .ToList()
             .ForEach(s => _audioQualities.Add(s));
+    }
+
+    private void GetDownloadSize()
+    {
+        Task.Run(async () =>
+        {
+            if (string.IsNullOrEmpty(Url)) return;
+            var manifest = await VideoService.GetManifest(Url);
+            var video = await VideoService.GetVideo(Url);
+
+            if (video.Duration == null) return;
+
+            if (IsAudioOnly)
+            {
+                var audioStreamInfo = VideoService.GetAudioOnlyStream(manifest, SelectedQuality);
+
+                var bitsPerSecond = audioStreamInfo.Bitrate.BitsPerSecond;
+
+                var duration = video.Duration.Value.TotalSeconds;
+                var fileSize = (long)(bitsPerSecond * duration / 8);
+                DownloadButtonContent =
+                    $"Downloading [{StringService.ConvertBytesToFormattedString(fileSize)}]";
+            }
+            else
+            {
+                var audioStreamInfo = manifest.GetAudioOnlyStreams().GetWithHighestBitrate();
+                var videoStreamInfo = VideoService.GetVideoOnlyStreamInfo(manifest, SelectedQuality);
+
+                var audioBitsPerSecond = audioStreamInfo.Bitrate.BitsPerSecond;
+                var videoBitsPerSecond = videoStreamInfo.Bitrate.BitsPerSecond;
+                var bitsPerSecond = audioBitsPerSecond + videoBitsPerSecond;
+
+                var duration = video.Duration.Value.TotalSeconds;
+                var fileSize = (long)(bitsPerSecond * duration / 8);
+
+                DownloadButtonContent =
+                    $"Downloading [{StringService.ConvertBytesToFormattedString(fileSize)}]";
+            }
+        });
     }
 }
