@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "MediaClippex"
-#define MyAppVersion "1.1.12.32"
+#define MyAppVersion "1.2.13.37"
 #define MyAppPublisher "Peter John Arao"
 #define MyAppURL "https://araopj.tech"
 #define MyAppExeName "Launcher.exe"
@@ -15,7 +15,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{7CF34999-E86F-4C06-A173-6D96998B3471}
+AppId={{9A8E2508-4CB3-4762-89D6-78AC8E85141C}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName}
