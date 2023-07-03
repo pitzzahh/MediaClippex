@@ -23,11 +23,11 @@ jobs:
         run: dotnet restore ${{ env.PROJECT_PATH }}
 
       - name: Build the project
-        run: dotnet build ${{ env.PROJECT_PATH }} -c Release -r win-x64 --self-contained
+        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 -p:PublishReadyToRun=true -p:DeleteExistingFiles=true
 
       - name: Zip Files
         run: |
-          Compress-Archive -Path ${{ github.workspace }}/MediaClippex/bin/Release/net6.0-windows/win-x64/MediaClippex.* -DestinationPath ${{ github.workspace }}/MediaClippex/Update.zip
+          Compress-Archive -Path ${{ github.workspace }}/MediaClippex/bin/Release/net6.0-windows/win-x64/publish/* -DestinationPath ${{ github.workspace }}/MediaClippex/Update.zip
 
       - name: Deploy Update File
         id: deploy_artifacts

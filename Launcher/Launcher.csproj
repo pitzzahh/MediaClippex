@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+        <Version>1.0.1.5</Version>
+        <FileVersion>1.0.1.5</FileVersion>
+        <ProductVersion>1.0.1.5</ProductVersion>
+        <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+      <PackageReference Include="Material.Icons.WPF" Version="2.0.0" />
+      <PackageReference Include="Russkyc.ModernControls.WPF" Version="1.9.18" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="Resources\Icon.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Elevator\Elevator.csproj" />
+      <ProjectReference Include="..\MediaClippex\MediaClippex.csproj" />
+    </ItemGroup>
+
+</Project>
