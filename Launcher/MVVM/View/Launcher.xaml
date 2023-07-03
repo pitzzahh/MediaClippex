@@ -9,10 +9,13 @@
                              mc:Ignorable="d"
                              Background="{DynamicResource bg-000}"
                              Foreground="{DynamicResource fg-000}"
-                             TitleBarBackground="{DynamicResource fg-000}"
-                             Title="Launcher"
+                             TitleBarBackground="{DynamicResource bg-000}"
+                             Icon="../../Resources/Icon.ico"
+                             Title="File Check"
+                             WindowStartupLocation="CenterScreen"
+                             ResizeMode="CanMinimize"
                              Width="350"
-                             Height="400">
+                             Height="200">
 
 
     <Window.DataContext>
@@ -23,11 +26,11 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="50" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="35" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="This app Required ffmpeg"
+        <TextBlock Text="This app requires ffmpeg"
                    FontWeight="Bold"
                    Margin="20"
                    HorizontalAlignment="Center"
@@ -37,6 +40,7 @@
                                      LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Download}"
                                      IconSize="21"
                                      FontSize="16"
+                                     Command="{Binding DownloadCommand}"
                                      FontWeight="Medium"/>
         <Grid Grid.Row="2"
               Margin="0 5"
@@ -44,8 +48,7 @@
               Background="Transparent">
             <ProgressBar
                 Value="{Binding Progress, Mode=OneWay}"
-                IsIndeterminate="{Binding IsProgressIndeterminate}"
-                Height="20">
+                IsIndeterminate="{Binding IsProgressIndeterminate}">
                 <ProgressBar.Style>
                     <Style TargetType="ProgressBar">
                         <Setter Property="Background" Value="{DynamicResource bg-400}" />
