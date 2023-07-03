@@ -13,10 +13,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="MVVM\Model\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
       <PackageReference Include="Material.Icons.WPF" Version="2.0.0" />
       <PackageReference Include="Russkyc.ModernControls.WPF" Version="1.9.18" />
