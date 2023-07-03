@@ -1,5 +1,8 @@
 ﻿# Changelog
 
+### Version 1.2.12.35
+- 🔄 Fix workflow
+___
 ### Version 1.2.11.33
 - 🔄 Fix downloading ffmpeg requirement
 - ✨ Make app installer smaller
