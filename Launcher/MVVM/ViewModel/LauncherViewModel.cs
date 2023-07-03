@@ -80,7 +80,7 @@ public partial class LauncherViewModel : ObservableObject
                 "Update Installed", MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
-                Process.Start("MediaClippex.exe");
+                Process.Start(Path.Combine(AppContext.BaseDirectory, "MediaClippex.exe"));
             }
 
             Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });

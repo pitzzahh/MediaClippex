@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -50,7 +51,7 @@ public partial class CheckUpdateViewModel : BaseViewModel
                 {
                     var startInfo = new ProcessStartInfo
                     {
-                        FileName = "Elevator.exe",
+                        FileName = Path.Combine(AppContext.BaseDirectory, "Elevator.exe"),
                         UseShellExecute = true,
                         Verb = "runas" // Set the Verb property to "runas" for elevated permissions
                     };

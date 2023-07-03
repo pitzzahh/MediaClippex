@@ -9,6 +9,8 @@
         <Version>0.1.13.31</Version>
         <FileVersion>0.1.13.31</FileVersion>
         <ProductVersion>0.1.13.31</ProductVersion>
+        <PublisherName>Peter John Arao</PublisherName>
+        <Authors>Peter John Arao</Authors>
         <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     </PropertyGroup>
 
