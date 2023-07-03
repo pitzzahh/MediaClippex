@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MediaClippex.Services;
 
 namespace Launcher.MVVM.ViewModel;
 
@@ -15,11 +16,22 @@ public partial class LauncherViewModel : ObservableObject
 {
     [ObservableProperty] private double _progress;
     [ObservableProperty] private string _progressBarVisibility = "Collapsed";
+    [ObservableProperty] private string _downloadButtonContent = "Download FFmpeg";
     [ObservableProperty] private string? _progressInfo;
     [ObservableProperty] private bool _isProgressIndeterminate;
 
-    private string? _downloadUrl = string.Empty;
-    private string? _tempFilePath = string.Empty;
+    public LauncherViewModel()
+    {
+        Task.Run(async () =>
+        {
+            using var response =
+                await new HttpClient().GetAsync(await GetUrl(), HttpCompletionOption.ResponseHeadersRead);
+            var headersContentLength = response.Content.Headers.ContentLength;
+            DownloadButtonContent =
+                string.Format(
+                    $"{DownloadButtonContent} {StringService.ConvertBytesToFormattedString(headersContentLength ?? 0)}");
+        });
+    }
 
     [RelayCommand]
     private async Task Download()
@@ -29,14 +41,39 @@ public partial class LauncherViewModel : ObservableObject
             ProgressBarVisibility = "Visible";
             ProgressInfo = "Getting ffmpeg info...";
             IsProgressIndeterminate = true;
-            await GetZipUrl();
+
+            var downloadUrl = await GetUrl(); // Getting DownloadUrl
+
+            if (string.IsNullOrEmpty(downloadUrl))
+            {
+                throw new Exception("Failed to retrieve the download URL.");
+            }
 
             IsProgressIndeterminate = false;
             ProgressInfo = "Downloading ffmpeg...";
-            await DownloadZip(_downloadUrl, _tempFilePath);
+
+            var zipPath = await DownloadZip(downloadUrl); // Downloading the zip file
+
+            if (string.IsNullOrEmpty(zipPath))
+            {
+                throw new Exception("Failed to download the zip file.");
+            }
+
+            for (var i = Progress; i >= Progress; i--) // Reset the progress bar
+            {
+                Progress = i;
+            }
 
             ProgressInfo = "Installing ffmpeg...";
-            await Installation(_tempFilePath);
+
+            var done = await Extraction(zipPath); // Extracting the zip file to the application directory
+
+            if (!done)
+            {
+                throw new Exception("Failed to install ffmpeg.");
+            }
+
+            if (File.Exists(zipPath)) File.Delete(zipPath);
             ProgressInfo = "Done!";
 
             var result = MessageBox.Show("Ffmpeg installed successfully. Do you want to open the application now?",
@@ -60,9 +97,10 @@ public partial class LauncherViewModel : ObservableObject
         }
     }
 
-    private async Task GetZipUrl()
+    private static async Task<string> GetUrl()
     {
         using var client = new HttpClient();
+        var url = string.Empty;
         const string endpoint = "https://ffbinaries.com/api/v1/version/latest";
 
         var json = await client.GetStringAsync(endpoint);
@@ -78,20 +116,29 @@ public partial class LauncherViewModel : ObservableObject
 
         if (windows64Element.TryGetProperty("ffmpeg", out var ffmpegElement))
         {
-            _downloadUrl = ffmpegElement.GetString();
+            url = ffmpegElement.GetString();
         }
 
-        if (string.IsNullOrEmpty(_downloadUrl))
-        {
-            throw new Exception("Failed to retrieve the download URL.");
-        }
+        return url ?? string.Empty;
     }
 
-    private async Task DownloadZip(string downloadUrl, string tempFilePath)
+    private async Task<string> DownloadZip(string downloadUrl)
     {
-        await using var zipStream = await new HttpClient().GetStreamAsync(_downloadUrl);
-        tempFilePath = Path.GetTempFileName();
-        await using var fileStream = File.Create(_tempFilePath);
+        using var client = new HttpClient();
+        using var headRequest = new HttpRequestMessage(HttpMethod.Head, downloadUrl);
+        using var headResponse = await client.SendAsync(headRequest, HttpCompletionOption.ResponseHeadersRead);
+        var contentLengthHeader = headResponse.Content.Headers.ContentLength;
+
+        if (!contentLengthHeader.HasValue)
+        {
+            throw new Exception("Failed to retrieve the content length of the zip file.");
+        }
+
+        var totalBytes = contentLengthHeader.Value;
+
+        await using var zipStream = await client.GetStreamAsync(downloadUrl);
+        var tempFileName = Path.GetTempFileName();
+        await using var fileStream = File.Create(tempFileName);
 
         var buffer = new byte[8192];
         long bytesRead;
@@ -103,46 +150,33 @@ public partial class LauncherViewModel : ObservableObject
 
             totalBytesRead += bytesRead;
 
-            OnUpdateProgress(totalBytesRead, fileStream.Length);
+            OnUpdateProgress(totalBytesRead, totalBytes);
         }
 
-        for (var i = Progress; i >= Progress; i--)
-        {
-            Progress = i;
-        }
+        return tempFileName;
     }
 
-
-    private async Task Installation(string zipFilePath)
+    private async Task<bool> Extraction(string zipFilePath)
     {
-        try
-        {
-            var extractionPath = AppContext.BaseDirectory;
+        var extractionPath = AppContext.BaseDirectory;
 
-            await Task.Run(() =>
+        return await Task.Run(() =>
+        {
+            using var archive = ZipFile.OpenRead(zipFilePath);
+            var entryCount = archive.Entries.Count;
+            var processedCount = 0;
+
+            foreach (var entry in archive.Entries)
             {
-                using var archive = ZipFile.OpenRead(zipFilePath);
-                var entryCount = archive.Entries.Count;
-                var processedCount = 0;
+                if (!entry.FullName.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase)) continue;
+                entry.ExtractToFile(Path.Combine(extractionPath, entry.FullName), true);
+                processedCount++;
 
-                foreach (var entry in archive.Entries)
-                {
-                    if (!entry.FullName.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase)) continue;
-                    entry.ExtractToFile(Path.Combine(extractionPath, entry.FullName), true);
-                    processedCount++;
+                OnUpdateProgress(processedCount, entryCount);
+            }
 
-                    OnUpdateProgress(processedCount, entryCount);
-                }
-            });
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error occurred while extracting the update: {ex.Message}");
-        }
-        finally
-        {
-            if (File.Exists(zipFilePath)) File.Delete(zipFilePath);
-        }
+            return File.Exists(Path.Combine(extractionPath, "ffmpeg.exe"));
+        });
     }
 
     private void OnUpdateProgress(long bytesReceived, long totalBytes)
