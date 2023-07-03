@@ -1,5 +1,4 @@
-﻿using MediaClippex.MVVM.View;
-using MediaClippex.MVVM.ViewModel;
+﻿using MediaClippex.MVVM.ViewModel;
 using Russkyc.DependencyInjection.Implementations;
 using Russkyc.DependencyInjection.Interfaces;
 
@@ -13,8 +12,6 @@ public static class BuildContainer
     {
         return new ServicesCollection()
             .AddSingleton<VideoInfoCardViewModel>()
-            .AddSingleton<MediaClippexViewModel>()
-            .AddTransient<MediaClippexView>()
             .Build();
     }
 }
