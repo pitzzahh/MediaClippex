@@ -6,9 +6,9 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
-        <Version>0.0.1.1</Version>
-        <FileVersion>0.0.1.1</FileVersion>
-        <ProductVersion>0.0.1.1</ProductVersion>
+        <Version>1.0.1.5</Version>
+        <FileVersion>1.0.1.5</FileVersion>
+        <ProductVersion>1.0.1.5</ProductVersion>
         <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     </PropertyGroup>
 
