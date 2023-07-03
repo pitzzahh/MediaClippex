@@ -14,9 +14,8 @@
                              Title="File Check"
                              WindowStartupLocation="CenterScreen"
                              ResizeMode="CanMinimize"
-                             Width="350"
-                             Height="200">
-
+                             Width="530"
+                             Height="320">
 
     <Window.DataContext>
         <viewModel:LauncherViewModel />
@@ -25,24 +24,55 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="50" />
             <RowDefinition Height="35" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="This app requires ffmpeg"
+        <TextBlock Text="This app requires FFmpeg"
                    FontWeight="Bold"
                    Margin="20"
                    HorizontalAlignment="Center"
                    FontSize="20" />
-        <moderncontrols:ModernButton Grid.Row="1"
-                                     Content="Download ffmpeg"
+
+        <TextBlock Grid.Row="1" Foreground="{DynamicResource fg-000}"
+                   TextWrapping="Wrap"
+                   Margin="0 0 0 5"
+                   FontSize="16">
+            <TextBlock.Inlines>
+                <Bold>What is FFmpeg?</Bold>
+                <LineBreak />
+                <Run Text="A complete, cross-platform solution to record, convert and stream audio and video." />
+            </TextBlock.Inlines>
+        </TextBlock>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 8 0 10">
+            <Border Background="{DynamicResource bg-400}"
+                    Margin="0 0 5 0"
+                    CornerRadius="8">
+                <Label
+                    Foreground="{DynamicResource fg-000}"
+                    Content="Enables you to choose download format" />
+            </Border>
+            <Border Background="{DynamicResource bg-400}"
+                    Margin="5 0 0 0"
+                    CornerRadius="8">
+                <Label
+                    Foreground="{DynamicResource fg-000}"
+                    Content="Enables you to download high quality video/audio" />
+            </Border>
+        </StackPanel>
+
+        <moderncontrols:ModernButton Grid.Row="3"
+                                     Content="{Binding DownloadButtonContent}"
                                      LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Download}"
                                      IconSize="21"
                                      FontSize="16"
                                      Command="{Binding DownloadCommand}"
-                                     FontWeight="Medium"/>
-        <Grid Grid.Row="2"
+                                     FontWeight="Medium" />
+        <Grid Grid.Row="4"
               Margin="0 5"
               Visibility="{Binding ProgressBarVisibility}"
               Background="Transparent">
