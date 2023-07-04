@@ -36,6 +36,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
@@ -58,12 +59,20 @@
                 <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
                            FontSize="16">
                     <TextBlock.Inlines>
+                        <Bold>File Type: </Bold>
+                        <Run Text="{Binding FileType}" />
+                    </TextBlock.Inlines>
+                </TextBlock>
+                
+                <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                           FontSize="16">
+                    <TextBlock.Inlines>
                         <Bold>File Size: </Bold>
                         <Run Text="{Binding FileSize}" />
                     </TextBlock.Inlines>
                 </TextBlock>
 
-                <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
                            FontSize="16">
                     <TextBlock.Inlines>
                         <Bold>Saved Path: </Bold>
@@ -71,7 +80,7 @@
                     </TextBlock.Inlines>
                 </TextBlock>
 
-                <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
                            TextWrapping="Wrap"
                            FontSize="16">
                     <TextBlock.Inlines>

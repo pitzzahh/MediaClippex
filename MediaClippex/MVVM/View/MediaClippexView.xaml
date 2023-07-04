@@ -83,6 +83,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
@@ -240,8 +241,15 @@
                                FontWeight="Medium"
                                Text="{Binding ProgressInfo}" />
                 </Grid>
+                
+                <TextBlock Grid.Row="6" 
+                           Margin="0 3"
+                           Text="Download History"
+                           FontSize="18"
+                           FontWeight="Medium"
+                           Foreground="{DynamicResource fg-000}"/>
 
-                <ScrollViewer Grid.Row="6"
+                <ScrollViewer Grid.Row="7"
                               Margin="0 5"
                               VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <Grid HorizontalAlignment="Stretch">

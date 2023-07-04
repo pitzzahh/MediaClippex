@@ -12,6 +12,7 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
 
     [ObservableProperty] private string? _description;
     
+    [ObservableProperty] private string? _fileType;
     [ObservableProperty] private string? _fileSize;
     
     [ObservableProperty] private string? _path;
@@ -20,10 +21,11 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
 
     [ObservableProperty] private string? _imageUrl;
 
-    public DownloadedVideoCardViewModel(string? title, string? description, string? fileSize, string? path, string? duration, string? imageUrl)
+    public DownloadedVideoCardViewModel(string? title, string? description, string? fileType, string? fileSize, string? path, string? duration, string? imageUrl)
     {
         Title = title;
         Description = description;
+        FileType = fileType;
         FileSize = fileSize;
         Path = path;
         Duration = duration;

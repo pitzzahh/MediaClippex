@@ -11,16 +11,18 @@ public class Video
     public string? Title { get; set; }
     public string? Duration { get; set; }
     public string? Description { get; set; }
+    public string? FileType { get; set; }
     public string? FileSize { get; set; }
     public string? Path { get; set; }
 
-    public Video(string thumbnailUrl, string? title, string? duration, string? description, string? fileSize, string? path)
+    public Video(string thumbnailUrl, string? title, string? duration, string? description, string? fileType, string? fileSize, string? path)
     {
         ThumbnailUrl = thumbnailUrl;
         Title = title;
         Duration = duration;
         Description = description;
-        Path = path;
+        FileType = fileType;
         FileSize = fileSize;
+        Path = path;
     }
 }

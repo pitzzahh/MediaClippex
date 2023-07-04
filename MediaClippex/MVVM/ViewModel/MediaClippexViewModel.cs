@@ -219,7 +219,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         }
 
         var fixedFileName = $"{StringService.FixFileName(_video.Title)}";
-        
+
         var videoFilePath = Path.Combine(DirectoryHelper.GetVideoSavingDirectory(), fixedFileName);
         var audioFilePath = Path.Combine(DirectoryHelper.GetAudioSavingDirectory(), fixedFileName);
 
@@ -233,7 +233,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         try
         {
             string savedPath;
-            
+
             var progressHandler = new Progress<double>(p => Progress = p * 100);
             var manifest = await VideoService.GetManifest(Url);
             if (!_video.Duration.HasValue) return;
@@ -261,6 +261,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                 _video.Title,
                 _video.Duration.Value.TotalSeconds.ToString(CultureInfo.CurrentCulture),
                 _video.Description,
+                IsAudioOnly ? "Audio" : "Video",
                 fileSize,
                 savedPath
             );
@@ -274,7 +275,9 @@ public partial class MediaClippexViewModel : BaseViewModel
                 Qualities.Clear();
                 SelectedQuality = "";
                 IsAudioOnly = false;
-                MessageBox.Show(IsAudioOnly ? $"Audio downloaded successfully. Saved to {audioFilePath}" : $"Video downloaded successfully. Saved to {videoFilePath}");
+                MessageBox.Show(IsAudioOnly
+                    ? $"Audio downloaded successfully. Saved to {audioFilePath}"
+                    : $"Video downloaded successfully. Saved to {videoFilePath}");
                 await Task.Run(GetDownloadedVideos);
             }
         }
@@ -390,6 +393,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                     DownloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
                         video.Title,
                         video.Description,
+                        video.FileType,
                         string.IsNullOrEmpty(video.Path)
                             ? "Could not determine, file moved to other location"
                             : StringService.ConvertBytesToFormattedString(File.OpenRead(video.Path).Length),
