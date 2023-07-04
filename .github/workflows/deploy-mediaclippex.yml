@@ -36,22 +36,6 @@ jobs:
           name: MediaClippex-Update
           path: ${{ github.workspace }}/MediaClippex/Update.zip
 
-      - name: Check if Changelog Exists
-        id: check_changelog
-        run: echo "::set-output name=exists::$(test -f changelog.md && echo true || echo false)"
-
-      - name: Read Changelog
-        id: read_changelog
-        if: steps.check_changelog.outputs.exists == 'true'
-        run: |
-            echo "::set-output name=content::$(cat changelog.md)"
-            
-      - name: Convert Changelog to HTML
-        id: convert_to_html
-        uses: peaceiris/actions-markdown@v2
-        with:
-           markdown: ${{ steps.read_changelog.outputs.content }}
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -60,7 +44,7 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           release_name: ${{ github.ref_name }}
-          body: ${{ steps.convert_to_html.outputs.html }}
+          body_path: changelog.md
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
