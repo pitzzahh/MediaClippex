@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="MediaClippex.Components.DownloadedVideoCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
+             mc:Ignorable="d"
+             Height="150"
+             HorizontalAlignment="Stretch"
+             Background="{DynamicResource bg-000}">
+    
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Video Image -->
+        <moderncontrols:ModernButton Background="Transparent" Padding="3" Command="{Binding OpenVideoCommand}">
+            <Image Source="{Binding ImageUrl}"
+                   VerticalAlignment="Center"
+                   Stretch="UniformToFill"
+                   HorizontalAlignment="Center" />
+        </moderncontrols:ModernButton>
+
+        <!-- Video Info -->
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"
+                      Margin="5"
+                      HorizontalScrollBarVisibility="Hidden">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                           TextWrapping="Wrap"
+                           FontSize="16">
+                    <Span>
+                        <Bold>Title: </Bold>
+                        <Run Text="{Binding Title}" />
+                    </Span>
+                </TextBlock>
+
+                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                           FontSize="16">
+                    <TextBlock.Inlines>
+                        <Bold>Duration: </Bold>
+                        <Run Text="{Binding Duration}" />
+                    </TextBlock.Inlines>
+                </TextBlock>
+
+                <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                           FontSize="16">
+                    <TextBlock.Inlines>
+                        <Bold>File Size: </Bold>
+                        <Run Text="{Binding FileSize}" />
+                    </TextBlock.Inlines>
+                </TextBlock>
+
+                <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                           FontSize="16">
+                    <TextBlock.Inlines>
+                        <Bold>Saved Path: </Bold>
+                        <Run Text="{Binding Path}" />
+                    </TextBlock.Inlines>
+                </TextBlock>
+
+                <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                           TextWrapping="Wrap"
+                           FontSize="16">
+                    <TextBlock.Inlines>
+                        <Bold>Description: </Bold>
+                        <Run Text="{Binding Description}" />
+                    </TextBlock.Inlines>
+                </TextBlock>
+            </Grid>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>
