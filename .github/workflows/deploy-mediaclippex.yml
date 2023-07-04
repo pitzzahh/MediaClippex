@@ -45,8 +45,6 @@ jobs:
         uses: mindsers/changelog-reader-action@v2
         if: steps.check_changelog.outputs.exists == 'true'
         with:
-          validation_level: warn
-          version: ${{ github.ref_name }}
           path: ./changelog.md
 
       - name: Create Release
