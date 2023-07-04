@@ -77,10 +77,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         {
             _selectedQuality = value;
             GetDownloadSize();
-            OnPropertyChanging();
             OnPropertyChanged();
-            OnPropertyChanged(SelectedQuality);
-            OnPropertyChanged(DownloadButtonContent);
         }
     }
 
@@ -97,6 +94,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             else
                 _videoQualities.ForEach(q => Qualities.Add(q));
             SelectedQuality = Qualities.First();
+            OnPropertyChanged();
         }
     }
 
@@ -183,8 +181,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             IsResolved = true;
             InitializeVideoResolutions(manifest);
             GetDownloadSize();
-            OnPropertyChanged(SelectedQuality);
-            OnPropertyChanged(DownloadButtonContent);
+            OnPropertyChanged();
             InitializeAudioResolutions(manifest);
         }
         catch (Exception e)
@@ -265,7 +262,6 @@ public partial class MediaClippexViewModel : BaseViewModel
         await ((CheckUpdateViewModel)UpdateWindow.DataContext).CheckForUpdate();
     }
 
-
     [RelayCommand]
     private static void CancelDownload()
     {
@@ -304,7 +300,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             var manifest = await VideoService.GetManifest(Url);
             var video = await VideoService.GetVideo(Url);
 
-            if (video.Duration == null) return;
+            if (!video.Duration.HasValue) return;
 
             if (IsAudioOnly)
             {
