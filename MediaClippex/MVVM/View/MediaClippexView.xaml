@@ -214,7 +214,7 @@
                 <ProgressBar.Style>
                     <Style TargetType="ProgressBar">
                         <Setter Property="Background" Value="{DynamicResource bg-400}" />
-                        <Setter Property="Foreground" Value="{DynamicResource fg-000}" />
+                        <Setter Property="Foreground" Value="{DynamicResource success-darken}" />
                         <Setter Property="BorderBrush" Value="Transparent" />
                         <Style.Triggers>
                             <Trigger Property="IsIndeterminate" Value="True">
