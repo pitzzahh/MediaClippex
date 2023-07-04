@@ -26,7 +26,6 @@ public static class VideoService
     {
         return manifest
             .GetVideoStreams()
-            .Where(s => s.Container == Container.Mp4)
             .First(s => s.VideoQuality.Label == quality);
     }
 
