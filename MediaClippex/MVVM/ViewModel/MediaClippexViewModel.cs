@@ -318,6 +318,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(Url)) return;
         _videoQualities.Clear();
+        Qualities.Clear();
         manifest.GetVideoOnlyStreams()
             .Select(s => s.VideoQuality.Label)
             .Distinct()
@@ -331,6 +332,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(Url)) return;
         _audioQualities.Clear();
+        Qualities.Clear();
         manifest.GetAudioOnlyStreams()
             .Select(a => a.Bitrate.ToString())
             .Distinct()
@@ -385,6 +387,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
+            DownloadedVideoCardViewModels.Clear();
             foreach (var video in UnitOfWork.VideosRepository.GetAll())
             {
                 if (video.Path == null) continue;
@@ -395,7 +398,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                     video.Description,
                     StringService.ConvertBytesToFormattedString(File.OpenRead(video.Path).Length),
                     video.Path,
-                    video.Duration,
+                    StringService.ConvertToTimeFormat(StringService.ConvertFromString(video.Duration)),
                     video.ThumbnailUrl
                 ));
             }
