@@ -16,7 +16,7 @@ public partial class CheckUpdateViewModel : BaseViewModel
     private static string Repo => "MediaClippex";
 
     [ObservableProperty] private bool _isProgressIndeterminate;
-    [ObservableProperty] private string _progressInfo = null!;
+    [ObservableProperty] private string _progressInfo = string.Empty;
 
     private static string? _latestVersion = "?";
 
