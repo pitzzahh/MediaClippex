@@ -77,6 +77,8 @@ public partial class MediaClippexViewModel : BaseViewModel
         {
             _selectedQuality = value;
             GetDownloadSize();
+            OnPropertyChanging();
+            OnPropertyChanged();
             OnPropertyChanged(SelectedQuality);
             OnPropertyChanged(DownloadButtonContent);
         }
@@ -313,7 +315,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                 var duration = video.Duration.Value.TotalSeconds;
                 var fileSize = (long)(bitsPerSecond * duration / 8);
                 DownloadButtonContent =
-                    $"Downloading [{StringService.ConvertBytesToFormattedString(fileSize)}]";
+                    $"Download [{StringService.ConvertBytesToFormattedString(fileSize)}]";
             }
             else
             {
@@ -328,7 +330,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                 var fileSize = (long)(bitsPerSecond * duration / 8);
 
                 DownloadButtonContent =
-                    $"Downloading [{StringService.ConvertBytesToFormattedString(fileSize)}]";
+                    $"Download [{StringService.ConvertBytesToFormattedString(fileSize)}]";
             }
         });
     }
