@@ -271,7 +271,9 @@ public partial class MediaClippexViewModel : BaseViewModel
 
             if (complete != 0)
             {
-                Url = "";
+                Qualities.Clear();
+                SelectedQuality = "";
+                IsAudioOnly = false;
                 MessageBox.Show(IsAudioOnly ? $"Audio downloaded successfully. Saved to {audioFilePath}" : $"Video downloaded successfully. Saved to {videoFilePath}");
                 await Task.Run(GetDownloadedVideos);
             }
