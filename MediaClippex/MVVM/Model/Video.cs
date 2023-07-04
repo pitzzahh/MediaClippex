@@ -1,9 +1,26 @@
-﻿namespace MediaClippex.MVVM.Model;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MediaClippex.MVVM.Model;
 
 public class Video
 {
-    private string? ImageUrl { get; set; }
-    private string? Title { get; set; }
-    private string? Duration { get; set; }
-    private string? Description { get; set; }
+    [Key]
+    public int VideoId { get; set; }
+    
+    public string ThumbnailUrl { get; set; }
+    public string? Title { get; set; }
+    public string? Duration { get; set; }
+    public string? Description { get; set; }
+    public string? FileSize { get; set; }
+    public string? Path { get; set; }
+
+    public Video(string thumbnailUrl, string? title, string? duration, string? description, string? fileSize, string? path)
+    {
+        ThumbnailUrl = thumbnailUrl;
+        Title = title;
+        Duration = duration;
+        Description = description;
+        Path = path;
+        FileSize = fileSize;
+    }
 }
