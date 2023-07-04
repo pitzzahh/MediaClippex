@@ -1,5 +1,8 @@
 ﻿# Changelog
 
+### Version 1.3.15.52
+- 🔄 Added file download info
+___
 ### Version 1.2.12.35
 - 🔄 Fix workflow
 ___
