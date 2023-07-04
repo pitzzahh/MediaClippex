@@ -1,9 +1,16 @@
 ﻿<Application x:Class="MediaClippex.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:components="clr-namespace:MediaClippex.Components"
+             xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
              StartupUri="MVVM/View/MediaClippexView.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            
+            <DataTemplate DataType="{x:Type viewModel:DownloadedVideoCardViewModel}">
+                <components:DownloadedVideoCard />
+            </DataTemplate>
+            
             <ResourceDictionary.MergedDictionaries>
                 <!--  ModernControls WPF  -->
                 <ResourceDictionary
