@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using MediaClippex.MVVM.ViewModel;
-using Russkyc.DependencyInjection.Implementations;
 
 namespace MediaClippex.MVVM.View;
 
