@@ -1,4 +1,7 @@
 ﻿# Changelog
+### Version 2.3.15.61
+- ✨ Added Download history
+___
 ### Version 1.3.15.53
 - 🔄 Test workflow
 ___
