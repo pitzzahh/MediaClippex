@@ -12,6 +12,16 @@ public static class StringService
         return $"{timeSpan.Hours:00}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}";
     }
 
+    public static TimeSpan ConvertFromString(string? seconds)
+    {
+        if (!int.TryParse(seconds, out var totalSeconds))
+        {
+            throw new ArgumentException("Invalid seconds value");
+        }
+
+        return TimeSpan.FromSeconds(totalSeconds);
+    }
+    
     public static string ConvertBytesToFormattedString(long bytes)
     {
         const int byteConversion = 1024;

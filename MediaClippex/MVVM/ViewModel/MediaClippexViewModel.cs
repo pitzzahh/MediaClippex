@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB;
 using MediaClippex.DB.Core;
 using MediaClippex.DB.Persistence;
+using MediaClippex.Helpers;
 using MediaClippex.MVVM.View;
 using MediaClippex.Services;
 using org.russkyc.moderncontrols.Helpers;
@@ -190,8 +192,8 @@ public partial class MediaClippexViewModel : BaseViewModel
             IsResolved = true;
             InitializeVideoResolutions(manifest);
             GetDownloadSize();
-            OnPropertyChanged();
             InitializeAudioResolutions(manifest);
+            OnPropertyChanged();
         }
         catch (Exception e)
         {
@@ -216,8 +218,10 @@ public partial class MediaClippexViewModel : BaseViewModel
             return;
         }
 
-        var userPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        var filePath = Path.Combine(userPath, "Downloads", $"{StringService.FixFileName(_video.Title)}");
+        var fixedFileName = $"{StringService.FixFileName(_video.Title)}";
+        
+        var videoFilePath = Path.Combine(DirectoryHelper.GetVideoSavingDirectory(), fixedFileName);
+        var audioFilePath = Path.Combine(DirectoryHelper.GetAudioSavingDirectory(), fixedFileName);
 
         if (string.IsNullOrWhiteSpace(Url)) return;
 
@@ -228,6 +232,8 @@ public partial class MediaClippexViewModel : BaseViewModel
 
         try
         {
+            string savedPath;
+            
             var progressHandler = new Progress<double>(p => Progress = p * 100);
             var manifest = await VideoService.GetManifest(Url);
             if (!_video.Duration.HasValue) return;
@@ -235,51 +241,40 @@ public partial class MediaClippexViewModel : BaseViewModel
             {
                 var audioStreamInfo = VideoService.GetAudioOnlyStream(manifest, SelectedQuality);
 
-                await VideoService.DownloadAudioOnly(audioStreamInfo, filePath, progressHandler);
-                
-                var fileSize = await GetFileSize();
-
-                var thumbNail = _video.Thumbnails.GetWithHighestResolution().Url;
-
-                var videoData = new Model.Video(
-                    thumbNail,
-                    _video.Title,
-                    _video.Duration.Value.Seconds.ToString(),
-                    _video.Description,
-                    fileSize,
-                    $"{filePath}.mp3"
-                );
-
-                UnitOfWork.VideosRepository.Add(videoData);
+                await VideoService.DownloadAudioOnly(audioStreamInfo, audioFilePath, progressHandler);
+                savedPath = $"{audioFilePath}.mp3";
             }
             else
             {
                 var audioStreamInfo = manifest.GetAudioOnlyStreams().GetWithHighestBitrate();
                 var videoStreamInfo = VideoService.GetVideoOnlyStreamInfo(manifest, SelectedQuality);
-                await VideoService.DownloadMuxed(audioStreamInfo, videoStreamInfo, filePath, progressHandler);
-                
-                var fileSize = await GetFileSize();
-
-                var thumbNail = _video.Thumbnails.GetWithHighestResolution().Url;
-
-                var videoData = new Model.Video(
-                    thumbNail,
-                    _video.Title,
-                    _video.Duration.Value.Seconds.ToString(),
-                    _video.Description,
-                    fileSize,
-                    $"{filePath}.{videoStreamInfo.Container}"
-                );
-
-                UnitOfWork.VideosRepository.Add(videoData);
+                await VideoService.DownloadMuxed(audioStreamInfo, videoStreamInfo, videoFilePath, progressHandler);
+                savedPath = $"{videoFilePath}.{videoStreamInfo.Container}";
             }
 
+            var fileSize = await GetFileSize();
+
+            var thumbNail = _video.Thumbnails.GetWithHighestResolution().Url;
+
+            var videoData = new Model.Video(
+                thumbNail,
+                _video.Title,
+                _video.Duration.Value.TotalSeconds.ToString(CultureInfo.CurrentCulture),
+                _video.Description,
+                fileSize,
+                savedPath
+            );
+
+            UnitOfWork.VideosRepository.Add(videoData);
 
             var complete = UnitOfWork.Complete();
 
             if (complete != 0)
             {
-                MessageBox.Show("Download completed. Saved to Downloads folder.");
+                Qualities.Clear();
+                SelectedQuality = "";
+                IsAudioOnly = false;
+                MessageBox.Show(IsAudioOnly ? $"Audio downloaded successfully. Saved to {audioFilePath}" : $"Video downloaded successfully. Saved to {videoFilePath}");
                 await Task.Run(GetDownloadedVideos);
             }
         }
@@ -318,6 +313,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(Url)) return;
         _videoQualities.Clear();
+        Qualities.Clear();
         manifest.GetVideoOnlyStreams()
             .Select(s => s.VideoQuality.Label)
             .Distinct()
@@ -385,19 +381,27 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
+            DownloadedVideoCardViewModels.Clear();
             foreach (var video in UnitOfWork.VideosRepository.GetAll())
             {
-                if (video.Path == null) continue;
-
                 // Save the image to a temporary file
-                DownloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
-                    video.Title,
-                    video.Description,
-                    StringService.ConvertBytesToFormattedString(File.OpenRead(video.Path).Length),
-                    video.Path,
-                    video.Duration,
-                    video.ThumbnailUrl
-                ));
+                try
+                {
+                    DownloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
+                        video.Title,
+                        video.Description,
+                        string.IsNullOrEmpty(video.Path)
+                            ? "Could not determine, file moved to other location"
+                            : StringService.ConvertBytesToFormattedString(File.OpenRead(video.Path).Length),
+                        video.Path,
+                        StringService.ConvertToTimeFormat(StringService.ConvertFromString(video.Duration)),
+                        video.ThumbnailUrl
+                    ));
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
             }
         });
     }

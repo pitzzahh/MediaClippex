@@ -87,7 +87,7 @@
                 </Grid.RowDefinitions>
 
 
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -116,14 +116,14 @@
                         Command="{Binding ResolveCommand}" />
                 </Grid>
 
-                <TextBlock Grid.Row="2"
+                <TextBlock Grid.Row="1"
                            Visibility="{Binding IsResolved, Converter={StaticResource BooleanToVisibilityConverter}}"
                            Margin="0 5"
                            Foreground="{DynamicResource danger}"
                            Text="{Binding Status}" />
 
                 <!-- View preview -->
-                <Grid Grid.Row="3"
+                <Grid Grid.Row="2"
                       Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup>
@@ -156,7 +156,7 @@
                     <components:VideoInfoCard />
                 </Grid>
 
-                <Grid Grid.Row="4" Margin="0 5">
+                <Grid Grid.Row="3" Margin="0 5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
@@ -204,7 +204,7 @@
                     </Grid>
                 </Grid>
 
-                <moderncontrols:ModernButton Grid.Row="5"
+                <moderncontrols:ModernButton Grid.Row="4"
                                              Content="{Binding DownloadButtonContent}"
                                              FontSize="18"
                                              IconSize="24"
@@ -214,7 +214,7 @@
                                              Margin="0 5 0 0"
                                              Command="{Binding DownloadCommand}" />
 
-                <Grid Grid.Row="6" Margin="0 5"
+                <Grid Grid.Row="5" Margin="0 5"
                       Background="Transparent"
                       Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ProgressBar
@@ -241,7 +241,7 @@
                                Text="{Binding ProgressInfo}" />
                 </Grid>
 
-                <ScrollViewer Grid.Row="7"
+                <ScrollViewer Grid.Row="6"
                               Margin="0 5"
                               VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <Grid HorizontalAlignment="Stretch">
