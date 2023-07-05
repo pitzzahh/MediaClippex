@@ -1,4 +1,12 @@
 ﻿# Changelog
+### Version 3.3.15.73
+- 🔄 Fixed opening saved file
+- ✨ Added Download history
+- ✨ Added `Open file` button (click the thumbnail of downloaded video)
+- ✨ Fixed `Cancel` button (now it cancels downloading process)
+### [Will implement soon]
+- 📢 ~~Ability to pause and resume download~~ 
+___
 ### Version 2.3.15.61
 - ✨ Added Download history
 ___
