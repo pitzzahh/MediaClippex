@@ -83,7 +83,6 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
@@ -241,32 +240,38 @@
                                FontWeight="Medium"
                                Text="{Binding ProgressInfo}" />
                 </Grid>
-                
-                <TextBlock Grid.Row="6" 
-                           Margin="0 3"
-                           Text="Download History"
-                           FontSize="18"
-                           FontWeight="Medium"
-                           Foreground="{DynamicResource fg-000}"/>
 
-                <ScrollViewer Grid.Row="7"
-                              Margin="0 5"
-                              VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <Grid HorizontalAlignment="Stretch">
-                        <ItemsControl ItemsSource="{Binding DownloadedVideoCardViewModels}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemContainerStyle>
-                                <Style>
-                                    <Setter Property="FrameworkElement.Margin" Value="5" />
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>
-                        </ItemsControl>
-                    </Grid>
-                </ScrollViewer>
+                <Grid Grid.Row="6" Visibility="{Binding HasDownloadHistory, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Margin="0 3"
+                               Text="Download History"
+                               FontSize="18"
+                               FontWeight="Medium"
+                               Foreground="{DynamicResource fg-000}" />
+
+                    <ScrollViewer Grid.Row="1"
+                                  Margin="0 5"
+                                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Grid HorizontalAlignment="Stretch">
+                            <ItemsControl ItemsSource="{Binding DownloadedVideoCardViewModels}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style>
+                                        <Setter Property="FrameworkElement.Margin" Value="5" />
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
             </Grid>
         </ScrollViewer>
     </Grid>
