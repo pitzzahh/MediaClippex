@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using YoutubeExplode;
 using YoutubeExplode.Converter;
@@ -37,20 +38,20 @@ public static class VideoService
     }
 
     public static async Task DownloadAudioOnly(IAudioStreamInfo audioStreamInfo, string path,
-        Progress<double> progressHandler)
+        Progress<double> progressHandler, CancellationToken cancellationToken = default)
     {
         var conversionRequestBuilder = new ConversionRequestBuilder($"{path}.mp3");
         conversionRequestBuilder
             .SetContainer("mp3")
             .SetFFmpegPath("ffmpeg.exe");
-        await Youtube.Videos.DownloadAsync( new[] { audioStreamInfo }, conversionRequestBuilder.Build(), progressHandler);
+        await Youtube.Videos.DownloadAsync( new[] { audioStreamInfo }, conversionRequestBuilder.Build(), progressHandler, cancellationToken);
     }
 
     public static async Task DownloadMuxed(IStreamInfo audioStreamInfo, IVideoStreamInfo videoStreamInfo,
-        string path, Progress<double> progressHandler)
+        string path, Progress<double> progressHandler, CancellationToken cancellationToken = default)
     {
         var conversionRequestBuilder = new ConversionRequestBuilder($"{path}.{videoStreamInfo.Container}");
         conversionRequestBuilder.SetFFmpegPath("ffmpeg.exe");
-        await Youtube.Videos.DownloadAsync(new[] { audioStreamInfo, videoStreamInfo }, conversionRequestBuilder.Build(), progressHandler);
+        await Youtube.Videos.DownloadAsync(new[] { audioStreamInfo, videoStreamInfo }, conversionRequestBuilder.Build(), progressHandler, cancellationToken);
     }
 }

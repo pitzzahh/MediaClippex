@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -62,15 +62,17 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     [ObservableProperty] private ObservableCollection<string> _themes = new();
 
-    [ObservableProperty] [Required(ErrorMessage = "Please enter a URL.")]
-    private string? _url;
+    [ObservableProperty] private string? _url;
+
+    [ObservableProperty]
+    private ObservableCollection<DownloadedVideoCardViewModel> _downloadedVideoCardViewModels = new();
+
+    private CancellationTokenSource _cancellationTokenSource = null!;
 
     private Video? _video;
     public static Window UpdateWindow = new CheckUpdateView();
     private IUnitOfWork UnitOfWork { get; }
 
-    [ObservableProperty]
-    private ObservableCollection<DownloadedVideoCardViewModel> _downloadedVideoCardViewModels = new();
 
     public MediaClippexViewModel()
     {
@@ -234,22 +236,25 @@ public partial class MediaClippexViewModel : BaseViewModel
         try
         {
             string savedPath;
-
+            _cancellationTokenSource = new();
             var progressHandler = new Progress<double>(p => Progress = p * 100);
             var manifest = await VideoService.GetManifest(Url);
             if (!_video.Duration.HasValue) return;
+            var cancellationToken = _cancellationTokenSource.Token;
             if (IsAudioOnly)
             {
                 var audioStreamInfo = VideoService.GetAudioOnlyStream(manifest, SelectedQuality);
 
-                await VideoService.DownloadAudioOnly(audioStreamInfo, audioFilePath, progressHandler);
+                await VideoService.DownloadAudioOnly(audioStreamInfo, audioFilePath, progressHandler,
+                    cancellationToken);
                 savedPath = $"{audioFilePath}.mp3";
             }
             else
             {
                 var audioStreamInfo = manifest.GetAudioOnlyStreams().GetWithHighestBitrate();
                 var videoStreamInfo = VideoService.GetVideoOnlyStreamInfo(manifest, SelectedQuality);
-                await VideoService.DownloadMuxed(audioStreamInfo, videoStreamInfo, videoFilePath, progressHandler);
+                await VideoService.DownloadMuxed(audioStreamInfo, videoStreamInfo, videoFilePath, progressHandler,
+                    cancellationToken);
                 savedPath = $"{videoFilePath}.{videoStreamInfo.Container}";
             }
 
@@ -309,9 +314,12 @@ public partial class MediaClippexViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private static void CancelDownload()
+    private void CancelDownload()
     {
-        MessageBox.Show("This feature is not implemented yet.");
+        var messageBoxResult = MessageBox.Show("Do you want to cancel the download?", "Cancel Download",
+            MessageBoxButton.YesNo);
+        if (messageBoxResult != MessageBoxResult.Yes) return;
+        _cancellationTokenSource.Cancel();
     }
 
     private void InitializeVideoResolutions(StreamManifest manifest)
