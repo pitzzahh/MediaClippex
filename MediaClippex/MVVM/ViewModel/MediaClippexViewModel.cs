@@ -56,6 +56,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     private string _selectedQuality = string.Empty;
 
     [ObservableProperty] private bool _showPreview;
+    [ObservableProperty] private bool _hasDownloadHistory;
 
     [ObservableProperty] private string? _status;
 
@@ -275,6 +276,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                 Qualities.Clear();
                 SelectedQuality = "";
                 IsAudioOnly = false;
+                DownloadButtonContent = "Download";
                 MessageBox.Show(IsAudioOnly
                     ? $"Audio downloaded successfully. Saved to {audioFilePath}"
                     : $"Video downloaded successfully. Saved to {videoFilePath}");
@@ -385,6 +387,9 @@ public partial class MediaClippexViewModel : BaseViewModel
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
             DownloadedVideoCardViewModels.Clear();
+            var enumerable = UnitOfWork.VideosRepository.Find(s => true);
+            HasDownloadHistory = enumerable.Any();
+            if (!HasDownloadHistory) return;
             foreach (var video in UnitOfWork.VideosRepository.GetAll())
             {
                 // Save the image to a temporary file
