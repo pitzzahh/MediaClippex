@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.Windows;
+﻿using System.Diagnostics;
+using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -35,10 +35,8 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
     [RelayCommand]
     private void OpenVideo()
     {
-        if (!string.IsNullOrEmpty(Path) && File.Exists(Path))
-        {
-            MessageBox.Show("This will open the video in your default video player\nHowever, this feature is not implemented yet", "Not implemented yet", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
+        if (string.IsNullOrEmpty(Path) || !File.Exists(Path)) return;
+        Process.Start("explorer.exe", $"/select,\"{Path}\"");
     }
 
 }
