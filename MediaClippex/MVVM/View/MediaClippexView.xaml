@@ -125,34 +125,9 @@
                 <!-- View preview -->
                 <Grid Grid.Row="2"
                       Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <VisualStateManager.VisualStateGroups>
-                        <VisualStateGroup>
-                            <VisualState x:Name="Visible">
-                                <Storyboard>
-                                    <DoubleAnimationUsingKeyFrames
-                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
-                                        <EasingDoubleKeyFrame KeyTime="0" Value="100" />
-                                        <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0" />
-                                    </DoubleAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </VisualState>
-                            <VisualState x:Name="Collapsed">
-                                <Storyboard>
-                                    <DoubleAnimationUsingKeyFrames
-                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
-                                        <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                                        <EasingDoubleKeyFrame KeyTime="0:0:1" Value="100" />
-                                    </DoubleAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateManager.VisualStateGroups>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Grid.RenderTransform>
-                        <TranslateTransform />
-                    </Grid.RenderTransform>
                     <components:VideoInfoCard />
                 </Grid>
 
@@ -253,24 +228,28 @@
                                FontWeight="Medium"
                                Foreground="{DynamicResource fg-000}" />
 
-                    <ScrollViewer Grid.Row="1"
-                                  Margin="0 5"
-                                  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <Grid HorizontalAlignment="Stretch">
-                            <ItemsControl ItemsSource="{Binding DownloadedVideoCardViewModels}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemContainerStyle>
-                                    <Style>
-                                        <Setter Property="FrameworkElement.Margin" Value="5" />
-                                    </Style>
-                                </ItemsControl.ItemContainerStyle>
-                            </ItemsControl>
-                        </Grid>
-                    </ScrollViewer>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ScrollViewer Margin="0 5"
+                                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <Grid HorizontalAlignment="Stretch">
+                                <ItemsControl ItemsSource="{Binding DownloadedVideoCardViewModels}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style>
+                                            <Setter Property="FrameworkElement.Margin" Value="5" />
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+                                </ItemsControl>
+                            </Grid>
+                        </ScrollViewer>
+                    </Grid>
                 </Grid>
             </Grid>
         </ScrollViewer>
