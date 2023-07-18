@@ -285,7 +285,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                 MessageBox.Show(IsAudioOnly
                     ? $"Audio downloaded successfully. Saved to {audioFilePath}"
                     : $"Video downloaded successfully. Saved to {videoFilePath}");
-                await Task.Run(GetDownloadedVideos);
+                await Task.Run(GetDownloadedVideos, cancellationToken);
             }
         }
         catch (Exception e)
