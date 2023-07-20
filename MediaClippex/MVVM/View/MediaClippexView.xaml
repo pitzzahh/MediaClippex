@@ -9,7 +9,7 @@
                              xmlns:components="clr-namespace:MediaClippex.Components"
                              xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
                              mc:Ignorable="d"
-                             Title="MediaClippex"
+                             Title="{Binding Title}"
                              Icon="../../Resources/Icon.ico"
                              TitleBarBackground="{DynamicResource bg-000}"
                              Background="{DynamicResource bg-000}"
@@ -216,40 +216,39 @@
                                Text="{Binding ProgressInfo}" />
                 </Grid>
 
-                <Grid Grid.Row="6" Visibility="{Binding HasDownloadHistory, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid Grid.Row="6"
+                      Visibility="{Binding HasDownloadHistory, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
                     <TextBlock Margin="0 3"
                                Text="Download History"
                                FontSize="18"
                                FontWeight="Medium"
                                Foreground="{DynamicResource fg-000}" />
-
+                    
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <ScrollViewer Margin="0 5"
                                       VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <Grid HorizontalAlignment="Stretch">
-                                <ItemsControl ItemsSource="{Binding DownloadedVideoCardViewModels}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemContainerStyle>
-                                        <Style>
-                                            <Setter Property="FrameworkElement.Margin" Value="5" />
-                                        </Style>
-                                    </ItemsControl.ItemContainerStyle>
-                                </ItemsControl>
-                            </Grid>
+                            <ItemsControl ItemsSource="{Binding DownloadedVideoCardViewModels}">
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style>
+                                        <Setter Property="FrameworkElement.Margin" Value="5" />
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
                         </ScrollViewer>
                     </Grid>
+
                 </Grid>
             </Grid>
         </ScrollViewer>
