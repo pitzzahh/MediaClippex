@@ -20,6 +20,11 @@ public partial class CheckUpdateViewModel : BaseViewModel
 
     private static string? _latestVersion = "?";
 
+    public CheckUpdateViewModel()
+    {
+        Task.Run(CheckForUpdate);
+    }
+
     public async Task CheckForUpdate()
     {
         try
