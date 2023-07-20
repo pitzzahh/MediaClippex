@@ -32,7 +32,7 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     [ObservableProperty] private string? _imagePreview;
     private bool _isAudioOnly;
-
+    [ObservableProperty] private string _title = "MediaClippex ";
     [ObservableProperty] private string _downloadButtonContent = "Download";
     [ObservableProperty] private bool _isDownloading;
 
@@ -81,6 +81,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             .GetColorThemes()
             .ToList()
             .ForEach(Themes.Add);
+        Title += "v" + CheckUpdateViewModel.ReadCurrentVersion();
         Task.Run(GetDownloadedVideos);
     }
 
