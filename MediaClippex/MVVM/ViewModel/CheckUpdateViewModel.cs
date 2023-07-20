@@ -96,7 +96,7 @@ public partial class CheckUpdateViewModel : BaseViewModel
         return new Version(latestVersion) > new Version(currentVersion);
     }
 
-    private static string? ReadCurrentVersion()
+    public static string? ReadCurrentVersion()
     {
         return Assembly.GetExecutingAssembly().GetName().Version?.ToString();
     }
