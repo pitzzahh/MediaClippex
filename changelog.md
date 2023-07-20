@@ -1,4 +1,8 @@
 ﻿# Changelog
+## Version 3.3.18.80
+- 🔄 Fixed downloaded video incosistent scrollbar
+- ✨ Added auto check for updates on start
+___
 ### Version 3.3.15.73
 - 🔄 Fixed opening saved file
 - ✨ Added Download history
