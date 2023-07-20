@@ -22,7 +22,13 @@ public partial class CheckUpdateViewModel : BaseViewModel
 
     public CheckUpdateViewModel()
     {
-        Task.Run(CheckForUpdate);
+        Task.Run(async () =>
+        {
+            var currentVersion = ReadCurrentVersion();
+            if (currentVersion == null) return;
+            var latestRelease = await GetLatestRelease();
+            if (ShouldUpdate(currentVersion, latestRelease.TagName)) UpdateProcess();
+        });
     }
 
     public async Task CheckForUpdate()
@@ -33,10 +39,7 @@ public partial class CheckUpdateViewModel : BaseViewModel
             ProgressInfo = "Checking for updates...";
             var currentVersion = ReadCurrentVersion();
 
-            var latestRelease = await new GitHubClient(new ProductHeaderValue(Repo))
-                .Repository
-                .Release
-                .GetLatest(Owner, Repo);
+            var latestRelease = await GetLatestRelease();
 
             _latestVersion = latestRelease.TagName;
 
@@ -50,50 +53,52 @@ public partial class CheckUpdateViewModel : BaseViewModel
             {
                 IsProgressIndeterminate = false;
                 ProgressInfo = "";
-                var result = MessageBox.Show("An update is available. Do you want to install it?", "Update Available",
-                    MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.Yes)
-                {
-                    var startInfo = new ProcessStartInfo
-                    {
-                        FileName = Path.Combine(AppContext.BaseDirectory, "Elevator.exe"),
-                        UseShellExecute = true,
-                        Verb = "runas" // Set the Verb property to "runas" for elevated permissions
-                    };
-
-                    Process.Start(startInfo);
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        Application.Current.Shutdown();
-                    });
-                }
-                else
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        MediaClippexViewModel.UpdateWindow.Close();
-                    });
-                }
+                UpdateProcess();
             }
             else
             {
                 IsProgressIndeterminate = false;
                 MessageBox.Show("You have the latest version of the application.", "No Updates Available");
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    MediaClippexViewModel.UpdateWindow.Close();
-                });
+                Application.Current.Dispatcher.Invoke(() => { MediaClippexViewModel.UpdateWindow.Close(); });
             }
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"Error occurred while checking for updates: {ex.Message} Captured Latest Version: {_latestVersion}", "Update Error");
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                MediaClippexViewModel.UpdateWindow.Close();
-            });
+                $"Error occurred while checking for updates: {ex.Message} Captured Latest Version: {_latestVersion}",
+                "Update Error");
+            Application.Current.Dispatcher.Invoke(() => { MediaClippexViewModel.UpdateWindow.Close(); });
         }
+    }
+
+    private static void UpdateProcess()
+    {
+        var result = MessageBox.Show("An update is available. Do you want to install it?", "Update Available",
+            MessageBoxButton.YesNo);
+        if (result == MessageBoxResult.Yes)
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = Path.Combine(AppContext.BaseDirectory, "Elevator.exe"),
+                UseShellExecute = true,
+                Verb = "runas" // Set the Verb property to "runas" for elevated permissions
+            };
+
+            Process.Start(startInfo);
+            Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
+        }
+        else
+        {
+            Application.Current.Dispatcher.Invoke(() => { MediaClippexViewModel.UpdateWindow.Close(); });
+        }
+    }
+
+    private static async Task<Release> GetLatestRelease()
+    {
+        return await new GitHubClient(new ProductHeaderValue(Repo))
+            .Repository
+            .Release
+            .GetLatest(Owner, Repo);
     }
 
     private static bool ShouldUpdate(string currentVersion, string latestVersion)
