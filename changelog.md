@@ -1,6 +1,9 @@
 ﻿# Changelog
+## Version 3.3.19.80
+- 🔄 Fixed automatic updates on startup popup
+___
 ## Version 3.3.18.80
-- 🔄 Fixed downloaded video incosistent scrollbar
+- 🔄 Fixed downloaded video inconsistent scrollbar
 - ✨ Added auto check for updates on start
 ___
 ### Version 3.3.15.73
