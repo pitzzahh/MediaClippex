@@ -17,7 +17,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: "6.0"
+          dotnet-version: "7.0"
 
       - name: Restore NuGet packages
         run: dotnet restore ${{ env.PROJECT_PATH }}
@@ -27,7 +27,7 @@ jobs:
 
       - name: Zip Files
         run: |
-          Compress-Archive -Path ${{ github.workspace }}/MediaClippex/bin/Release/net6.0-windows/win-x64/publish/* -DestinationPath ${{ github.workspace }}/MediaClippex/Update.zip
+          Compress-Archive -Path ${{ github.workspace }}/MediaClippex/bin/Release/net7.0-windows/win-x64/publish/* -DestinationPath ${{ github.workspace }}/MediaClippex/Update.zip
 
       - name: Deploy Update File
         id: deploy_artifacts
