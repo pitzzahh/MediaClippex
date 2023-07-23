@@ -6,5 +6,6 @@ namespace MediaClippex.DB.Core;
 public interface IUnitOfWork : IDisposable
 {
     VideosRepository VideosRepository { get; }
+    QueuingContentRepository QueuingContentRepository { get; }
     int Complete();
 }
