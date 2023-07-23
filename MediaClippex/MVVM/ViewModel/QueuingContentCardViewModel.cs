@@ -15,6 +15,7 @@ namespace MediaClippex.MVVM.ViewModel;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 // I do not know if this is good practice or not, did not even test it yet.
+// pausing and resuming will not work yet, because it does not know how to do so.
 public partial class QueuingContentCardViewModel : BaseViewModel
 {
     [ObservableProperty] private string _title;
