@@ -3,19 +3,99 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
+             xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
+             d:DataContext="{d:DesignInstance viewModel:QueuingContentCardViewModel}"
              mc:Ignorable="d"
              d:DesignWidth="650"
              Height="150"
              HorizontalAlignment="Stretch"
              Background="{DynamicResource bg-000}">
-    
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
-        <moderncontrols:ModernTextBox>Hello</moderncontrols:ModernTextBox>
-        <ProgressBar Grid.Row="1"></ProgressBar>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+
+        <!-- Video Image -->
+        <Image Source="{Binding ThumbnailUrl}"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Left" />
+
+        <Grid Grid.Column="1">
+        
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <!-- Video Info -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          Margin="7"
+                          HorizontalScrollBarVisibility="Hidden">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Foreground="{DynamicResource fg-000}"
+                               TextWrapping="Wrap"
+                               FontSize="16">
+                        <Span>
+                            <Bold>Title: </Bold>
+                            <Run Text="{Binding Title}" />
+                        </Span>
+                    </TextBlock>
+
+                    <TextBlock Grid.Row="1" Foreground="{DynamicResource fg-000}"
+                               FontSize="16">
+                        <TextBlock.Inlines>
+                            <Bold>Duration: </Bold>
+                            <Run Text="{Binding Duration}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
+                    <TextBlock Grid.Row="2" Foreground="{DynamicResource fg-000}"
+                               TextWrapping="Wrap"
+                               FontSize="16">
+                        <TextBlock.Inlines>
+                            <Bold>File type: </Bold>
+                            <Run Text="{Binding FileType}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
+                </Grid>
+            </ScrollViewer>
+            <Grid Grid.Row="1" Margin="1 2"
+                  Background="Transparent"
+                  Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ProgressBar
+                    Value="{Binding Progress}"
+                    Height="20">
+                    <ProgressBar.Style>
+                        <Style TargetType="ProgressBar">
+                            <Setter Property="Background" Value="{DynamicResource bg-400}" />
+                            <Setter Property="Foreground" Value="{DynamicResource success-darken}" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Style.Triggers>
+                                <Trigger Property="IsIndeterminate" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource success-darken}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ProgressBar.Style>
+                </ProgressBar>
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource fg-000}"
+                           FontWeight="Medium"
+                           Text="{Binding ProgressInfo}" />
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>
