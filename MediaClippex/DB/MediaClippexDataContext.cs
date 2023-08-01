@@ -5,7 +5,10 @@ namespace MediaClippex.DB;
 
 public class MediaClippexDataContext : DbContext
 {
+    // ReSharper disable once UnusedMember.Global
     public DbSet<Video> Videos { get; set; } = null!;
+    // ReSharper disable once UnusedMember.Global
+    public DbSet<QueuingVideo> QueuingVideos { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
