@@ -21,8 +21,10 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     [ObservableProperty] private string _title;
     [ObservableProperty] private string _duration;
     [ObservableProperty] private string _thumbnailUrl;
+    [ObservableProperty] private string? _fileType;
     [ObservableProperty] private double _progress;
     [ObservableProperty] private string? _progressInfo;
+    [ObservableProperty] private bool _isProcessing;
     [ObservableProperty] private bool _paused;
     private CancellationTokenSource _cancellationTokenSource = null!;
     private readonly string _url;
@@ -36,7 +38,12 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         ThumbnailUrl = thumbnailUrl;
         _url = url;
         _selectedQuality = selectedQuality;
-        Task.Run(() => newDownload ? DownloadProcess(isAudio) : SetPaused());
+        IsProcessing = true;
+        Task.Run(() =>
+        {
+            FileType = isAudio ? "Audio" : "Video";
+            return newDownload ? DownloadProcess(isAudio) : SetPaused();
+        });
     }
 
     private Task SetPaused()
@@ -45,6 +52,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         var firstOrDefault = queuingVideos.First();
         Progress = firstOrDefault.Progress;
         ProgressInfo = firstOrDefault.ProgressInfo;
+        IsProcessing = false;
         return Task.CompletedTask;
     }
 
@@ -82,17 +90,18 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         var videoFilePath = Path.Combine(DirectoryHelper.GetVideoSavingDirectory(), fixedFileName);
         var audioFilePath = Path.Combine(DirectoryHelper.GetAudioSavingDirectory(), fixedFileName);
         ProgressInfo = "Downloading";
+        IsProcessing = true;
         var progressHandler = new Progress<double>(p =>
         {
             Progress = p * 100;
-            if (Progress <= 80d)
+            if (Progress >= 80d)
             {
                 ProgressInfo = "Almost finished";
             }
         });
 
         MediaClippexViewModel.UnitOfWork.QueuingContentRepository.Add(
-            new QueuingVideo(Title, Duration, ThumbnailUrl, _url, Progress, ProgressInfo, _selectedQuality, Paused, isAudio)
+            new QueuingVideo(Title, Duration, ThumbnailUrl, isAudio ? "Audio" : "Video", _url, Progress, ProgressInfo, _selectedQuality, Paused, isAudio)
         );
 
         MediaClippexViewModel.UnitOfWork.Complete();
