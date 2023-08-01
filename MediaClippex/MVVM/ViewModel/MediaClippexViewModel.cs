@@ -211,7 +211,6 @@ public partial class MediaClippexViewModel : BaseViewModel
 
         if (string.IsNullOrWhiteSpace(Url)) return;
 
-        ProgressInfo = "Downloading...";
         IsDownloading = true;
         IsProcessing = false;
         try
@@ -226,6 +225,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                 true,
                 IsAudioOnly
             ));
+            HasQueue = QueuingContentCardViewModels.Count > 0;
         }
         catch (Exception e)
         {
