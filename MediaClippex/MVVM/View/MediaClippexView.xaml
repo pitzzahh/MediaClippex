@@ -14,8 +14,8 @@
                              TitleBarBackground="{DynamicResource bg-000}"
                              Background="{DynamicResource bg-000}"
                              WindowStartupLocation="CenterScreen"
-                             d:DesignHeight="600"
-                             Width="1000">
+                             d:DesignHeight="400"
+                             Width="1200">
 
     <Window.DataContext>
         <viewModel:MediaClippexViewModel />

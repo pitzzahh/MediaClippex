@@ -8,7 +8,6 @@
              xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              d:DataContext="{d:DesignInstance viewModel:QueuingContentCardViewModel}"
              mc:Ignorable="d"
-             d:DesignWidth="650"
              Height="150"
              HorizontalAlignment="Stretch"
              Background="{DynamicResource bg-000}">
@@ -81,7 +80,8 @@
                 </Grid.ColumnDefinitions>
                 
                 <moderncontrols:ModernButton Grid.Column="1"
-                                             LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
+                                             LeftIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
+                                             IconPadding="5 0 0 0"
                                              Command="{Binding CancelDownloadCommand}"
                                              DefaultForeground="{DynamicResource fg-200}"
                                              DefaultBackground="{DynamicResource danger}"/>
