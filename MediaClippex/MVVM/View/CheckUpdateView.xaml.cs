@@ -1,14 +1,14 @@
 ﻿using MediaClippex.MVVM.ViewModel;
+using Russkyc.DependencyInjection.Implementations;
 
 namespace MediaClippex.MVVM.View;
 
 public partial class CheckUpdateView
 {
-    
     public CheckUpdateView()
     {
         InitializeComponent();
-        DataContext = new CheckUpdateViewModel();
+        DataContext = BuilderServices.Resolve<CheckUpdateViewModel>();
     }
 
 }
