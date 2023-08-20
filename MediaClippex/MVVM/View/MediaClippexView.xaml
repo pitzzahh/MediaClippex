@@ -15,14 +15,13 @@
                              Background="{DynamicResource bg-000}"
                              WindowStartupLocation="CenterScreen"
                              d:DesignHeight="600"
-                             Width="1200">
+                             Width="1000">
 
     <Window.DataContext>
         <viewModel:MediaClippexViewModel />
     </Window.DataContext>
 
     <Window.Resources>
-        <system:Double x:Key="Shortest">130</system:Double>
         <system:Double x:Key="Short">200</system:Double>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
@@ -74,12 +73,9 @@
                    FontSize="26"
                    Margin="0 10 0 30"
                    Foreground="{DynamicResource fg-000}" />
-        <ScrollViewer Grid.Row="1">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -88,7 +84,7 @@
                 </Grid.RowDefinitions>
 
 
-                <Grid Grid.Row="0">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -106,10 +102,9 @@
 
                     <moderncontrols:ModernButton
                         Grid.Column="1"
-                        Width="{StaticResource Shortest}"
-                        Content="Resolve"
                         FontSize="16"
                         IconSize="20"
+                        IconPadding="5 0 0 0"
                         Height="38"
                         LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Search}"
                         Margin="0 5 0 0"
@@ -117,80 +112,7 @@
                         Command="{Binding ResolveCommand}" />
                 </Grid>
 
-                <TextBlock Grid.Row="1"
-                           Visibility="{Binding IsResolved, Converter={StaticResource BooleanToVisibilityConverter}}"
-                           Margin="0 5"
-                           Foreground="{DynamicResource danger}"
-                           Text="{Binding Status}" />
-
-                <!-- View preview -->
-                <Grid Grid.Row="2"
-                      Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <components:VideoInfoCard />
-                </Grid>
-
-                <Grid Grid.Row="3" Margin="0 5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-
-                    <StackPanel Grid.Column="1" Margin="5 0">
-                        <TextBlock Text="Quality"
-                                   FontWeight="Medium"
-                                   Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
-                        <moderncontrols:ModernComboBox ItemsSource="{Binding Qualities}"
-                                                       HorizontalAlignment="Left"
-                                                       SelectedItem="{Binding SelectedQuality}"
-                                                       Width="{StaticResource Short}"
-                                                       IsEnabled="{Binding IsResolved}" />
-                    </StackPanel>
-                    <moderncontrols:ModernSwitch HorizontalAlignment="Left"
-                                                 Content="Audio Only"
-                                                 VerticalAlignment="Bottom"
-                                                 Grid.Column="2" Margin="5 0"
-                                                 Width="{StaticResource Short}"
-                                                 IsChecked="{Binding IsAudioOnly}"
-                                                 IsEnabled="{Binding IsResolved}" />
-                    <Grid Grid.Column="3" HorizontalAlignment="Right">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <!-- <moderncontrols:ModernButton Content="Cancel" -->
-                        <!--                              FontWeight="Heavy" -->
-                        <!--                              Height="40" -->
-                        <!--                              Width="130" -->
-                        <!--                              IconSize="20" -->
-                        <!--                              LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Cancel}" -->
-                        <!--                              Command="{Binding CancelDownloadCommand}" -->
-                        <!--                              VerticalAlignment="Bottom" -->
-                        <!--                              Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}" -->
-                        <!--                              DefaultBackground="{DynamicResource danger-lighten}" -->
-                        <!--                              HoverBackground="{DynamicResource danger}" -->
-                        <!--                              PressedBackground="{DynamicResource danger-darken}" -->
-                        <!--                              DefaultForeground="{DynamicResource fg-200}" /> -->
-                    </Grid>
-                </Grid>
-
-                <moderncontrols:ModernButton Grid.Row="4"
-                                             Content="{Binding DownloadButtonContent}"
-                                             FontSize="18"
-                                             IconSize="24"
-                                             FontWeight="Medium"
-                                             LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Download}"
-                                             IsEnabled="{Binding IsResolved}"
-                                             Margin="0 5 0 0"
-                                             Command="{Binding DownloadCommand}" />
-
-                <Grid Grid.Row="5" Margin="0 5"
+                <Grid Grid.Row="1" Margin="0 5"
                       Background="Transparent"
                       Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ProgressBar
@@ -215,8 +137,69 @@
                                FontWeight="Medium"
                                Text="{Binding ProgressInfo}" />
                 </Grid>
-                
-                <Grid Grid.Row="6"
+
+                <Grid Grid.Row="2"
+                      Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- View preview -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <components:VideoInfoCard />
+                    </Grid>
+
+                    <Grid Grid.Row="1" Margin="0 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+
+                        <StackPanel Grid.Column="1" Margin="5 0">
+                            <TextBlock Text="Quality"
+                                       FontWeight="Medium"
+                                       Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
+                            <moderncontrols:ModernComboBox ItemsSource="{Binding Qualities}"
+                                                           HorizontalAlignment="Left"
+                                                           SelectedItem="{Binding SelectedQuality}"
+                                                           Width="{StaticResource Short}"
+                                                           IsEnabled="{Binding IsResolved}" />
+                        </StackPanel>
+                        <moderncontrols:ModernSwitch HorizontalAlignment="Left"
+                                                     Content="Audio Only"
+                                                     VerticalAlignment="Bottom"
+                                                     Grid.Column="2" Margin="5 0"
+                                                     Width="{StaticResource Short}"
+                                                     IsChecked="{Binding IsAudioOnly}"
+                                                     IsEnabled="{Binding IsResolved}" />
+                        <Grid Grid.Column="2" HorizontalAlignment="Right">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </Grid>
+
+                    <moderncontrols:ModernButton Grid.Row="2"
+                                                 Content="{Binding DownloadButtonContent}"
+                                                 FontSize="18"
+                                                 IconSize="24"
+                                                 FontWeight="Medium"
+                                                 LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Download}"
+                                                 IsEnabled="{Binding IsResolved}"
+                                                 Margin="0 5 0 0"
+                                                 Command="{Binding DownloadCommand}" />
+                </Grid>
+
+                <Grid Grid.Row="3"
                       Visibility="{Binding HasQueue, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -232,7 +215,7 @@
                                FontSize="18"
                                FontWeight="Medium"
                                Foreground="{DynamicResource fg-000}" />
-                    
+
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -250,7 +233,7 @@
                     </Grid>
                 </Grid>
 
-                <Grid Grid.Row="7"
+                <Grid Grid.Row="4"
                       Visibility="{Binding HasDownloadHistory, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -266,7 +249,7 @@
                                FontSize="18"
                                FontWeight="Medium"
                                Foreground="{DynamicResource fg-000}" />
-                    
+
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
