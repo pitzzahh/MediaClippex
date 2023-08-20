@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
+             xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
+             xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              d:DataContext="{d:DesignInstance viewModel:QueuingContentCardViewModel}"
              mc:Ignorable="d"
              d:DesignWidth="650"
@@ -32,6 +34,7 @@
         
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <!-- Video Info -->
@@ -71,7 +74,19 @@
                     </TextBlock>
                 </Grid>
             </ScrollViewer>
-            <Grid Grid.Row="1" Margin="1 2"
+            <Grid Grid.Row="1" Margin="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <moderncontrols:ModernButton Grid.Column="1"
+                                             LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
+                                             Command="{Binding CancelDownloadCommand}"
+                                             DefaultForeground="{DynamicResource fg-200}"
+                                             DefaultBackground="{DynamicResource danger}"/>
+            </Grid>
+            <Grid Grid.Row="2" Margin="1 2"
                   Background="Transparent"
                   Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ProgressBar
