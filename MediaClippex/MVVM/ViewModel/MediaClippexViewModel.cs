@@ -68,6 +68,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             .ToList()
             .ForEach(Themes.Add);
         Title += "v" + CheckUpdateViewModel.ReadCurrentVersion();
+        SelectedIndex = 3;
         Task.Run(GetQueuingVideos);
         Task.Run(GetDownloadedVideos);
     }
