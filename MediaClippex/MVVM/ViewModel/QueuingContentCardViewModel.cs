@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using MediaClippex.Helpers;
 using MediaClippex.MVVM.Model;
 using MediaClippex.Services;
+using Russkyc.DependencyInjection.Implementations;
 using YoutubeExplode.Videos.Streams;
 
 namespace MediaClippex.MVVM.ViewModel;
@@ -77,8 +78,10 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     {
         var messageBoxResult = MessageBox.Show("Do you want to cancel the download?", "Cancel Download",
             MessageBoxButton.YesNo);
+        _cancellationTokenSource.Cancel();
         if (messageBoxResult != MessageBoxResult.Yes) return;
         _cancellationTokenSource.Cancel();
+        BuilderServices.Resolve<StorageService>().RemoveFromQueue(Title);
     }
 
     private async Task DownloadProcess(bool isAudio)
