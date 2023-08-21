@@ -1,4 +1,7 @@
-﻿using MediaClippex.MVVM.View;
+﻿using MediaClippex.DB;
+using MediaClippex.DB.Core;
+using MediaClippex.DB.Persistence;
+using MediaClippex.MVVM.View;
 using MediaClippex.MVVM.ViewModel;
 using Russkyc.DependencyInjection.Implementations;
 using Russkyc.DependencyInjection.Interfaces;
@@ -12,7 +15,8 @@ public static class BuildContainer
     public static IServicesContainer ConfigureServices()
     {
         return new ServicesContainer()
-            .AddSingleton<StorageService>()
+            .AddSingleton<MediaClippexDataContext>()
+            .AddSingleton<IUnitOfWork, UnitOfWork>()
             .AddSingleton<VideoInfoCardViewModel>()
             .AddSingleton<MediaClippexViewModel>()
             .AddTransient<CheckUpdateViewModel>()
