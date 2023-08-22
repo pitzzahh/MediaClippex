@@ -17,6 +17,7 @@ public static class BuildContainer
         return new ServicesContainer()
             .AddSingleton<MediaClippexDataContext>()
             .AddSingleton<IUnitOfWork, UnitOfWork>()
+            .AddSingleton<StorageService>()
             .AddSingleton<VideoInfoCardViewModel>()
             .AddSingleton<MediaClippexViewModel>()
             .AddTransient<CheckUpdateViewModel>()
