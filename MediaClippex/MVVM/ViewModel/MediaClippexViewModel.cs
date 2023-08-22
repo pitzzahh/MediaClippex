@@ -299,6 +299,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             QueuingContentCardViewModels.Clear();
             var queuingVideos = UnitOfWork.QueuingContentRepository.GetAll().ToList();
             HasQueue = queuingVideos.Count > 0;
+            if (!HasQueue) return;
             foreach (var video in queuingVideos)
             {
                 QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
