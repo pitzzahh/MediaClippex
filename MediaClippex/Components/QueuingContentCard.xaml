@@ -90,21 +90,10 @@
                   Background="Transparent"
                   Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ProgressBar
+                    Background="{DynamicResource bg-400}"
                     Value="{Binding Progress}"
-                    Height="20">
-                    <ProgressBar.Style>
-                        <Style TargetType="ProgressBar">
-                            <Setter Property="Background" Value="{DynamicResource bg-400}" />
-                            <Setter Property="Foreground" Value="{DynamicResource success-darken}" />
-                            <Setter Property="BorderBrush" Value="Transparent" />
-                            <Style.Triggers>
-                                <Trigger Property="IsIndeterminate" Value="True">
-                                    <Setter Property="Foreground" Value="{DynamicResource success-darken}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ProgressBar.Style>
-                </ProgressBar>
+                    Foreground="{DynamicResource success-darken}"
+                    BorderBrush="Transparent" />
                 <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource fg-000}"
