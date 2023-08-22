@@ -18,21 +18,42 @@ public class StorageService
 
     public void RemoveFromQueue(string title)
     {
+        MessageBox.Show($"Removing queuing video: {title}");
         var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
-        var queuingContentCardViewModels = mediaClippexViewModel.QueuingContentCardViewModels;
-        queuingContentCardViewModels
+
+        var queuingContentCardViewModels = mediaClippexViewModel
+            .QueuingContentCardViewModels;
+
+        foreach (var contentCardViewModel in queuingContentCardViewModels)
+            MessageBox.Show($"Queuing View Model: {contentCardViewModel.Title}");
+
+        var queuingContentCardViewModel = queuingContentCardViewModels
+            .FirstOrDefault(s => s.Title.Equals(title));
+
+        if (queuingContentCardViewModel == null)
+        {
+            MessageBox.Show($"Cannot find queuing video view model with title: {title}");
+            return;
+        }
+
+        var remove = queuingContentCardViewModels
             .Remove(
-                mediaClippexViewModel
-                    .QueuingContentCardViewModels
-                    .First(s => s.Title.Equals(title))
+                queuingContentCardViewModel
             );
+        MessageBox.Show($"View Model: {title} is removed? {remove}");
 
         var foundQueuingVideo = _unitOfWork.QueuingContentRepository
             .Find(v => v.Title.Equals(title))
             .FirstOrDefault();
+
+        if (foundQueuingVideo == null)
+        {
+            MessageBox.Show($"Cannot find queuing video with title: {title}");
+            return;
+        }
+
         MessageBox.Show($"Found Queuing Video {foundQueuingVideo}");
 
-        if (foundQueuingVideo == null) return;
         _unitOfWork.QueuingContentRepository
             .Remove(foundQueuingVideo);
 
