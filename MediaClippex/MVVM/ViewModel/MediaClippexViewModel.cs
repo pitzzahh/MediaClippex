@@ -7,62 +7,59 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MediaClippex.DB;
 using MediaClippex.DB.Core;
-using MediaClippex.DB.Persistence;
 using MediaClippex.MVVM.View;
 using MediaClippex.Services;
 using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Implementations;
 using YoutubeExplode.Common;
+using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
-using Video = YoutubeExplode.Videos.Video;
 
 namespace MediaClippex.MVVM.ViewModel;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public partial class MediaClippexViewModel : BaseViewModel
 {
-    [ObservableProperty] private string? _imagePreview;
-    [ObservableProperty] private string _title = "MediaClippex ";
+    private readonly List<string> _audioQualities = new();
+
+    private readonly List<string> _videoQualities = new();
     [ObservableProperty] private string _downloadButtonContent = "Download";
+
+    [ObservableProperty]
+    private ObservableCollection<DownloadedVideoCardViewModel> _downloadedVideoCardViewModels = new();
+
+    [ObservableProperty] private bool _hasDownloadHistory;
+    [ObservableProperty] private bool _hasQueue;
+    [ObservableProperty] private string? _imagePreview;
+
+    private bool _isAudioOnly;
     [ObservableProperty] private bool _isDownloading;
     [ObservableProperty] private bool _isProcessing;
     [ObservableProperty] private bool _isProgressIndeterminate;
     [ObservableProperty] private bool _isResolved;
+    private bool _nightMode = true;
+    [ObservableProperty] private string? _progressInfo;
     [ObservableProperty] private ObservableCollection<string> _qualities = new();
     [ObservableProperty] private string? _quality = "Quality";
-    [ObservableProperty] private string? _progressInfo;
-    [ObservableProperty] private bool _showPreview;
-    [ObservableProperty] private bool _hasDownloadHistory;
-    [ObservableProperty] private bool _hasQueue;
-    [ObservableProperty] private string? _status;
-    [ObservableProperty] private ObservableCollection<string> _themes = new();
-    [ObservableProperty] private string? _url;
 
-    public ObservableCollection<DownloadedVideoCardViewModel> DownloadedVideoCardViewModels { get; }
+    [ObservableProperty]
+    private ObservableCollection<QueuingContentCardViewModel> _queuingContentCardViewModels = new();
 
-    public ObservableCollection<QueuingContentCardViewModel> QueuingContentCardViewModels { get; }
-
-    private readonly List<string> _audioQualities = new();
-
-    private readonly List<string> _videoQualities = new();
-
-    private bool _isAudioOnly;
-    private bool _nightMode = true;
     private int _selectedIndex;
 
     private string _selectedQuality = string.Empty;
+    [ObservableProperty] private bool _showPreview;
+    [ObservableProperty] private string? _status;
+    [ObservableProperty] private ObservableCollection<string> _themes = new();
+    [ObservableProperty] private string _title = "MediaClippex ";
+    [ObservableProperty] private string? _url;
 
     private Video? _video;
-    public static IUnitOfWork UnitOfWork { get; private set; } = null!;
 
-    public MediaClippexViewModel()
+    public MediaClippexViewModel(IUnitOfWork unitOfWork)
     {
-        UnitOfWork = new UnitOfWork(new MediaClippexDataContext());
-        DownloadedVideoCardViewModels = BuilderServices.Resolve<StorageService>().DownloadedVideoCardViewModelsList;
-        QueuingContentCardViewModels = BuilderServices.Resolve<StorageService>().QueuingContentCardViewModelsList;
-        
+        UnitOfWork = unitOfWork;
         ThemeManager.Instance
             .GetColorThemes()
             .ToList()
@@ -72,6 +69,8 @@ public partial class MediaClippexViewModel : BaseViewModel
         Task.Run(GetQueuingVideos);
         Task.Run(GetDownloadedVideos);
     }
+
+    private static IUnitOfWork UnitOfWork { get; set; } = null!;
 
     public string SelectedQuality
     {
@@ -161,6 +160,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             ProgressInfo = "Processing URL...";
             IsProgressIndeterminate = true;
             IsProcessing = true;
+            ShowPreview = false;
             _video = await VideoService.GetVideo(Url);
 
             if (_video == null)
@@ -169,6 +169,9 @@ public partial class MediaClippexViewModel : BaseViewModel
                 return;
             }
 
+            IsProgressIndeterminate = false;
+            IsProcessing = false;
+            ShowPreview = true;
             var manifest = await VideoService.GetManifest(Url);
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -190,13 +193,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         catch (Exception e)
         {
             MessageBox.Show($"Something went wrong: {e.Message}");
-        }
-        finally
-        {
             ProgressInfo = "";
-            IsProgressIndeterminate = false;
-            IsProcessing = !IsResolved;
-            ShowPreview = true;
         }
     }
 
@@ -217,17 +214,17 @@ public partial class MediaClippexViewModel : BaseViewModel
         try
         {
             if (!_video.Duration.HasValue) return;
-            var queuingContentCardViewModels = BuilderServices.Resolve<StorageService>().QueuingContentCardViewModelsList;
-            queuingContentCardViewModels.Add(new QueuingContentCardViewModel(
-                _video.Title,
-                StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault()),
-                _video.Thumbnails.GetWithHighestResolution().Url,
-                Url,
-                SelectedQuality,
-                true,
-                IsAudioOnly
-            ));
-            HasQueue = queuingContentCardViewModels.Count > 0;
+            QueuingContentCardViewModels.Add(
+                new QueuingContentCardViewModel(
+                    _video.Title,
+                    StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault()),
+                    _video.Thumbnails.GetWithHighestResolution().Url,
+                    Url,
+                    SelectedQuality,
+                    true,
+                    IsAudioOnly
+                ));
+            HasQueue = true;
         }
         catch (Exception e)
         {
@@ -298,13 +295,12 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            var queuingContentCardViewModels = BuilderServices.Resolve<StorageService>().QueuingContentCardViewModelsList;
-            queuingContentCardViewModels.Clear();
-            var enumerable = UnitOfWork.QueuingContentRepository.Find(s => true);
-            HasQueue = enumerable.Any();
-            foreach (var video in UnitOfWork.QueuingContentRepository.GetAll())
+            QueuingContentCardViewModels.Clear();
+            var queuingVideos = UnitOfWork.QueuingContentRepository.GetAll().ToList();
+            HasQueue = queuingVideos.Count > 0;
+            foreach (var video in queuingVideos)
             {
-                queuingContentCardViewModels.Add(new QueuingContentCardViewModel(
+                QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
                     video.Title,
                     video.Duration,
                     video.ThumbnailUrl,
@@ -320,24 +316,30 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            var downloadedVideoCardViewModels = BuilderServices.Resolve<StorageService>().DownloadedVideoCardViewModelsList;
-            downloadedVideoCardViewModels.Clear();
-            var enumerable = UnitOfWork.VideosRepository.Find(s => true);
-            HasDownloadHistory = enumerable.Any();
+            DownloadedVideoCardViewModels.Clear();
+            var videos = UnitOfWork.VideosRepository.GetAll().ToList();
+            HasDownloadHistory = videos.Count > 0;
+            MessageBox.Show($"Has History {HasDownloadHistory}");
             if (!HasDownloadHistory) return;
-            foreach (var video in UnitOfWork.VideosRepository.GetAll())
+            try
             {
-                downloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
-                    video.Title,
-                    video.Description,
-                    video.FileType,
-                    string.IsNullOrEmpty(video.Path)
-                        ? "Could not determine, file moved to other location"
-                        : StringService.ConvertBytesToFormattedString(File.OpenRead(video.Path).Length),
-                    video.Path,
-                    StringService.ConvertToTimeFormat(StringService.ConvertFromString(video.Duration)),
-                    video.ThumbnailUrl
-                ));
+                foreach (var video in videos)
+                    DownloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
+                        video.Title,
+                        video.Description,
+                        video.FileType,
+                        string.IsNullOrEmpty(video.Path)
+                            ? "Could not determine, file moved to other location"
+                            : StringService.ConvertBytesToFormattedString(File.OpenRead(video.Path).Length),
+                        video.Path,
+                        StringService.ConvertToTimeFormat(StringService.ConvertFromString(video.Duration)),
+                        video.ThumbnailUrl
+                    ));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+                throw;
             }
         });
     }
