@@ -72,6 +72,7 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     private static IUnitOfWork UnitOfWork { get; set; } = null!;
 
+    // ReSharper disable once MemberCanBePrivate.Global
     public string SelectedQuality
     {
         get => _selectedQuality;
