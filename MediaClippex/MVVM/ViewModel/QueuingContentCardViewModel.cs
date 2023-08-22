@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MediaClippex.DB.Core;
 using MediaClippex.Helpers;
 using MediaClippex.MVVM.Model;
 using MediaClippex.Services;
@@ -19,17 +20,18 @@ namespace MediaClippex.MVVM.ViewModel;
 // pausing and resuming will not work yet, because it does not know how to do so.
 public partial class QueuingContentCardViewModel : BaseViewModel
 {
-    [ObservableProperty] private string _title;
+    private readonly string _url;
+    private CancellationTokenSource _cancellationTokenSource = null!;
     [ObservableProperty] private string _duration;
-    [ObservableProperty] private string _thumbnailUrl;
     [ObservableProperty] private string? _fileType;
-    [ObservableProperty] private double _progress;
-    [ObservableProperty] private string? _progressInfo;
     [ObservableProperty] private bool _isProcessing;
     [ObservableProperty] private bool _paused;
-    private CancellationTokenSource _cancellationTokenSource = null!;
-    private readonly string _url;
+    [ObservableProperty] private double _progress;
+    [ObservableProperty] private string? _progressInfo;
     private string _selectedQuality;
+    [ObservableProperty] private string _thumbnailUrl;
+    [ObservableProperty] private string _title;
+
 
     public QueuingContentCardViewModel(string title, string duration, string thumbnailUrl, string url,
         string selectedQuality, bool newDownload = true, bool isAudio = false)
@@ -40,6 +42,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         _url = url;
         _selectedQuality = selectedQuality;
         IsProcessing = true;
+        UnitOfWork = BuilderServices.Resolve<IUnitOfWork>();
         Task.Run(() =>
         {
             FileType = isAudio ? "Audio" : "Video";
@@ -47,9 +50,12 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         });
     }
 
+    private IUnitOfWork UnitOfWork { get; }
+
+    // TODO: implement pausing of download
     private Task SetPaused()
     {
-        var queuingVideos = MediaClippexViewModel.UnitOfWork.QueuingContentRepository.Find(e => e.Title.Equals(Title));
+        var queuingVideos = UnitOfWork.QueuingContentRepository.Find(e => e.Title.Equals(Title));
         var firstOrDefault = queuingVideos.First();
         Progress = firstOrDefault.Progress;
         ProgressInfo = firstOrDefault.ProgressInfo;
@@ -64,10 +70,10 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         {
             Task.Run(() =>
             {
-                MediaClippexViewModel.UnitOfWork.QueuingContentRepository.Find(e => e.Title.Equals(Title))
+                UnitOfWork.QueuingContentRepository.Find(e => e.Title.Equals(Title))
                     .First()
                     .Paused = true;
-                Paused = MediaClippexViewModel.UnitOfWork.Complete() == 1;
+                Paused = UnitOfWork.Complete() == 1;
                 ProgressInfo = Paused ? "Paused" : "In Progress";
             });
         }
@@ -78,10 +84,9 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     {
         var messageBoxResult = MessageBox.Show("Do you want to cancel the download?", "Cancel Download",
             MessageBoxButton.YesNo);
-        _cancellationTokenSource.Cancel();
         if (messageBoxResult != MessageBoxResult.Yes) return;
-        _cancellationTokenSource.Cancel();
         BuilderServices.Resolve<StorageService>().RemoveFromQueue(Title);
+        _cancellationTokenSource.Cancel();
     }
 
     private async Task DownloadProcess(bool isAudio)
@@ -97,18 +102,23 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         var progressHandler = new Progress<double>(p =>
         {
             Progress = p * 100;
-            if (Progress >= 80d)
+            switch (Progress)
             {
-                ProgressInfo = "Almost finished";
+                case 60d:
+                    CancelDownloadCommand.CanExecute(false);
+                    break;
+                case 80d:
+                    ProgressInfo = "Almost finished";
+                    break;
             }
         });
 
-        MediaClippexViewModel.UnitOfWork.QueuingContentRepository.Add(
-            new QueuingVideo(Title, Duration, ThumbnailUrl, isAudio ? "Audio" : "Video", _url, Progress, ProgressInfo, _selectedQuality, Paused, isAudio)
+        UnitOfWork.QueuingContentRepository.Add(
+            new QueuingVideo(Title, Duration, ThumbnailUrl, isAudio ? "Audio" : "Video", _url, Progress, ProgressInfo,
+                _selectedQuality, Paused, isAudio)
         );
 
-        MediaClippexViewModel.UnitOfWork.Complete();
-
+        UnitOfWork.Complete();
         var streamManifest = await VideoService.GetManifest(_url);
 
         if (isAudio)
@@ -128,28 +138,35 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             savedPath = $"{videoFilePath}.{videoStreamInfo.Container}";
         }
 
+        ProgressInfo = "Done";
+        BuilderServices.Resolve<StorageService>().RemoveFromQueue(Title);
         var videoData = new Video(
             ThumbnailUrl,
             Title,
             Duration,
             "Add description here",
             isAudio ? "Audio" : "Video",
-            isAudio ? VideoService.GetAudioFileSizeFormatted(streamManifest, await VideoService.GetVideo(_url), _selectedQuality) : VideoService.GetVideoFileSizeFormatted(streamManifest, await VideoService.GetVideo(_url), _selectedQuality),
+            isAudio
+                ? VideoService.GetAudioFileSizeFormatted(streamManifest, await VideoService.GetVideo(_url),
+                    _selectedQuality)
+                : VideoService.GetVideoFileSizeFormatted(streamManifest, await VideoService.GetVideo(_url),
+                    _selectedQuality),
             savedPath
         );
 
-        MediaClippexViewModel.UnitOfWork.VideosRepository.Add(videoData);
+        UnitOfWork.VideosRepository.Add(videoData);
 
-        var complete = MediaClippexViewModel.UnitOfWork.Complete();
+        var complete = UnitOfWork.Complete();
+        MessageBox.Show($"Downloaded video added to db {complete == 1}");
 
-        if (complete != 0)
-        {
-            _selectedQuality = "";
-            isAudio = false;
-            MessageBox.Show(isAudio
-                ? $"Audio downloaded successfully. Saved to {audioFilePath}"
-                : $"Video downloaded successfully. Saved to {videoFilePath}");
-        }
+        if (complete == 0) return;
+        _selectedQuality = "";
+        isAudio = false;
+        MessageBox.Show(isAudio
+            ? $"Audio downloaded successfully. Saved to {audioFilePath}"
+            : $"Video downloaded successfully. Saved to {videoFilePath}");
+        var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
+        StorageService.CheckQueue(mediaClippexViewModel);
+        StorageService.CheckDownloadHistory(mediaClippexViewModel);
     }
-
 }
