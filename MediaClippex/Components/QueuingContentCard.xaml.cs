@@ -1,8 +1,6 @@
-﻿using System.Windows.Controls;
+﻿namespace MediaClippex.Components;
 
-namespace MediaClippex.Components;
-
-public partial class QueuingContentCard : UserControl
+public partial class QueuingContentCard
 {
     public QueuingContentCard()
     {
