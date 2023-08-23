@@ -20,6 +20,7 @@ namespace MediaClippex.MVVM.ViewModel;
 // pausing and resuming will not work yet, because it does not know how to do so.
 public partial class QueuingContentCardViewModel : BaseViewModel
 {
+    private readonly string _selectedQuality;
     private readonly string _url;
     private CancellationTokenSource _cancellationTokenSource = null!;
     [ObservableProperty] private string _duration;
@@ -28,7 +29,6 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     [ObservableProperty] private bool _paused;
     [ObservableProperty] private double _progress;
     [ObservableProperty] private string? _progressInfo;
-    private string _selectedQuality;
     [ObservableProperty] private string _thumbnailUrl;
     [ObservableProperty] private string _title;
 
@@ -91,7 +91,6 @@ public partial class QueuingContentCardViewModel : BaseViewModel
 
     private async Task DownloadProcess(bool isAudio)
     {
-        string savedPath;
         var fixedFileName = $"{StringService.FixFileName(Title)}";
         _cancellationTokenSource = new CancellationTokenSource();
 
@@ -113,14 +112,51 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             }
         });
 
-        UnitOfWork.QueuingContentRepository.Add(
-            new QueuingVideo(Title, Duration, ThumbnailUrl, isAudio ? "Audio" : "Video", _url, Progress, ProgressInfo,
-                _selectedQuality, Paused, isAudio)
-        );
+        try
+        {
+            // Starting of download
+            var streamManifest = await VideoService.GetManifest(_url);
 
-        UnitOfWork.Complete();
-        var streamManifest = await VideoService.GetManifest(_url);
+            var savedPath = await InternalDownloadProcess(isAudio, streamManifest, audioFilePath, progressHandler,
+                videoFilePath);
 
+            ProgressInfo = "Done";
+            BuilderServices.Resolve<StorageService>().RemoveFromQueue(Title);
+
+            var path = new string(savedPath);
+            UnitOfWork.VideosRepository.Add(new Video(
+                ThumbnailUrl,
+                Title,
+                Duration,
+                "Add description here",
+                isAudio ? "Audio" : "Video",
+                StringService.ConvertBytesToFormattedString(File.OpenRead(path).Length),
+                path
+            ));
+
+            var downloadedContentAdded = UnitOfWork.Complete();
+            if (downloadedContentAdded == 0) return;
+
+            MessageBox.Show(isAudio
+                ? $"Audio downloaded successfully. Saved to {audioFilePath}"
+                : $"Video downloaded successfully. Saved to {videoFilePath}");
+
+            var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
+            await Task.Run(mediaClippexViewModel.GetQueuingVideos);
+            await Task.Run(mediaClippexViewModel.GetDownloadedVideos);
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show($"Something went wrong while downloading: {e.Message}");
+            throw;
+        }
+    }
+
+    private async Task<string> InternalDownloadProcess(bool isAudio, StreamManifest streamManifest,
+        string audioFilePath,
+        Progress<double> progressHandler, string videoFilePath)
+    {
+        string savedPath;
         if (isAudio)
         {
             var audioStreamInfo = VideoService.GetAudioOnlyStream(streamManifest, _selectedQuality);
@@ -138,35 +174,6 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             savedPath = $"{videoFilePath}.{videoStreamInfo.Container}";
         }
 
-        ProgressInfo = "Done";
-        BuilderServices.Resolve<StorageService>().RemoveFromQueue(Title);
-        var videoData = new Video(
-            ThumbnailUrl,
-            Title,
-            Duration,
-            "Add description here",
-            isAudio ? "Audio" : "Video",
-            isAudio
-                ? VideoService.GetAudioFileSizeFormatted(streamManifest, await VideoService.GetVideo(_url),
-                    _selectedQuality)
-                : VideoService.GetVideoFileSizeFormatted(streamManifest, await VideoService.GetVideo(_url),
-                    _selectedQuality),
-            savedPath
-        );
-
-        UnitOfWork.VideosRepository.Add(videoData);
-
-        var complete = UnitOfWork.Complete();
-        MessageBox.Show($"Downloaded video added to db {complete == 1}");
-
-        if (complete == 0) return;
-        _selectedQuality = "";
-        isAudio = false;
-        MessageBox.Show(isAudio
-            ? $"Audio downloaded successfully. Saved to {audioFilePath}"
-            : $"Video downloaded successfully. Saved to {videoFilePath}");
-        var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
-        StorageService.CheckQueue(mediaClippexViewModel);
-        StorageService.CheckDownloadHistory(mediaClippexViewModel);
+        return savedPath;
     }
 }
