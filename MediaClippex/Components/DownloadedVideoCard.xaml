@@ -10,7 +10,7 @@
              Height="150"
              HorizontalAlignment="Stretch"
              Background="{DynamicResource bg-000}">
-    
+
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -29,15 +29,15 @@
         <!-- Video Info -->
         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"
                       Margin="5"
-                      HorizontalScrollBarVisibility="Hidden">
+                      HorizontalScrollBarVisibility="Disabled">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
@@ -64,7 +64,7 @@
                         <Run Text="{Binding FileType}" />
                     </TextBlock.Inlines>
                 </TextBlock>
-                
+
                 <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
                            FontSize="16">
                     <TextBlock.Inlines>
