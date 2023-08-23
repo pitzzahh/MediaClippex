@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
+using MediaClippex.MVVM.Model;
 using MediaClippex.MVVM.View;
 using MediaClippex.Services;
 using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Implementations;
 using YoutubeExplode.Common;
-using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
+using Video = YoutubeExplode.Videos.Video;
 
 namespace MediaClippex.MVVM.ViewModel;
 
@@ -170,11 +170,10 @@ public partial class MediaClippexViewModel : BaseViewModel
                 return;
             }
 
+            var manifest = await VideoService.GetManifest(Url);
+            ShowPreview = true;
             IsProgressIndeterminate = false;
             IsProcessing = false;
-            ShowPreview = true;
-            var manifest = await VideoService.GetManifest(Url);
-
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 if (_video == null) return;
@@ -193,7 +192,9 @@ public partial class MediaClippexViewModel : BaseViewModel
         }
         catch (Exception e)
         {
-            MessageBox.Show($"Something went wrong: {e.Message}");
+            MessageBox.Show($"Something went wrong resolving the url: {e.Message}");
+            IsProcessing = false;
+            IsProgressIndeterminate = false;
             ProgressInfo = "";
         }
     }
@@ -215,21 +216,38 @@ public partial class MediaClippexViewModel : BaseViewModel
         try
         {
             if (!_video.Duration.HasValue) return;
-            QueuingContentCardViewModels.Add(
-                new QueuingContentCardViewModel(
-                    _video.Title,
-                    StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault()),
-                    _video.Thumbnails.GetWithHighestResolution().Url,
+            var queuingContentCardViewModel = new QueuingContentCardViewModel(
+                _video.Title,
+                StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault()),
+                _video.Thumbnails.GetWithHighestResolution().Url,
+                Url,
+                SelectedQuality,
+                true,
+                IsAudioOnly
+            );
+            QueuingContentCardViewModels.Add(queuingContentCardViewModel);
+            // Adding to QueuingContent Table
+            UnitOfWork.QueuingContentRepository.Add(
+                new QueuingContent(
+                    queuingContentCardViewModel.Title,
+                    queuingContentCardViewModel.Duration,
+                    queuingContentCardViewModel.ThumbnailUrl,
+                    IsAudioOnly ? "Audio" : "Video",
                     Url,
+                    0,
+                    "Just Started",
                     SelectedQuality,
-                    true,
-                    IsAudioOnly
-                ));
+                    false,
+                    IsAudioOnly)
+            );
+
+            var addedToQueueDb = UnitOfWork.Complete();
+            if (addedToQueueDb == 0) return;
             HasQueue = true;
         }
         catch (Exception e)
         {
-            MessageBox.Show($"Something went wrong: {e.Message}");
+            MessageBox.Show($"Something went wrong downloading: {e.Message}");
         }
         finally
         {
@@ -292,7 +310,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             : $"Download [{VideoService.GetVideoFileSizeFormatted(manifest, video, SelectedQuality)}]";
     }
 
-    private async Task GetQueuingVideos()
+    public async Task GetQueuingVideos()
     {
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
@@ -300,28 +318,33 @@ public partial class MediaClippexViewModel : BaseViewModel
             var queuingVideos = UnitOfWork.QueuingContentRepository.GetAll().ToList();
             HasQueue = queuingVideos.Count > 0;
             if (!HasQueue) return;
-            foreach (var video in queuingVideos)
+            try
             {
-                QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
-                    video.Title,
-                    video.Duration,
-                    video.ThumbnailUrl,
-                    video.Url,
-                    video.SelectedQuality,
-                    !video.Paused
-                ));
+                foreach (var video in queuingVideos)
+                    QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
+                        video.Title,
+                        video.Duration,
+                        video.ThumbnailUrl,
+                        video.Url,
+                        video.SelectedQuality,
+                        !video.Paused
+                    ));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+                throw;
             }
         });
     }
 
-    private async Task GetDownloadedVideos()
+    public async Task GetDownloadedVideos()
     {
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
             DownloadedVideoCardViewModels.Clear();
             var videos = UnitOfWork.VideosRepository.GetAll().ToList();
             HasDownloadHistory = videos.Count > 0;
-            MessageBox.Show($"Has History {HasDownloadHistory}");
             if (!HasDownloadHistory) return;
             try
             {
@@ -330,11 +353,9 @@ public partial class MediaClippexViewModel : BaseViewModel
                         video.Title,
                         video.Description,
                         video.FileType,
-                        string.IsNullOrEmpty(video.Path)
-                            ? "Could not determine, file moved to other location"
-                            : StringService.ConvertBytesToFormattedString(File.OpenRead(video.Path).Length),
+                        video.FileSize,
                         video.Path,
-                        StringService.ConvertToTimeFormat(StringService.ConvertFromString(video.Duration)),
+                        video.Duration,
                         video.ThumbnailUrl
                     ));
             }
