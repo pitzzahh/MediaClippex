@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -240,7 +241,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                     false,
                     IsAudioOnly)
             );
-
+            Url = "";
             var addedToQueueDb = UnitOfWork.Complete();
             if (addedToQueueDb == 0) return;
             HasQueue = true;
@@ -353,7 +354,9 @@ public partial class MediaClippexViewModel : BaseViewModel
                         video.Title,
                         video.Description,
                         video.FileType,
-                        video.FileSize,
+                        video.Path is null
+                            ? "Cannot be determined"
+                            : StringService.ConvertBytesToFormattedString(new FileInfo(video.Path).Length),
                         video.Path,
                         video.Duration,
                         video.ThumbnailUrl
