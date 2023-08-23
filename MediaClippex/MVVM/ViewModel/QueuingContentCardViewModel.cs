@@ -123,15 +123,13 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             ProgressInfo = "Done";
             BuilderServices.Resolve<StorageService>().RemoveFromQueue(Title);
 
-            var path = new string(savedPath);
             UnitOfWork.VideosRepository.Add(new Video(
                 ThumbnailUrl,
                 Title,
                 Duration,
                 "Add description here",
                 isAudio ? "Audio" : "Video",
-                StringService.ConvertBytesToFormattedString(File.OpenRead(path).Length),
-                path
+                savedPath
             ));
 
             var downloadedContentAdded = UnitOfWork.Complete();
