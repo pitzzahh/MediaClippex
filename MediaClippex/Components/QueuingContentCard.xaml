@@ -28,69 +28,82 @@
                VerticalAlignment="Center"
                HorizontalAlignment="Left" />
 
-        <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+        <Grid Grid.Column="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-                <TextBlock Foreground="{DynamicResource fg-000}"
-                           TextWrapping="Wrap"
-                           FontSize="16">
-                    <Span>
-                        <Bold>Title: </Bold>
-                        <Run Text="{Binding Title}" />
-                    </Span>
-                </TextBlock>
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Foreground="{DynamicResource fg-000}"
+                               TextWrapping="Wrap"
+                               FontSize="16">
+                        <Span>
+                            <Bold>Title: </Bold>
+                            <Run Text="{Binding Title}" />
+                        </Span>
+                    </TextBlock>
 
-                <TextBlock Grid.Row="1" Foreground="{DynamicResource fg-000}"
-                           FontSize="16">
-                    <TextBlock.Inlines>
-                        <Bold>Duration: </Bold>
-                        <Run Text="{Binding Duration}" />
-                    </TextBlock.Inlines>
-                </TextBlock>
-                <TextBlock Grid.Row="2" Foreground="{DynamicResource fg-000}"
-                           TextWrapping="Wrap"
-                           FontSize="16">
-                    <TextBlock.Inlines>
-                        <Bold>File type: </Bold>
-                        <Run Text="{Binding FileType}" />
-                    </TextBlock.Inlines>
-                </TextBlock>
-
-                <Grid Grid.Row="3" Margin="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <moderncontrols:ModernButton Grid.Column="1"
-                                                 LeftIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
-                                                 IconPadding="5 0 0 0"
-                                                 Command="{Binding CancelDownloadCommand}"
-                                                 DefaultForeground="{DynamicResource fg-200}"
-                                                 DefaultBackground="{DynamicResource danger}" />
+                    <TextBlock Grid.Row="1" Foreground="{DynamicResource fg-000}"
+                               FontSize="16">
+                        <TextBlock.Inlines>
+                            <Bold>Duration: </Bold>
+                            <Run Text="{Binding Duration}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
+                    <TextBlock Grid.Row="2" Foreground="{DynamicResource fg-000}"
+                               TextWrapping="Wrap"
+                               FontSize="16">
+                        <TextBlock.Inlines>
+                            <Bold>File type: </Bold>
+                            <Run Text="{Binding FileType}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
                 </Grid>
-                <Grid Grid.Row="4" Margin="1 2"
-                      Background="Transparent"
-                      Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <ProgressBar
-                        Background="{DynamicResource bg-400}"
-                        Value="{Binding Progress}"
-                        Foreground="{DynamicResource success-darken}"
-                        BorderBrush="Transparent" />
-                    <TextBlock HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Foreground="{DynamicResource fg-000}"
-                               FontWeight="Medium"
-                               Text="{Binding ProgressInfo}" />
-                </Grid>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
+
+                <moderncontrols:ModernButton
+                    LeftIcon="{materialIcons:MaterialIconExt Kind=Pause}"
+                    IconPadding="5 0 0 0"
+                    Command="{Binding PauseDownloadCommand}"
+                    DefaultForeground="{DynamicResource fg-200}"
+                    DefaultBackground="{DynamicResource warning}" />
+
+                <Separator Width="5" Background="Transparent" />
+
+                <moderncontrols:ModernButton
+                    LeftIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
+                    IconPadding="5 0 0 0"
+                    Command="{Binding CancelDownloadCommand}"
+                    DefaultForeground="{DynamicResource fg-200}"
+                    DefaultBackground="{DynamicResource danger}" />
+            </StackPanel>
+            <Grid Grid.Row="4" Margin="0 2"
+                  Background="Transparent"
+                  Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ProgressBar
+                    Background="{DynamicResource bg-400}"
+                    Value="{Binding Progress}"
+                    Foreground="{DynamicResource success-darken}"
+                    BorderBrush="Transparent" />
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource fg-000}"
+                           FontWeight="Medium"
+                           Text="{Binding ProgressInfo}" />
             </Grid>
-        </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>
