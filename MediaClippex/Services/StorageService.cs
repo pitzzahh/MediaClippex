@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using MediaClippex.DB.Core;
 using MediaClippex.MVVM.ViewModel;
@@ -18,57 +19,37 @@ public class StorageService
 
     public void RemoveFromQueue(string title)
     {
-        MessageBox.Show($"Removing queuing video: {title}");
         var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
 
-        var queuingContentCardViewModels = mediaClippexViewModel
-            .QueuingContentCardViewModels;
-
-        foreach (var contentCardViewModel in queuingContentCardViewModels)
-            MessageBox.Show($"Queuing View Model: {contentCardViewModel.Title}");
-
-        var queuingContentCardViewModel = queuingContentCardViewModels
-            .FirstOrDefault(s => s.Title.Equals(title));
-
-        if (queuingContentCardViewModel == null)
+        // Needs to run on the Current dispatcher in order to remove the view models
+        Application.Current.Dispatcher.Invoke(() =>
         {
-            MessageBox.Show($"Cannot find queuing video view model with title: {title}");
-            return;
-        }
+            var queuingContentCardViewModels = mediaClippexViewModel
+                .QueuingContentCardViewModels;
 
-        var remove = queuingContentCardViewModels
-            .Remove(
-                queuingContentCardViewModel
-            );
-        MessageBox.Show($"View Model: {title} is removed? {remove}");
+            var queuingContentCardViewModel = queuingContentCardViewModels
+                .FirstOrDefault(s => title.Equals(s.Title));
 
-        var foundQueuingVideo = _unitOfWork.QueuingContentRepository
-            .Find(v => v.Title.Equals(title))
-            .FirstOrDefault();
+            if (queuingContentCardViewModel == null) return;
 
-        if (foundQueuingVideo == null)
-        {
-            MessageBox.Show($"Cannot find queuing video with title: {title}");
-            return;
-        }
+            // Remove view model from item source
+            queuingContentCardViewModels
+                .Remove(
+                    queuingContentCardViewModel
+                );
 
-        MessageBox.Show($"Found Queuing Video {foundQueuingVideo}");
+            var foundQueuingVideo = _unitOfWork.QueuingContentRepository
+                .Find(v => v.Title.Equals(title))
+                .FirstOrDefault();
 
-        _unitOfWork.QueuingContentRepository
-            .Remove(foundQueuingVideo);
+            if (foundQueuingVideo == null) return;
 
-        if (_unitOfWork.Complete() == 0) return;
-        MessageBox.Show("Queuing Video Deleted From DB");
-        CheckQueue(mediaClippexViewModel);
-    }
+            _unitOfWork.QueuingContentRepository
+                .Remove(foundQueuingVideo);
 
-    public static void CheckQueue(MediaClippexViewModel mediaClippexViewModel = default!)
-    {
-        mediaClippexViewModel.HasQueue = mediaClippexViewModel.QueuingContentCardViewModels.Count > 0;
-    }
-
-    public static void CheckDownloadHistory(MediaClippexViewModel mediaClippexViewModel = default!)
-    {
-        mediaClippexViewModel.HasDownloadHistory = mediaClippexViewModel.DownloadedVideoCardViewModels.Count > 0;
+            if (_unitOfWork.Complete() == 0) return;
+            _unitOfWork.Dispose();
+            Task.Run(mediaClippexViewModel.GetQueuingVideos);
+        });
     }
 }
