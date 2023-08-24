@@ -104,16 +104,16 @@
         <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
 
                 <!-- Progress bar -->
-                <Grid Grid.Row="0"
-                      Background="Transparent"
+                <Grid Background="Transparent"
+                      Height="15"
                       Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ProgressBar
                         IsIndeterminate="{Binding IsProgressIndeterminate}"
