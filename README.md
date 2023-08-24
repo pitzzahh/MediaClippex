@@ -21,9 +21,7 @@ ___
 ![Lines of code](https://img.shields.io/tokei/lines/github/pitzzahh/MediaClippex?label=lines%20of%20code)
 
 <div align="center">
-  <h1>MediaClippex.</h1>
   <img src="preview.gif" alt="App Preview" />
-  <br>  
 </div>
 
 ## Features
