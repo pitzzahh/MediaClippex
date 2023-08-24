@@ -20,9 +20,9 @@ namespace MediaClippex.MVVM.ViewModel;
 // pausing and resuming will not work yet, because it does not know how to do so.
 public partial class QueuingContentCardViewModel : BaseViewModel
 {
+    private readonly CancellationTokenSource _cancellationTokenSource = null!;
     private readonly string _selectedQuality;
     private readonly string _url;
-    private CancellationTokenSource _cancellationTokenSource = null!;
     [ObservableProperty] private string _duration;
     [ObservableProperty] private string? _fileType;
     [ObservableProperty] private bool _isProcessing;
@@ -42,12 +42,10 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         _url = url;
         _selectedQuality = selectedQuality;
         IsProcessing = true;
+        FileType = isAudio ? "Audio" : "Video";
+        if (newDownload) _cancellationTokenSource = new CancellationTokenSource();
         UnitOfWork = BuilderServices.Resolve<IUnitOfWork>();
-        Task.Run(() =>
-        {
-            FileType = isAudio ? "Audio" : "Video";
-            return newDownload ? DownloadProcess(isAudio) : SetPaused();
-        });
+        Task.Run(() => newDownload ? DownloadProcess(isAudio) : SetPaused());
     }
 
     private IUnitOfWork UnitOfWork { get; }
@@ -92,7 +90,6 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     private async Task DownloadProcess(bool isAudio)
     {
         var fixedFileName = $"{StringService.FixFileName(Title)}";
-        _cancellationTokenSource = new CancellationTokenSource();
 
         var videoFilePath = Path.Combine(DirectoryHelper.GetVideoSavingDirectory(), fixedFileName);
         var audioFilePath = Path.Combine(DirectoryHelper.GetAudioSavingDirectory(), fixedFileName);
