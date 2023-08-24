@@ -19,11 +19,19 @@ ___
 ![Languages count](https://img.shields.io/github/languages/count/pitzzahh/MediaClippex)
 ![Repo size](https://img.shields.io/github/repo-size/pitzzahh/MediaClippex)
 ![Lines of code](https://img.shields.io/tokei/lines/github/pitzzahh/MediaClippex?label=lines%20of%20code)
-## Features
 
+<div align="center">
+  <h1>MediaClippex.</h1>
+  <img src="preview.gif" alt="App Preview" />
+  <br>  
+</div>
+
+## Features
 - Download videos, shorts, audios from YouTube.
 - Extract audio from video.
+- Themes
 - **Download multiple videos/audios at once. (NEW)**
+- **Cancel current downloading content. (NEW)** 
 - ~~Download video from a playlist.~~ (Coming soon)
 - ~~Download video from a channel.~~ (Coming soon)
 - ~~Pause and resume downloads.~~ (Coming soon)
