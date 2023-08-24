@@ -2,7 +2,7 @@
   <h1>MediaClippex.</h1>
   <img src="https://raw.githubusercontent.com/pitzzahh/MediaClippex/main/MediaClippex/Resources/Icon.ico" alt="Banner" width="120" />
   <br>  
-  <b>A simple tool to download content from the YouTube.</b>
+  <b>A simple tool to download content from YouTube.</b>
 </div>
 
 ___
