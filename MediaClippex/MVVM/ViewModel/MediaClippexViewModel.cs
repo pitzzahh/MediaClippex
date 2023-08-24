@@ -223,7 +223,9 @@ public partial class MediaClippexViewModel : BaseViewModel
                 _video.Thumbnails.GetWithHighestResolution().Url,
                 Url,
                 SelectedQuality,
-                IsAudioOnly
+                true,
+                IsAudioOnly,
+                _video.Description
             );
             QueuingContentCardViewModels.Add(queuingContentCardViewModel);
             // Adding to QueuingContent Table
