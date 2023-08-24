@@ -24,12 +24,35 @@
                    VerticalAlignment="Center"
                    Stretch="UniformToFill"
                    HorizontalAlignment="Center" />
+
+            <!-- Tooltip -->
+            <moderncontrols:ModernButton.ToolTip>
+                <ToolTip Content="Play" />
+            </moderncontrols:ModernButton.ToolTip>
+
+            <!-- Cursor change -->
+            <moderncontrols:ModernButton.Style>
+                <Style TargetType="moderncontrols:ModernButton">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                </Style>
+            </moderncontrols:ModernButton.Style>
         </moderncontrols:ModernButton>
 
-        <!-- Video Info -->
-        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"
-                      Margin="5"
-                      HorizontalScrollBarVisibility="Disabled">
+
+        <Grid Grid.Column="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Video Info -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          Margin="5"
+                          HorizontalScrollBarVisibility="Disabled">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -91,6 +114,6 @@
                 </TextBlock>
             </Grid>
         </ScrollViewer>
-
+        </Grid>
     </Grid>
 </UserControl>
