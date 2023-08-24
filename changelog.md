@@ -1,4 +1,9 @@
 ﻿# Changelog
+## Version 4.3.19.132
+- ✨ Download multiple videos/audios at once
+- ✨ Can now play the downloaded content on click on thumbnail
+- ✨ New UI Design
+___
 ## Version 3.3.19.80
 - 🔄 Fixed automatic updates on startup popup
 ___
