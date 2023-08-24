@@ -20,10 +20,29 @@
 
         <!-- Video Image -->
         <moderncontrols:ModernButton Background="Transparent" Padding="3" Command="{Binding OpenVideoCommand}">
-            <Image Source="{Binding ImageUrl}"
-                   VerticalAlignment="Center"
-                   Stretch="UniformToFill"
-                   HorizontalAlignment="Center" />
+            <Grid>
+                <Image Source="{Binding ImageUrl}" Stretch="UniformToFill" />
+
+                <!-- Play Icon -->
+                <Image Source="../Resources/play_icon.png"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Height="100">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="Visibility" Value="Hidden" />
+                            <Style.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type moderncontrols:ModernButton}}, Path=IsMouseOver}"
+                                    Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Setter Property="Opacity" Value="1" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </Grid>
 
             <!-- Tooltip -->
             <moderncontrols:ModernButton.ToolTip>
@@ -36,13 +55,13 @@
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Opacity" Value="0.4" />
                         </Trigger>
                     </Style.Triggers>
                     <Setter Property="BorderBrush" Value="Transparent" />
                 </Style>
             </moderncontrols:ModernButton.Style>
         </moderncontrols:ModernButton>
-
 
         <Grid Grid.Column="1" Margin="5">
             <Grid.RowDefinitions>
@@ -53,67 +72,67 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto"
                           Margin="5"
                           HorizontalScrollBarVisibility="Disabled">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
 
-                <TextBlock Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
-                           TextWrapping="Wrap"
-                           FontSize="16">
-                    <Span>
-                        <Bold>Title: </Bold>
-                        <Run Text="{Binding Title}" />
-                    </Span>
-                </TextBlock>
+                    <TextBlock Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                               TextWrapping="Wrap"
+                               FontSize="16">
+                        <Span>
+                            <Bold>Title: </Bold>
+                            <Run Text="{Binding Title}" />
+                        </Span>
+                    </TextBlock>
 
-                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
-                           FontSize="16">
-                    <TextBlock.Inlines>
-                        <Bold>Duration: </Bold>
-                        <Run Text="{Binding Duration}" />
-                    </TextBlock.Inlines>
-                </TextBlock>
+                    <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                               FontSize="16">
+                        <TextBlock.Inlines>
+                            <Bold>Duration: </Bold>
+                            <Run Text="{Binding Duration}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
 
-                <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
-                           FontSize="16">
-                    <TextBlock.Inlines>
-                        <Bold>File Type: </Bold>
-                        <Run Text="{Binding FileType}" />
-                    </TextBlock.Inlines>
-                </TextBlock>
+                    <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                               FontSize="16">
+                        <TextBlock.Inlines>
+                            <Bold>File Type: </Bold>
+                            <Run Text="{Binding FileType}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
 
-                <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
-                           FontSize="16">
-                    <TextBlock.Inlines>
-                        <Bold>File Size: </Bold>
-                        <Run Text="{Binding FileSize}" />
-                    </TextBlock.Inlines>
-                </TextBlock>
+                    <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                               FontSize="16">
+                        <TextBlock.Inlines>
+                            <Bold>File Size: </Bold>
+                            <Run Text="{Binding FileSize}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
 
-                <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
-                           FontSize="16">
-                    <TextBlock.Inlines>
-                        <Bold>Saved Path: </Bold>
-                        <Run Text="{Binding Path}" />
-                    </TextBlock.Inlines>
-                </TextBlock>
+                    <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                               FontSize="16">
+                        <TextBlock.Inlines>
+                            <Bold>Saved Path: </Bold>
+                            <Run Text="{Binding Path}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
 
-                <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
-                           TextWrapping="Wrap"
-                           FontSize="16">
-                    <TextBlock.Inlines>
-                        <Bold>Description: </Bold>
-                        <Run Text="{Binding Description}" />
-                    </TextBlock.Inlines>
-                </TextBlock>
-            </Grid>
-        </ScrollViewer>
+                    <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                               TextWrapping="Wrap"
+                               FontSize="16">
+                        <TextBlock.Inlines>
+                            <Bold>Description: </Bold>
+                            <Run Text="{Binding Description}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
+                </Grid>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>
