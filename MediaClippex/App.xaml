@@ -11,6 +11,10 @@
                 <components:DownloadedVideoCard />
             </DataTemplate>
             
+            <DataTemplate DataType="{x:Type viewModel:QueuingContentCardViewModel}">
+                <components:QueuingContentCard />
+            </DataTemplate>
+            
             <ResourceDictionary.MergedDictionaries>
                 <!--  ModernControls WPF  -->
                 <ResourceDictionary

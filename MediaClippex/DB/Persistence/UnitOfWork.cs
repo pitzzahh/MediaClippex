@@ -13,9 +13,11 @@ public class UnitOfWork : IUnitOfWork
     {
         _context = context;
         VideosRepository = new VideosRepository(_context);
+        QueuingContentRepository = new QueuingContentRepository(_context);
     }
 
     public VideosRepository VideosRepository { get; }
+    public QueuingContentRepository QueuingContentRepository { get; }
 
     public void Dispose()
     {

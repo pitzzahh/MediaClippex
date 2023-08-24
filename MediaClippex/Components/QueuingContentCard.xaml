@@ -1,0 +1,109 @@
+﻿<UserControl x:Class="MediaClippex.Components.QueuingContentCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
+             xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
+             d:DataContext="{d:DesignInstance viewModel:QueuingContentCardViewModel}"
+             mc:Ignorable="d"
+             Height="150"
+             HorizontalAlignment="Stretch"
+             Background="{DynamicResource bg-000}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Video Image -->
+        <Image Source="{Binding ThumbnailUrl}"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Left" />
+
+        <Grid Grid.Column="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Foreground="{DynamicResource fg-000}"
+                               TextWrapping="Wrap"
+                               FontSize="16">
+                        <Span>
+                            <Bold>Title: </Bold>
+                            <Run Text="{Binding Title}" />
+                        </Span>
+                    </TextBlock>
+
+                    <TextBlock Grid.Row="1" Foreground="{DynamicResource fg-000}"
+                               FontSize="16">
+                        <TextBlock.Inlines>
+                            <Bold>Duration: </Bold>
+                            <Run Text="{Binding Duration}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
+                    <TextBlock Grid.Row="2" Foreground="{DynamicResource fg-000}"
+                               TextWrapping="Wrap"
+                               FontSize="16">
+                        <TextBlock.Inlines>
+                            <Bold>File type: </Bold>
+                            <Run Text="{Binding FileType}" />
+                        </TextBlock.Inlines>
+                    </TextBlock>
+                </Grid>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
+
+                <moderncontrols:ModernButton
+                    LeftIcon="{materialIcons:MaterialIconExt Kind=Pause}"
+                    IconPadding="5 0 0 0"
+                    Command="{Binding PauseDownloadCommand}"
+                    DefaultForeground="{DynamicResource fg-200}"
+                    DefaultBackground="{DynamicResource warning}" />
+
+                <Separator Width="5" Background="Transparent" />
+
+                <moderncontrols:ModernButton
+                    LeftIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
+                    IconPadding="5 0 0 0"
+                    Command="{Binding CancelDownloadCommand}"
+                    DefaultForeground="{DynamicResource fg-200}"
+                    DefaultBackground="{DynamicResource danger}" />
+            </StackPanel>
+            <Grid Grid.Row="4" Margin="0 2"
+                  Background="Transparent"
+                  Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ProgressBar
+                    Background="{DynamicResource bg-400}"
+                    Value="{Binding Progress}"
+                    Foreground="{DynamicResource success-darken}"
+                    BorderBrush="Transparent" />
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource fg-000}"
+                           FontWeight="Medium"
+                           Text="{Binding ProgressInfo}" />
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>
