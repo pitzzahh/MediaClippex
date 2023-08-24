@@ -28,6 +28,7 @@ ___
 - Download videos, shorts, audios from YouTube.
 - Extract audio from video.
 - Themes
+- App Update functionality
 - **Download multiple videos/audios at once. (NEW)**
 - **Cancel current downloading content. (NEW)** 
 - ~~Download video from a playlist.~~ (Coming soon)
