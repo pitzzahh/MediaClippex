@@ -16,18 +16,16 @@ namespace Elevator.MVVM.ViewModel;
 
 public partial class MediaClippexUpdaterViewModel : ObservableObject
 {
-    [ObservableProperty] private string? _titleName = "MediaClippex Updater";
-    [ObservableProperty] private double _progress;
-    [ObservableProperty] private string? _progressInfo;
-    [ObservableProperty] private string _progressBarVisibility = "Collapsed";
-    [ObservableProperty] private bool _isProgressIndeterminate;
-    [ObservableProperty] private string? _currentVersion;
-    [ObservableProperty] private string? _latestVersion;
-    [ObservableProperty] private string? _changeLog;
-    [ObservableProperty] private string _showChangeLog = "Collapsed";
     private static readonly string VersionFilePath = Path.Combine(AppContext.BaseDirectory, "app.version");
-    private static string Owner => "pitzzahh";
-    private static string Repo => "MediaClippex";
+    [ObservableProperty] private string? _changeLog;
+    [ObservableProperty] private string? _currentVersion;
+    [ObservableProperty] private bool _isProgressIndeterminate;
+    [ObservableProperty] private string? _latestVersion;
+    [ObservableProperty] private double _progress;
+    [ObservableProperty] private string _progressBarVisibility = "Collapsed";
+    [ObservableProperty] private string? _progressInfo;
+    [ObservableProperty] private string _showChangeLog = "Collapsed";
+    [ObservableProperty] private string? _titleName = "MediaClippex Updater";
 
     public MediaClippexUpdaterViewModel()
     {
@@ -55,7 +53,7 @@ public partial class MediaClippexUpdaterViewModel : ObservableObject
                 {
                     VersionFilePath.StreamWrite(LatestVersion);
                 }
-                
+
                 if (!ShouldUpdate(CurrentVersion, LatestVersion)) return;
 
                 IsProgressIndeterminate = false;
@@ -99,6 +97,9 @@ public partial class MediaClippexUpdaterViewModel : ObservableObject
             Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
         }
     }
+
+    private static string Owner => "pitzzahh";
+    private static string Repo => "MediaClippex";
 
     private async Task DownloadAndInstallUpdate(ReleaseAsset releaseAsset, string newVersion)
     {
@@ -177,6 +178,7 @@ public partial class MediaClippexUpdaterViewModel : ObservableObject
             }
 
             if (File.Exists(zipFilePath)) File.Delete(zipFilePath);
+            ProgressInfo = "Done";
             VersionFilePath.StreamWrite(newVersion);
             var result = MessageBox.Show("Update installed successfully. Do you want to open the application now?",
                 "Update Installed", MessageBoxButton.YesNo);
@@ -193,7 +195,7 @@ public partial class MediaClippexUpdaterViewModel : ObservableObject
     {
         return VersionFilePath.StreamRead();
     }
-    
+
     private static bool ShouldUpdate(string currentVersion, string latestVersion)
     {
         return new Version(latestVersion) > new Version(currentVersion);
