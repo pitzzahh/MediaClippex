@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using MediaClippex.MVVM.ViewModel;
+using Russkyc.DependencyInjection.Implementations;
 
 namespace MediaClippex.MVVM.View;
 
@@ -13,7 +14,7 @@ public partial class MediaClippexView
     {
         InitializeComponent();
         UrlTextBox.Focus();
-        DataContext = new MediaClippexViewModel();
+        DataContext = BuilderServices.Resolve<MediaClippexViewModel>();
     }
 
     protected override void OnClosing(CancelEventArgs e)

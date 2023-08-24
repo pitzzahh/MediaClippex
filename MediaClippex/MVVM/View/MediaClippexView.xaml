@@ -7,22 +7,14 @@
                              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
                              xmlns:system="clr-namespace:System;assembly=System.Runtime"
                              xmlns:components="clr-namespace:MediaClippex.Components"
-                             xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
                              mc:Ignorable="d"
                              Title="{Binding Title}"
                              Icon="../../Resources/Icon.ico"
                              TitleBarBackground="{DynamicResource bg-000}"
                              Background="{DynamicResource bg-000}"
                              WindowStartupLocation="CenterScreen"
-                             d:DesignHeight="600"
-                             Width="1200">
-
-    <Window.DataContext>
-        <viewModel:MediaClippexViewModel />
-    </Window.DataContext>
-
+                             Width="800">
     <Window.Resources>
-        <system:Double x:Key="Shortest">130</system:Double>
         <system:Double x:Key="Short">200</system:Double>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
@@ -64,6 +56,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -74,141 +67,59 @@
                    FontSize="26"
                    Margin="0 10 0 30"
                    Foreground="{DynamicResource fg-000}" />
-        <ScrollViewer Grid.Row="1">
+
+        <!-- Search Bar -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <moderncontrols:ModernTextBox
+                x:Name="UrlTextBox"
+                HelperText="Required field"
+                Focusable="True"
+                Placeholder="Enter a URL"
+                Margin="0 5 2 5"
+                LeftIcon="{materialIcons:MaterialIconExt Kind=Link}"
+                Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}">
+                <moderncontrols:ModernTextBox.InputBindings>
+                    <KeyBinding Gesture="Enter"
+                                Command="{Binding ResolveCommand}" />
+                </moderncontrols:ModernTextBox.InputBindings>
+            </moderncontrols:ModernTextBox>
+
+            <moderncontrols:ModernButton
+                Grid.Column="1"
+                FontSize="16"
+                IconSize="20"
+                IconPadding="5 0 0 0"
+                Height="38"
+                LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Search}"
+                Margin="0 5 0 0"
+                VerticalAlignment="Top"
+                Command="{Binding ResolveCommand}" />
+        </Grid>
+
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
 
-                <Grid Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <moderncontrols:ModernTextBox
-                        x:Name="UrlTextBox"
-                        Grid.Column="0"
-                        HelperText="Required field"
-                        Focusable="True"
-                        Placeholder="Enter a URL"
-                        Margin="0 5 2 5"
-                        LeftIcon="{materialIcons:MaterialIconExt Kind=Link}"
-                        Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <moderncontrols:ModernButton
-                        Grid.Column="1"
-                        Width="{StaticResource Shortest}"
-                        Content="Resolve"
-                        FontSize="16"
-                        IconSize="20"
-                        Height="38"
-                        LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Search}"
-                        Margin="0 5 0 0"
-                        VerticalAlignment="Top"
-                        Command="{Binding ResolveCommand}" />
-                </Grid>
-
-                <TextBlock Grid.Row="1"
-                           Visibility="{Binding IsResolved, Converter={StaticResource BooleanToVisibilityConverter}}"
-                           Margin="0 5"
-                           Foreground="{DynamicResource danger}"
-                           Text="{Binding Status}" />
-
-                <!-- View preview -->
-                <Grid Grid.Row="2"
-                      Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <components:VideoInfoCard />
-                </Grid>
-
-                <Grid Grid.Row="3" Margin="0 5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-
-                    <StackPanel Grid.Column="1" Margin="5 0">
-                        <TextBlock Text="Quality"
-                                   FontWeight="Medium"
-                                   Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
-                        <moderncontrols:ModernComboBox ItemsSource="{Binding Qualities}"
-                                                       HorizontalAlignment="Left"
-                                                       SelectedItem="{Binding SelectedQuality}"
-                                                       Width="{StaticResource Short}"
-                                                       IsEnabled="{Binding IsResolved}" />
-                    </StackPanel>
-                    <moderncontrols:ModernSwitch HorizontalAlignment="Left"
-                                                 Content="Audio Only"
-                                                 VerticalAlignment="Bottom"
-                                                 Grid.Column="2" Margin="5 0"
-                                                 Width="{StaticResource Short}"
-                                                 IsChecked="{Binding IsAudioOnly}"
-                                                 IsEnabled="{Binding IsResolved}" />
-                    <Grid Grid.Column="3" HorizontalAlignment="Right">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <moderncontrols:ModernButton Content="Cancel"
-                                                     FontWeight="Heavy"
-                                                     Height="40"
-                                                     Width="130"
-                                                     IconSize="20"
-                                                     LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
-                                                     Command="{Binding CancelDownloadCommand}"
-                                                     VerticalAlignment="Bottom"
-                                                     Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                     DefaultBackground="{DynamicResource danger-lighten}"
-                                                     HoverBackground="{DynamicResource danger}"
-                                                     PressedBackground="{DynamicResource danger-darken}"
-                                                     DefaultForeground="{DynamicResource fg-200}" />
-                    </Grid>
-                </Grid>
-
-                <moderncontrols:ModernButton Grid.Row="4"
-                                             Content="{Binding DownloadButtonContent}"
-                                             FontSize="18"
-                                             IconSize="24"
-                                             FontWeight="Medium"
-                                             LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Download}"
-                                             IsEnabled="{Binding IsResolved}"
-                                             Margin="0 5 0 0"
-                                             Command="{Binding DownloadCommand}" />
-
-                <Grid Grid.Row="5" Margin="0 5"
-                      Background="Transparent"
+                <!-- Progress bar -->
+                <Grid Background="Transparent"
+                      Height="15"
                       Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ProgressBar
-                        Value="{Binding Progress, Mode=OneWay}"
                         IsIndeterminate="{Binding IsProgressIndeterminate}"
-                        Height="20">
-                        <ProgressBar.Style>
-                            <Style TargetType="ProgressBar">
-                                <Setter Property="Background" Value="{DynamicResource bg-400}" />
-                                <Setter Property="Foreground" Value="{DynamicResource success-darken}" />
-                                <Setter Property="BorderBrush" Value="Transparent" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsIndeterminate" Value="True">
-                                        <Setter Property="Foreground" Value="{DynamicResource success-darken}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ProgressBar.Style>
-                    </ProgressBar>
+                        Background="{DynamicResource bg-400}"
+                        Foreground="{DynamicResource success-darken}"
+                        BorderBrush="Transparent" />
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource fg-000}"
@@ -216,39 +127,94 @@
                                Text="{Binding ProgressInfo}" />
                 </Grid>
 
-                <Grid Grid.Row="6"
+                <!-- Download Preview -->
+                <Grid Grid.Row="1"
+                      Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <!-- View preview -->
+                    <components:VideoInfoCard />
+
+                    <StackPanel Grid.Row="1" Margin="0 5" Orientation="Horizontal">
+
+                        <StackPanel>
+                            <TextBlock Text="Quality"
+                                       FontWeight="Medium"
+                                       Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
+                            <moderncontrols:ModernComboBox ItemsSource="{Binding Qualities}"
+                                                           HorizontalAlignment="Left"
+                                                           SelectedItem="{Binding SelectedQuality}"
+                                                           Width="{StaticResource Short}"
+                                                           IsEnabled="{Binding IsResolved}" />
+                        </StackPanel>
+
+                        <moderncontrols:ModernSwitch HorizontalAlignment="Left"
+                                                     Content="Audio Only"
+                                                     VerticalAlignment="Bottom"
+                                                     Width="{StaticResource Short}"
+                                                     IsChecked="{Binding IsAudioOnly}"
+                                                     IsEnabled="{Binding IsResolved}" />
+                    </StackPanel>
+
+                    <moderncontrols:ModernButton Grid.Row="2"
+                                                 Content="{Binding DownloadButtonContent}"
+                                                 FontSize="16"
+                                                 IconSize="21"
+                                                 FontWeight="Medium"
+                                                 LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Download}"
+                                                 IsEnabled="{Binding IsResolved}"
+                                                 Margin="0 5 0 0"
+                                                 Command="{Binding DownloadCommand}" />
+                </Grid>
+                <!-- Queue List -->
+                <Grid Grid.Row="2"
+                      Visibility="{Binding HasQueue, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Margin="0 3"
+                               Text="Queue"
+                               FontSize="18"
+                               FontWeight="Medium"
+                               Foreground="{DynamicResource fg-000}" />
+
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding QueuingContentCardViewModels}">
+                        <ItemsControl.ItemContainerStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.Margin" Value="5" />
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+                </Grid>
+
+                <!-- Download History -->
+                <Grid Grid.Row="3"
                       Visibility="{Binding HasDownloadHistory, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
                     <TextBlock Margin="0 3"
                                Text="Download History"
                                FontSize="18"
                                FontWeight="Medium"
                                Foreground="{DynamicResource fg-000}" />
-                    
-                    <Grid Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <ScrollViewer Margin="0 5"
-                                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <ItemsControl ItemsSource="{Binding DownloadedVideoCardViewModels}">
-                                <ItemsControl.ItemContainerStyle>
-                                    <Style>
-                                        <Setter Property="FrameworkElement.Margin" Value="5" />
-                                    </Style>
-                                </ItemsControl.ItemContainerStyle>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </Grid>
 
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding DownloadedVideoCardViewModels}">
+                        <ItemsControl.ItemContainerStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.Margin" Value="5" />
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
                 </Grid>
             </Grid>
         </ScrollViewer>

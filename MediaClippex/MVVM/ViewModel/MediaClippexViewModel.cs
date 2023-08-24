@@ -1,25 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MediaClippex.DB;
 using MediaClippex.DB.Core;
-using MediaClippex.DB.Persistence;
-using MediaClippex.Helpers;
+using MediaClippex.MVVM.Model;
 using MediaClippex.MVVM.View;
 using MediaClippex.Services;
 using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Implementations;
 using YoutubeExplode.Common;
-using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
+using Video = YoutubeExplode.Videos.Video;
 
 namespace MediaClippex.MVVM.ViewModel;
 
@@ -29,62 +25,55 @@ public partial class MediaClippexViewModel : BaseViewModel
     private readonly List<string> _audioQualities = new();
 
     private readonly List<string> _videoQualities = new();
-
-    [ObservableProperty] private string? _imagePreview;
-    private bool _isAudioOnly;
-    [ObservableProperty] private string _title = "MediaClippex ";
     [ObservableProperty] private string _downloadButtonContent = "Download";
-    [ObservableProperty] private bool _isDownloading;
-
-    [ObservableProperty] private bool _isProcessing;
-
-    [ObservableProperty] private bool _isProgressIndeterminate;
-
-    [ObservableProperty] private bool _isResolved;
-    private bool _nightMode = true;
-
-    [ObservableProperty] private double _progress;
-
-    [ObservableProperty] private string? _progressInfo;
-
-    [ObservableProperty] private ObservableCollection<string> _qualities = new();
-
-    [ObservableProperty] private string? _quality = "Quality";
-
-    private int _selectedIndex;
-
-    private string _selectedQuality = string.Empty;
-
-    [ObservableProperty] private bool _showPreview;
-    [ObservableProperty] private bool _hasDownloadHistory;
-
-    [ObservableProperty] private string? _status;
-
-    [ObservableProperty] private ObservableCollection<string> _themes = new();
-
-    [ObservableProperty] private string? _url;
 
     [ObservableProperty]
     private ObservableCollection<DownloadedVideoCardViewModel> _downloadedVideoCardViewModels = new();
 
-    private CancellationTokenSource _cancellationTokenSource = null!;
+    [ObservableProperty] private bool _hasDownloadHistory;
+    [ObservableProperty] private bool _hasQueue;
+    [ObservableProperty] private string? _imagePreview;
+
+    private bool _isAudioOnly;
+    [ObservableProperty] private bool _isDownloading;
+    [ObservableProperty] private bool _isProcessing;
+    [ObservableProperty] private bool _isProgressIndeterminate;
+    [ObservableProperty] private bool _isResolved;
+    private bool _nightMode = true;
+    [ObservableProperty] private string? _progressInfo;
+    [ObservableProperty] private ObservableCollection<string> _qualities = new();
+    [ObservableProperty] private string? _quality = "Quality";
+
+    [ObservableProperty]
+    private ObservableCollection<QueuingContentCardViewModel> _queuingContentCardViewModels = new();
+
+    private int _selectedIndex;
+
+    private string _selectedQuality = string.Empty;
+    [ObservableProperty] private bool _showPreview;
+    [ObservableProperty] private string? _status;
+    [ObservableProperty] private ObservableCollection<string> _themes = new();
+    [ObservableProperty] private string _title = "MediaClippex ";
+    [ObservableProperty] private string? _url;
 
     private Video? _video;
-    public static Window UpdateWindow = new CheckUpdateView();
-    private IUnitOfWork UnitOfWork { get; }
 
-
-    public MediaClippexViewModel()
+    public MediaClippexViewModel(IUnitOfWork unitOfWork)
     {
-        UnitOfWork = new UnitOfWork(new MediaClippexDataContext());
+        UnitOfWork = unitOfWork;
         ThemeManager.Instance
             .GetColorThemes()
             .ToList()
             .ForEach(Themes.Add);
         Title += "v" + CheckUpdateViewModel.ReadCurrentVersion();
+        SelectedIndex = 3;
+        Task.Run(GetQueuingVideos);
         Task.Run(GetDownloadedVideos);
     }
 
+    private static IUnitOfWork UnitOfWork { get; set; } = null!;
+
+    // ReSharper disable once MemberCanBePrivate.Global
     public string SelectedQuality
     {
         get => _selectedQuality;
@@ -173,6 +162,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             ProgressInfo = "Processing URL...";
             IsProgressIndeterminate = true;
             IsProcessing = true;
+            ShowPreview = false;
             _video = await VideoService.GetVideo(Url);
 
             if (_video == null)
@@ -182,7 +172,9 @@ public partial class MediaClippexViewModel : BaseViewModel
             }
 
             var manifest = await VideoService.GetManifest(Url);
-
+            ShowPreview = true;
+            IsProgressIndeterminate = false;
+            IsProcessing = false;
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 if (_video == null) return;
@@ -201,19 +193,15 @@ public partial class MediaClippexViewModel : BaseViewModel
         }
         catch (Exception e)
         {
-            MessageBox.Show($"Something went wrong: {e.Message}");
-        }
-        finally
-        {
-            ProgressInfo = "";
+            MessageBox.Show($"Something went wrong resolving the url: {e.Message}");
+            IsProcessing = false;
             IsProgressIndeterminate = false;
-            IsProcessing = !IsResolved;
-            ShowPreview = true;
+            ProgressInfo = "";
         }
     }
 
     [RelayCommand]
-    private async Task Download()
+    private void Download()
     {
         if (_video == null) return;
         if (string.IsNullOrWhiteSpace(SelectedQuality))
@@ -222,76 +210,46 @@ public partial class MediaClippexViewModel : BaseViewModel
             return;
         }
 
-        var fixedFileName = $"{StringService.FixFileName(_video.Title)}";
-
-        var videoFilePath = Path.Combine(DirectoryHelper.GetVideoSavingDirectory(), fixedFileName);
-        var audioFilePath = Path.Combine(DirectoryHelper.GetAudioSavingDirectory(), fixedFileName);
-
         if (string.IsNullOrWhiteSpace(Url)) return;
 
-        ProgressInfo = "Downloading...";
         IsDownloading = true;
-        Progress = 0;
-        IsProcessing = true;
-
+        IsProcessing = false;
         try
         {
-            string savedPath;
-            _cancellationTokenSource = new();
-            var progressHandler = new Progress<double>(p => Progress = p * 100);
-            var manifest = await VideoService.GetManifest(Url);
             if (!_video.Duration.HasValue) return;
-            var cancellationToken = _cancellationTokenSource.Token;
-            if (IsAudioOnly)
-            {
-                var audioStreamInfo = VideoService.GetAudioOnlyStream(manifest, SelectedQuality);
-
-                await VideoService.DownloadAudioOnly(audioStreamInfo, audioFilePath, progressHandler,
-                    cancellationToken);
-                savedPath = $"{audioFilePath}.mp3";
-            }
-            else
-            {
-                var audioStreamInfo = manifest.GetAudioOnlyStreams().GetWithHighestBitrate();
-                var videoStreamInfo = VideoService.GetVideoOnlyStreamInfo(manifest, SelectedQuality);
-                await VideoService.DownloadMuxed(audioStreamInfo, videoStreamInfo, videoFilePath, progressHandler,
-                    cancellationToken);
-                savedPath = $"{videoFilePath}.{videoStreamInfo.Container}";
-            }
-
-            var fileSize = await GetFileSize();
-
-            var thumbNail = _video.Thumbnails.GetWithHighestResolution().Url;
-
-            var videoData = new Model.Video(
-                thumbNail,
+            var queuingContentCardViewModel = new QueuingContentCardViewModel(
                 _video.Title,
-                _video.Duration.Value.TotalSeconds.ToString(CultureInfo.CurrentCulture),
-                _video.Description,
-                IsAudioOnly ? "Audio" : "Video",
-                fileSize,
-                savedPath
+                StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault()),
+                _video.Thumbnails.GetWithHighestResolution().Url,
+                Url,
+                SelectedQuality,
+                true,
+                IsAudioOnly,
+                _video.Description
             );
-
-            UnitOfWork.VideosRepository.Add(videoData);
-
-            var complete = UnitOfWork.Complete();
-
-            if (complete != 0)
-            {
-                Qualities.Clear();
-                SelectedQuality = "";
-                IsAudioOnly = false;
-                DownloadButtonContent = "Download";
-                MessageBox.Show(IsAudioOnly
-                    ? $"Audio downloaded successfully. Saved to {audioFilePath}"
-                    : $"Video downloaded successfully. Saved to {videoFilePath}");
-                await Task.Run(GetDownloadedVideos, cancellationToken);
-            }
+            QueuingContentCardViewModels.Add(queuingContentCardViewModel);
+            // Adding to QueuingContent Table
+            UnitOfWork.QueuingContentRepository.Add(
+                new QueuingContent(
+                    queuingContentCardViewModel.Title,
+                    queuingContentCardViewModel.Duration,
+                    queuingContentCardViewModel.ThumbnailUrl,
+                    IsAudioOnly ? "Audio" : "Video",
+                    Url,
+                    0,
+                    "Just Started",
+                    SelectedQuality,
+                    false,
+                    IsAudioOnly)
+            );
+            Url = "";
+            var addedToQueueDb = UnitOfWork.Complete();
+            if (addedToQueueDb == 0) return;
+            HasQueue = true;
         }
         catch (Exception e)
         {
-            MessageBox.Show($"Something went wrong: {e.Message}");
+            MessageBox.Show($"Something went wrong downloading: {e.Message}");
         }
         finally
         {
@@ -299,7 +257,6 @@ public partial class MediaClippexViewModel : BaseViewModel
             IsDownloading = false;
             IsProcessing = false;
             ShowPreview = false;
-            Progress = 0;
             IsAudioOnly = false;
             IsResolved = false;
         }
@@ -308,19 +265,10 @@ public partial class MediaClippexViewModel : BaseViewModel
     [RelayCommand]
     private static async Task CheckForUpdates()
     {
-        if (UpdateWindow.IsVisible) UpdateWindow.Close();
-        UpdateWindow = new CheckUpdateView();
-        UpdateWindow.Show();
-        await ((CheckUpdateViewModel)UpdateWindow.DataContext).CheckForUpdate();
-    }
-
-    [RelayCommand]
-    private void CancelDownload()
-    {
-        var messageBoxResult = MessageBox.Show("Do you want to cancel the download?", "Cancel Download",
-            MessageBoxButton.YesNo);
-        if (messageBoxResult != MessageBoxResult.Yes) return;
-        _cancellationTokenSource.Cancel();
+        var checkUpdateView = BuilderServices.Resolve<CheckUpdateView>();
+        if (checkUpdateView.IsVisible) checkUpdateView.Hide();
+        checkUpdateView.Show();
+        await ((CheckUpdateViewModel)checkUpdateView.DataContext).CheckForUpdate();
     }
 
     private void InitializeVideoResolutions(StreamManifest manifest)
@@ -350,76 +298,75 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     private void GetDownloadSize()
     {
-        Task.Run(async () => { await GetFileSize(); });
+        Task.Run(GetFileSize);
     }
 
-    private async Task<string> GetFileSize()
+    private async Task GetFileSize()
     {
-        if (string.IsNullOrEmpty(Url)) return string.Empty;
+        if (string.IsNullOrEmpty(Url)) return;
         var manifest = await VideoService.GetManifest(Url);
         var video = await VideoService.GetVideo(Url);
-
-        if (!video.Duration.HasValue) return string.Empty;
-
-        if (IsAudioOnly)
-        {
-            var audioStreamInfo = VideoService.GetAudioOnlyStream(manifest, SelectedQuality);
-
-            var bitsPerSecond = audioStreamInfo.Bitrate.BitsPerSecond;
-
-            var duration = video.Duration.Value.TotalSeconds;
-            var fileSize = (long)(bitsPerSecond * duration / 8);
-            var fileSizeFormattedString = StringService.ConvertBytesToFormattedString(fileSize);
-            DownloadButtonContent = $"Download [{fileSizeFormattedString}]";
-            return fileSizeFormattedString;
-        }
-        else
-        {
-            var audioStreamInfo = manifest.GetAudioOnlyStreams().GetWithHighestBitrate();
-            var videoStreamInfo = VideoService.GetVideoOnlyStreamInfo(manifest, SelectedQuality);
-
-            var audioBitsPerSecond = audioStreamInfo.Bitrate.BitsPerSecond;
-            var videoBitsPerSecond = videoStreamInfo.Bitrate.BitsPerSecond;
-            var bitsPerSecond = audioBitsPerSecond + videoBitsPerSecond;
-
-            var duration = video.Duration.Value.TotalSeconds;
-            var fileSize = (long)(bitsPerSecond * duration / 8);
-
-            var fileSizeFormattedString = StringService.ConvertBytesToFormattedString(fileSize);
-            DownloadButtonContent = $"Download [{fileSizeFormattedString}]";
-            return fileSizeFormattedString;
-        }
+        if (!video.Duration.HasValue) return;
+        DownloadButtonContent = IsAudioOnly
+            ? $"Download [{VideoService.GetAudioFileSizeFormatted(manifest, video, SelectedQuality)}]"
+            : $"Download [{VideoService.GetVideoFileSizeFormatted(manifest, video, SelectedQuality)}]";
     }
 
-    private async Task GetDownloadedVideos()
+    public async Task GetQueuingVideos()
+    {
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            QueuingContentCardViewModels.Clear();
+            var queuingVideos = UnitOfWork.QueuingContentRepository.GetAll().ToList();
+            HasQueue = queuingVideos.Count > 0;
+            if (!HasQueue) return;
+            try
+            {
+                foreach (var video in queuingVideos)
+                    QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
+                        video.Title,
+                        video.Duration,
+                        video.ThumbnailUrl,
+                        video.Url,
+                        video.SelectedQuality,
+                        !video.Paused
+                    ));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+                throw;
+            }
+        });
+    }
+
+    public async Task GetDownloadedVideos()
     {
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
             DownloadedVideoCardViewModels.Clear();
-            var enumerable = UnitOfWork.VideosRepository.Find(s => true);
-            HasDownloadHistory = enumerable.Any();
+            var videos = UnitOfWork.VideosRepository.GetAll().ToList();
+            HasDownloadHistory = videos.Count > 0;
             if (!HasDownloadHistory) return;
-            foreach (var video in UnitOfWork.VideosRepository.GetAll())
+            try
             {
-                // Save the image to a temporary file
-                try
-                {
+                foreach (var video in videos)
                     DownloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
                         video.Title,
                         video.Description,
                         video.FileType,
-                        string.IsNullOrEmpty(video.Path)
-                            ? "Could not determine, file moved to other location"
-                            : StringService.ConvertBytesToFormattedString(File.OpenRead(video.Path).Length),
+                        video.Path is null
+                            ? "Cannot be determined"
+                            : StringService.ConvertBytesToFormattedString(new FileInfo(video.Path).Length),
                         video.Path,
-                        StringService.ConvertToTimeFormat(StringService.ConvertFromString(video.Duration)),
+                        video.Duration,
                         video.ThumbnailUrl
                     ));
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+                throw;
             }
         });
     }

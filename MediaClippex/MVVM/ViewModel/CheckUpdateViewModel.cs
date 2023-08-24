@@ -5,11 +5,14 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
+using MediaClippex.MVVM.View;
 using Octokit;
+using Russkyc.DependencyInjection.Implementations;
 using Application = System.Windows.Application;
 
 namespace MediaClippex.MVVM.ViewModel;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public partial class CheckUpdateViewModel : BaseViewModel
 {
     private static string Owner => "pitzzahh";
@@ -33,6 +36,7 @@ public partial class CheckUpdateViewModel : BaseViewModel
 
     public async Task CheckForUpdate()
     {
+        var checkUpdateView = BuilderServices.Resolve<CheckUpdateView>();
         try
         {
             IsProgressIndeterminate = true;
@@ -59,7 +63,7 @@ public partial class CheckUpdateViewModel : BaseViewModel
             {
                 IsProgressIndeterminate = false;
                 MessageBox.Show("You have the latest version of the application.", "No Updates Available");
-                Application.Current.Dispatcher.Invoke(() => { MediaClippexViewModel.UpdateWindow.Close(); });
+                Application.Current.Dispatcher.Invoke(() => { checkUpdateView.Hide(); });
             }
         }
         catch (Exception ex)
@@ -67,7 +71,7 @@ public partial class CheckUpdateViewModel : BaseViewModel
             MessageBox.Show(
                 $"Error occurred while checking for updates: {ex.Message} Captured Latest Version: {_latestVersion}",
                 "Update Error");
-            Application.Current.Dispatcher.Invoke(() => { MediaClippexViewModel.UpdateWindow.Close(); });
+            Application.Current.Dispatcher.Invoke(() => { checkUpdateView.Hide(); });
         }
     }
 
@@ -89,7 +93,7 @@ public partial class CheckUpdateViewModel : BaseViewModel
         }
         else
         {
-            Application.Current.Dispatcher.Invoke(() => { MediaClippexViewModel.UpdateWindow.Close(); });
+            Application.Current.Dispatcher.Invoke(() => { BuilderServices.Resolve<CheckUpdateView>().Hide(); });
         }
     }
 

@@ -2,7 +2,7 @@
   <h1>MediaClippex.</h1>
   <img src="https://raw.githubusercontent.com/pitzzahh/MediaClippex/main/MediaClippex/Resources/Icon.ico" alt="Banner" width="120" />
   <br>  
-  <b>A simple tool to download videos from the internet.</b>
+  <b>A simple tool to download content from the YouTube.</b>
 </div>
 
 ___
@@ -19,14 +19,22 @@ ___
 ![Languages count](https://img.shields.io/github/languages/count/pitzzahh/MediaClippex)
 ![Repo size](https://img.shields.io/github/repo-size/pitzzahh/MediaClippex)
 ![Lines of code](https://img.shields.io/tokei/lines/github/pitzzahh/MediaClippex?label=lines%20of%20code)
-## Features
 
-- Download video from the internet.
+<div align="center">
+  <img src="preview.gif" alt="App Preview" />
+</div>
+
+## Features
+- Download videos, shorts, audios from YouTube.
 - Extract audio from video.
+- Themes
+- App Update functionality
+- **Download multiple videos/audios at once. (NEW)**
+- **Cancel current downloading content. (NEW)** 
 - ~~Download video from a playlist.~~ (Coming soon)
 - ~~Download video from a channel.~~ (Coming soon)
 - ~~Pause and resume downloads.~~ (Coming soon)
-- ~~Download multiple videos at once.~~ (Coming soon)
+
 
 ## Usage
 
