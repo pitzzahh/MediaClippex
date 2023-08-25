@@ -16,7 +16,7 @@ Windows Server 2019 = 1
 Windows Server 2022 = 1
 Windows 11 = 1
 DoNotCheckOS = 0
-Company name = Peter John Arao
+Company name = pitzzahh
 Website = https://github.com/pitzzahh
 SFA = 0
 DFA = 0
@@ -27,7 +27,7 @@ Header image = D:\Installer\Icons\Icon (transparent).png
 Show Label = 1
 VisualStylesEnabled = 1
 [Files]
-Installation path = <ApplicationData>\<Company>\<AppName>\
+Installation path = <ApplicationData>\<AppName>\
 Autcip = 1
 [Uninstall]
 Vwau = 0
@@ -44,22 +44,22 @@ Reboot computer = 0
 Program = <InstallPath>\Launcher.exe
 ProgramArguments = 
 [Shortcuts]
-Allowtc = 1
-Shortcut path = <Company>\<AppName>\
+Allowtc = 0
+Shortcut path = <AppName>\
 [Serialoptions]
 Allows = 0
 Number = 1000
 Mask = #####-#####-#####-#####
 [SplashScreen]
-Image = D:\BACKUP\Affinity Designs\Icons\MediaClippex\Export\Icon (transparent).png
+Image = D:\Installer\Icons\Icon (transparent).png
 Sound = 
 Time = 2
 PlaySound = 0
 Allow = 0
 [Build]
 File = D:\Installer\Export\MediaClippex Setup.exe
-SetupIconPath = D:\Installer\Icons\Icon.ico
-UninstallIconPath = D:\Installer\Icons\Icon.ico
+SetupIconPath = D:\Installer\Icons\Icon (ico).ico
+UninstallIconPath = D:\Installer\Icons\Icon (ico).ico
 CompressionMethod = 0
 CompressionLevel = 2
 [Updater]
@@ -206,9 +206,6 @@ dll
 D:\Installer\Material.Icons.WPF.dll
 9.5 KB
 dll
-D:\Installer\mediaclippex.db
-24 KB
-db
 D:\Installer\MediaClippex.deps.json
 72.1 KB
 json
@@ -1677,13 +1674,13 @@ Desktop
 MediaClippex
 <InstallPath>\Launcher.exe
 
-D:\Installer\Icons\Icon.ico
+D:\Installer\Icons\Icon (ico).ico
 0
 Startmenu
 MediaClippex
 <InstallPath>\Launcher.exe
 
-D:\Installer\Icons\Icon.ico
+D:\Installer\Icons\Icon (ico).ico
 0
 [IFP_End]
 [Serials]
