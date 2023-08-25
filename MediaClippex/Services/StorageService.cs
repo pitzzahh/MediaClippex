@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using MediaClippex.DB.Core;
 using MediaClippex.MVVM.ViewModel;
@@ -53,7 +52,6 @@ public class StorageService
             {
                 _unitOfWork.Complete();
                 _unitOfWork.Dispose();
-                Task.Run(mediaClippexViewModel.GetQueuingVideos);
             }
         });
     }

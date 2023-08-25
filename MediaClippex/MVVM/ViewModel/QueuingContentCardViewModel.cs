@@ -134,7 +134,6 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             if (downloadedContentAdded == 0) return;
 
             var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
-            await Task.Run(mediaClippexViewModel.GetQueuingVideos);
             await Task.Run(mediaClippexViewModel.GetDownloadedVideos);
         }
         catch (Exception e)
