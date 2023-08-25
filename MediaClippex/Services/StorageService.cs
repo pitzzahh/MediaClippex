@@ -24,32 +24,37 @@ public class StorageService
         // Needs to run on the Current dispatcher in order to remove the view models
         Application.Current.Dispatcher.Invoke(() =>
         {
-            var queuingContentCardViewModels = mediaClippexViewModel
-                .QueuingContentCardViewModels;
+            try
+            {
+                var queuingContentCardViewModels = mediaClippexViewModel
+                    .QueuingContentCardViewModels;
 
-            var queuingContentCardViewModel = queuingContentCardViewModels
-                .FirstOrDefault(s => title.Equals(s.Title));
+                var queuingContentCardViewModel = queuingContentCardViewModels
+                    .FirstOrDefault(s => title.Equals(s.Title));
 
-            if (queuingContentCardViewModel == null) return;
+                if (queuingContentCardViewModel == null) return;
 
-            // Remove view model from item source
-            queuingContentCardViewModels
-                .Remove(
-                    queuingContentCardViewModel
-                );
+                // Remove view model from item source
+                queuingContentCardViewModels
+                    .Remove(
+                        queuingContentCardViewModel
+                    );
 
-            var foundQueuingVideo = _unitOfWork.QueuingContentRepository
-                .Find(v => v.Title.Equals(title))
-                .FirstOrDefault();
+                var foundQueuingVideo = _unitOfWork.QueuingContentRepository
+                    .Find(v => v.Title.Equals(title))
+                    .FirstOrDefault();
 
-            if (foundQueuingVideo == null) return;
+                if (foundQueuingVideo == null) return;
 
-            _unitOfWork.QueuingContentRepository
-                .Remove(foundQueuingVideo);
-
-            if (_unitOfWork.Complete() == 0) return;
-            _unitOfWork.Dispose();
-            Task.Run(mediaClippexViewModel.GetQueuingVideos);
+                _unitOfWork.QueuingContentRepository
+                    .Remove(foundQueuingVideo);
+            }
+            finally
+            {
+                _unitOfWork.Complete();
+                _unitOfWork.Dispose();
+                Task.Run(mediaClippexViewModel.GetQueuingVideos);
+            }
         });
     }
 }
