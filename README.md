@@ -38,7 +38,7 @@ ___
 
 ## Usage
 
-1. Download the setup [here](https://github.com/pitzzahh/MediaClippex/releases/download/1.2.14.39/MediaClippexSetup.exe).
+1. Download the setup [here](https://github.com/pitzzahh/MediaClippex/releases/download/4.3.19.132/MediaClippex.Setup.exe).
 2. Install the setup.
 3. Run the `MediaClippex` app.
 4. Download ffmpeg on first launch **REQUIRED**
@@ -46,4 +46,4 @@ ___
 6. Enter the video URL of the media you want to download.
 
 ## Quick links
-- [MediaClippex Setup](https://github.com/pitzzahh/MediaClippex/releases/download/1.2.14.39/MediaClippexSetup.exe).
+- [MediaClippex Setup](https://github.com/pitzzahh/MediaClippex/releases/download/4.3.19.132/MediaClippex.Setup.exe).
