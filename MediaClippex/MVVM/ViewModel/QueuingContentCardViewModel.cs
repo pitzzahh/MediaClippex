@@ -33,7 +33,6 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     [ObservableProperty] private string _thumbnailUrl;
     [ObservableProperty] private string _title;
 
-
     public QueuingContentCardViewModel(string title, string duration, string thumbnailUrl, string url,
         string selectedQuality, bool newDownload = true!, bool isAudio = false, string description = "Awesome content")
     {
@@ -116,39 +115,31 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             // Starting of download
             var streamManifest = await VideoService.GetManifest(_url);
 
-            await Task.Run(async () =>
-            {
-                var savedPath = await InternalDownloadProcess(isAudio, streamManifest, audioFilePath, progressHandler,
-                    videoFilePath);
+            var savedPath = await InternalDownloadProcess(isAudio, streamManifest, audioFilePath, progressHandler,
+                videoFilePath);
 
-                ProgressInfo = "Done";
-                BuilderServices.Resolve<StorageService>().RemoveFromQueue(Title);
+            ProgressInfo = "Done";
+            BuilderServices.Resolve<StorageService>().RemoveFromQueue(Title);
 
-                UnitOfWork.VideosRepository.Add(new Video(
-                    ThumbnailUrl,
-                    Title,
-                    Duration,
-                    _description,
-                    FileType,
-                    savedPath
-                ));
+            UnitOfWork.VideosRepository.Add(new Video(
+                ThumbnailUrl,
+                Title,
+                Duration,
+                _description,
+                FileType,
+                savedPath
+            ));
 
-                var downloadedContentAdded = UnitOfWork.Complete();
-                if (downloadedContentAdded == 0) return;
+            var downloadedContentAdded = UnitOfWork.Complete();
+            if (downloadedContentAdded == 0) return;
 
-                MessageBox.Show(isAudio
-                    ? $"Audio downloaded successfully. Saved to {audioFilePath}"
-                    : $"Video downloaded successfully. Saved to {videoFilePath}");
-
-                var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
-                await Task.Run(mediaClippexViewModel.GetQueuingVideos);
-                await Task.Run(mediaClippexViewModel.GetDownloadedVideos);
-            });
+            var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
+            await Task.Run(mediaClippexViewModel.GetQueuingVideos);
+            await Task.Run(mediaClippexViewModel.GetDownloadedVideos);
         }
         catch (Exception e)
         {
-            MessageBox.Show($"Something went wrong while downloading: {e.Message}");
-            throw;
+            MessageBox.Show($"Something went wrong while downloading internally: {e.Message}");
         }
     }
 
