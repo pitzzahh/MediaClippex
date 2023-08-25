@@ -1,4 +1,10 @@
 ﻿# Changelog
+## Version 4.4.20.137
+- 🔄 Some UI enhancement
+___
+## Version 4.3.20.135
+- 🔄 Some UI enhancement
+___
 ## Version 4.3.19.132
 - ✨ Download multiple videos/audios at once
 - ✨ Can now play the downloaded content on click on thumbnail
