@@ -5,7 +5,7 @@ on:
       - "*.*.*.*"
 
 env:
-  PROJECT_PATH: "MediaClippex/Launcher.csproj"
+  PROJECT_PATH: "Launcher/Launcher.csproj"
   DOTNET_VERSION: "net7.0-windows"
 
 jobs:
