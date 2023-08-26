@@ -3,13 +3,13 @@
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-        <TargetFramework>net7.0-windows</TargetFramework>
+        <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <Company>pitzzahh</Company>
-        <Version>4.4.21.152</Version>
-        <FileVersion>4.4.21.152</FileVersion>
-        <ProductVersion>4.4.21.152</ProductVersion>
+        <Version>4.4.23.162</Version>
+        <FileVersion>4.4.23.162</FileVersion>
+        <ProductVersion>4.4.23.162</ProductVersion>
         <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     </PropertyGroup>
 

@@ -3,13 +3,14 @@
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-        <TargetFramework>net7.0-windows</TargetFramework>
+        <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <Version>1.0.2.7</Version>
         <FileVersion>1.0.2.7</FileVersion>
         <ProductVersion>1.0.2.7</ProductVersion>
         <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
+        <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
