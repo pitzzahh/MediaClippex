@@ -1,4 +1,7 @@
 ﻿# Changelog
+## Version 4.4.24.164
+- 🔄 Fixed downloaded content card not stretching and wrapping correctly
+___
 ## Version 4.4.23.162
 - 🔄 Fixed update issue
 ___
