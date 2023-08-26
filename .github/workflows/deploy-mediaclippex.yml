@@ -6,7 +6,7 @@ on:
 
 env:
   PROJECT_PATH: "MediaClippex/MediaClippex.csproj"
-  DOTNET_VERSION: "net7.0-windows"
+  DOTNET_VERSION: "net6.0-windows"
 
 jobs:
   deploy:
@@ -18,7 +18,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: "7.0"
+          dotnet-version: "6.0"
 
       - name: Restore NuGet packages
         run: dotnet restore ${{ env.PROJECT_PATH }}
