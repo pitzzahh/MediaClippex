@@ -1,4 +1,8 @@
 ﻿# Changelog
+## Version 4.4.25.166
+- 🔄 Fixed Queue keep showing when there is no queue
+- 🔄 Set min width
+___
 ## Version 4.4.24.164
 - 🔄 Fixed downloaded content card not stretching and wrapping correctly
 ___
