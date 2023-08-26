@@ -15,7 +15,7 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!-- Video Image -->
@@ -69,9 +69,7 @@
             </Grid.RowDefinitions>
 
             <!-- Video Info -->
-            <ScrollViewer VerticalScrollBarVisibility="Auto"
-                          Margin="5"
-                          HorizontalScrollBarVisibility="Disabled">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
