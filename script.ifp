@@ -3,7 +3,7 @@
 ProjectFileVersion = 1.1
 [General]
 Program name = MediaClippex
-Program version = 4.3.19.132
+Program version = 4.3.22.158
 Windows XP = 0
 Windows Server 2003 = 1
 Windows Vista = 1
@@ -78,25 +78,145 @@ Execdlls = 0
 2
 [Files/Dirs]
 D:\Installer\Accessibility.dll
-20.7 KB
+20.6 KB
 dll
 D:\Installer\AngleSharp.dll
 866 KB
 dll
-D:\Installer\app.version
-10 Byte
-version
+D:\Installer\api-ms-win-core-console-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-console-l1-2-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-datetime-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-debug-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-errorhandling-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-fibers-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-file-l1-1-0.dll
+24.5 KB
+dll
+D:\Installer\api-ms-win-core-file-l1-2-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-file-l2-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-handle-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-heap-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-interlocked-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-libraryloader-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-localization-l1-2-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-memory-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-namedpipe-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-processenvironment-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-processthreads-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-processthreads-l1-1-1.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-profile-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-rtlsupport-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-string-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-synch-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-synch-l1-2-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-sysinfo-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-timezone-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-core-util-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-crt-conio-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-crt-convert-l1-1-0.dll
+24.5 KB
+dll
+D:\Installer\api-ms-win-crt-environment-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-crt-filesystem-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-crt-heap-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-crt-locale-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-crt-math-l1-1-0.dll
+28.5 KB
+dll
+D:\Installer\api-ms-win-crt-multibyte-l1-1-0.dll
+28.5 KB
+dll
+D:\Installer\api-ms-win-crt-private-l1-1-0.dll
+72.5 KB
+dll
+D:\Installer\api-ms-win-crt-process-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-crt-runtime-l1-1-0.dll
+24.5 KB
+dll
+D:\Installer\api-ms-win-crt-stdio-l1-1-0.dll
+24.5 KB
+dll
+D:\Installer\api-ms-win-crt-string-l1-1-0.dll
+24.5 KB
+dll
+D:\Installer\api-ms-win-crt-time-l1-1-0.dll
+20.5 KB
+dll
+D:\Installer\api-ms-win-crt-utility-l1-1-0.dll
+20.5 KB
+dll
 D:\Installer\CliWrap.dll
 172 KB
 dll
 D:\Installer\clretwrc.dll
-302.1 KB
-dll
-D:\Installer\clrgc.dll
-646.6 KB
+297.7 KB
 dll
 D:\Installer\clrjit.dll
-1.5 MB
+1.4 MB
 dll
 D:\Installer\CommunityToolkit.Mvvm.dll
 114.6 KB
@@ -105,31 +225,34 @@ D:\Installer\coreclr.dll
 4.9 MB
 dll
 D:\Installer\createdump.exe
-59.7 KB
+56.2 KB
 exe
 D:\Installer\D3DCompiler_47_cor3.dll
 4.7 MB
 dll
+D:\Installer\dbgshim.dll
+137.2 KB
+dll
 D:\Installer\DirectWriteForwarder.dll
-510.2 KB
+508.2 KB
 dll
 D:\Installer\e_sqlite3.dll
 1.6 MB
 dll
 D:\Installer\Elevator.deps.json
-38.9 KB
+43.3 KB
 json
 D:\Installer\Elevator.dll
-126.5 KB
+124.5 KB
 dll
 D:\Installer\Elevator.exe
-200.5 KB
+194 KB
 exe
 D:\Installer\Elevator.pdb
-21.2 KB
+20 KB
 pdb
 D:\Installer\Elevator.runtimeconfig.json
-274 Byte
+382 Byte
 json
 D:\Installer\Google.Api.CommonProtos.dll
 388.5 KB
@@ -174,31 +297,31 @@ D:\Installer\Grpc.Core.Api.dll
 59.8 KB
 dll
 D:\Installer\Grpc.Net.Client.dll
-261.8 KB
+262.3 KB
 dll
 D:\Installer\Grpc.Net.Common.dll
 21.8 KB
 dll
 D:\Installer\hostfxr.dll
-373.7 KB
+366.7 KB
 dll
 D:\Installer\hostpolicy.dll
-383.1 KB
+383.2 KB
 dll
 D:\Installer\Launcher.deps.json
-73 KB
+77.9 KB
 json
 D:\Installer\Launcher.dll
-126.5 KB
+124 KB
 dll
 D:\Installer\Launcher.exe
-200.5 KB
+194 KB
 exe
 D:\Installer\Launcher.pdb
-23.2 KB
+22.2 KB
 pdb
 D:\Installer\Launcher.runtimeconfig.json
-377 Byte
+451 Byte
 json
 D:\Installer\Material.Icons.dll
 5.3 MB
@@ -207,25 +330,25 @@ D:\Installer\Material.Icons.WPF.dll
 9.5 KB
 dll
 D:\Installer\MediaClippex.deps.json
-72.1 KB
+77 KB
 json
 D:\Installer\MediaClippex.dll
-197.5 KB
+187.5 KB
 dll
 D:\Installer\MediaClippex.exe
-200.5 KB
+194 KB
 exe
 D:\Installer\MediaClippex.pdb
-54.8 KB
+50.9 KB
 pdb
 D:\Installer\MediaClippex.runtimeconfig.json
-377 Byte
+451 Byte
 json
 D:\Installer\Microsoft.Bcl.AsyncInterfaces.dll
 15.6 KB
 dll
 D:\Installer\Microsoft.CSharp.dll
-1 MB
+1018.2 KB
 dll
 D:\Installer\Microsoft.Data.Sqlite.dll
 166.9 KB
@@ -246,34 +369,34 @@ D:\Installer\Microsoft.EntityFrameworkCore.Sqlite.dll
 199.9 KB
 dll
 D:\Installer\Microsoft.Extensions.Caching.Abstractions.dll
-30.1 KB
+31.1 KB
 dll
 D:\Installer\Microsoft.Extensions.Caching.Memory.dll
-41.6 KB
-dll
-D:\Installer\Microsoft.Extensions.Configuration.Abstractions.dll
-27.6 KB
-dll
-D:\Installer\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 42.6 KB
 dll
+D:\Installer\Microsoft.Extensions.Configuration.Abstractions.dll
+28.6 KB
+dll
+D:\Installer\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+44.1 KB
+dll
 D:\Installer\Microsoft.Extensions.DependencyInjection.dll
-81.6 KB
+83.2 KB
 dll
 D:\Installer\Microsoft.Extensions.DependencyModel.dll
-78.1 KB
+79.1 KB
 dll
 D:\Installer\Microsoft.Extensions.Logging.Abstractions.dll
-61.6 KB
+62.6 KB
 dll
 D:\Installer\Microsoft.Extensions.Logging.dll
-46.1 KB
+47.1 KB
 dll
 D:\Installer\Microsoft.Extensions.Options.dll
-59.1 KB
+60.1 KB
 dll
 D:\Installer\Microsoft.Extensions.Primitives.dll
-40.6 KB
+41.6 KB
 dll
 D:\Installer\Microsoft.VisualBasic.Core.dll
 1.2 MB
@@ -282,40 +405,40 @@ D:\Installer\Microsoft.VisualBasic.dll
 18.7 KB
 dll
 D:\Installer\Microsoft.VisualBasic.Forms.dll
-242.2 KB
+237.6 KB
 dll
 D:\Installer\Microsoft.Win32.Primitives.dll
-15.7 KB
+25.7 KB
 dll
 D:\Installer\Microsoft.Win32.Registry.AccessControl.dll
-38.2 KB
+26.1 KB
 dll
 D:\Installer\Microsoft.Win32.Registry.dll
-126.1 KB
+85.7 KB
 dll
 D:\Installer\Microsoft.Win32.SystemEvents.dll
-110.2 KB
+85.1 KB
 dll
 D:\Installer\mscordaccore.dll
 1.3 MB
 dll
-D:\Installer\mscordaccore_amd64_amd64_7.0.923.32018.dll
+D:\Installer\mscordaccore_amd64_amd64_6.0.2123.36311.dll
 1.3 MB
 dll
 D:\Installer\mscordbi.dll
 1.2 MB
 dll
 D:\Installer\mscorlib.dll
-60.2 KB
+57.2 KB
 dll
 D:\Installer\mscorrc.dll
-134.1 KB
+143.7 KB
 dll
 D:\Installer\msquic.dll
-521.9 KB
+504.9 KB
 dll
 D:\Installer\netstandard.dll
-98.7 KB
+99.2 KB
 dll
 D:\Installer\Newtonsoft.Json.dll
 695.3 KB
@@ -327,43 +450,43 @@ D:\Installer\PenImc_cor3.dll
 155.1 KB
 dll
 D:\Installer\PresentationCore.dll
-8.2 MB
+8.3 MB
 dll
 D:\Installer\PresentationFramework.Aero.dll
-446.1 KB
+440.2 KB
 dll
 D:\Installer\PresentationFramework.Aero2.dll
-450.2 KB
+446.1 KB
 dll
 D:\Installer\PresentationFramework.AeroLite.dll
-234.2 KB
+224.2 KB
 dll
 D:\Installer\PresentationFramework.Classic.dll
-266.2 KB
+259.7 KB
 dll
 D:\Installer\PresentationFramework.dll
 15.5 MB
 dll
 D:\Installer\PresentationFramework.Luna.dll
-666.2 KB
+657.2 KB
 dll
 D:\Installer\PresentationFramework.Royale.dll
-330.2 KB
+321.2 KB
 dll
 D:\Installer\PresentationFramework-SystemCore.dll
-38.2 KB
+26.6 KB
 dll
 D:\Installer\PresentationFramework-SystemData.dll
-34.2 KB
+23.6 KB
 dll
 D:\Installer\PresentationFramework-SystemDrawing.dll
-34.2 KB
+22.7 KB
 dll
 D:\Installer\PresentationFramework-SystemXml.dll
-34.2 KB
+23.6 KB
 dll
 D:\Installer\PresentationFramework-SystemXmlLinq.dll
-30.2 KB
+19.2 KB
 dll
 D:\Installer\PresentationNative_cor3.dll
 1.2 MB
@@ -396,103 +519,103 @@ D:\Installer\System.AppContext.dll
 15.2 KB
 dll
 D:\Installer\System.Buffers.dll
-15.1 KB
+15.2 KB
 dll
 D:\Installer\System.CodeDom.dll
-482.2 KB
+475.1 KB
 dll
 D:\Installer\System.Collections.Concurrent.dll
-258.2 KB
+241.2 KB
 dll
 D:\Installer\System.Collections.dll
-262.1 KB
+258.7 KB
 dll
 D:\Installer\System.Collections.Immutable.dll
-678.1 KB
+650.7 KB
 dll
 D:\Installer\System.Collections.NonGeneric.dll
-106.1 KB
+98.7 KB
 dll
 D:\Installer\System.Collections.Specialized.dll
-106.1 KB
+93.2 KB
 dll
 D:\Installer\System.ComponentModel.Annotations.dll
-194.1 KB
+182.7 KB
 dll
 D:\Installer\System.ComponentModel.DataAnnotations.dll
-17.2 KB
+17.1 KB
 dll
 D:\Installer\System.ComponentModel.dll
-30.1 KB
+18.2 KB
 dll
 D:\Installer\System.ComponentModel.EventBasedAsync.dll
-46.1 KB
+37.7 KB
 dll
 D:\Installer\System.ComponentModel.Primitives.dll
-82.1 KB
+73.7 KB
 dll
 D:\Installer\System.ComponentModel.TypeConverter.dll
-738.1 KB
+727.2 KB
 dll
 D:\Installer\System.Configuration.ConfigurationManager.dll
-1 MB
+982.6 KB
 dll
 D:\Installer\System.Configuration.dll
-19.7 KB
+19.1 KB
 dll
 D:\Installer\System.Console.dll
-178.2 KB
+153.2 KB
 dll
 D:\Installer\System.Core.dll
 23.6 KB
 dll
 D:\Installer\System.Data.Common.dll
-2.9 MB
+2.8 MB
 dll
 D:\Installer\System.Data.DataSetExtensions.dll
-15.6 KB
+15.7 KB
 dll
 D:\Installer\System.Data.dll
-25.2 KB
+25.1 KB
 dll
 D:\Installer\System.Design.dll
-21.2 KB
+21.1 KB
 dll
 D:\Installer\System.Diagnostics.Contracts.dll
-16.1 KB
+15.7 KB
 dll
 D:\Installer\System.Diagnostics.Debug.dll
 15.6 KB
 dll
 D:\Installer\System.Diagnostics.DiagnosticSource.dll
-394.1 KB
+371.7 KB
 dll
 D:\Installer\System.Diagnostics.EventLog.dll
-374.2 KB
+300.1 KB
 dll
 D:\Installer\System.Diagnostics.EventLog.Messages.dll
-782.2 KB
+782.1 KB
 dll
 D:\Installer\System.Diagnostics.FileVersionInfo.dll
-46.1 KB
+34.7 KB
 dll
 D:\Installer\System.Diagnostics.PerformanceCounter.dll
-298.2 KB
+265.6 KB
 dll
 D:\Installer\System.Diagnostics.Process.dll
-338.1 KB
+283.7 KB
 dll
 D:\Installer\System.Diagnostics.StackTrace.dll
-46.1 KB
+35.7 KB
 dll
 D:\Installer\System.Diagnostics.TextWriterTraceListener.dll
-74.1 KB
+59.2 KB
 dll
 D:\Installer\System.Diagnostics.Tools.dll
 15.6 KB
 dll
 D:\Installer\System.Diagnostics.TraceSource.dll
-146.2 KB
+130.2 KB
 dll
 D:\Installer\System.Diagnostics.Tracing.dll
 16.1 KB
@@ -501,163 +624,160 @@ D:\Installer\System.DirectoryServices.dll
 1 MB
 dll
 D:\Installer\System.dll
-49.7 KB
+49.6 KB
 dll
 D:\Installer\System.Drawing.Common.dll
-1.4 MB
+1018.6 KB
 dll
 D:\Installer\System.Drawing.Design.dll
-15.2 KB
+15.1 KB
 dll
 D:\Installer\System.Drawing.dll
-20.7 KB
+20.6 KB
 dll
 D:\Installer\System.Drawing.Primitives.dll
-134.1 KB
+127.2 KB
 dll
 D:\Installer\System.Dynamic.Runtime.dll
-16.2 KB
-dll
-D:\Installer\System.Formats.Asn1.dll
-202.1 KB
-dll
-D:\Installer\System.Formats.Tar.dll
-266.1 KB
-dll
-D:\Installer\System.Globalization.Calendars.dll
 16.1 KB
 dll
+D:\Installer\System.Formats.Asn1.dll
+192.7 KB
+dll
+D:\Installer\System.Globalization.Calendars.dll
+15.7 KB
+dll
 D:\Installer\System.Globalization.dll
-15.6 KB
+15.7 KB
 dll
 D:\Installer\System.Globalization.Extensions.dll
-15.6 KB
+15.1 KB
 dll
 D:\Installer\System.IO.Compression.Brotli.dll
-90.2 KB
+71.2 KB
 dll
 D:\Installer\System.IO.Compression.dll
-270.1 KB
+260.7 KB
 dll
 D:\Installer\System.IO.Compression.FileSystem.dll
-15.6 KB
+15.7 KB
 dll
 D:\Installer\System.IO.Compression.Native.dll
-808.7 KB
+803.2 KB
 dll
 D:\Installer\System.IO.Compression.ZipFile.dll
-50.1 KB
+38.7 KB
 dll
 D:\Installer\System.IO.dll
-15.7 KB
+15.6 KB
 dll
 D:\Installer\System.IO.FileSystem.AccessControl.dll
-106.1 KB
+91.7 KB
 dll
 D:\Installer\System.IO.FileSystem.dll
-15.7 KB
+23.6 KB
 dll
 D:\Installer\System.IO.FileSystem.DriveInfo.dll
-54.1 KB
+41.7 KB
 dll
 D:\Installer\System.IO.FileSystem.Primitives.dll
-15.7 KB
+15.2 KB
 dll
 D:\Installer\System.IO.FileSystem.Watcher.dll
-86.1 KB
+70.7 KB
 dll
 D:\Installer\System.IO.IsolatedStorage.dll
-90.1 KB
+81.7 KB
 dll
 D:\Installer\System.IO.MemoryMappedFiles.dll
-82.1 KB
+67.7 KB
 dll
 D:\Installer\System.IO.Packaging.dll
-278.2 KB
+273.6 KB
 dll
 D:\Installer\System.IO.Pipes.AccessControl.dll
 16.1 KB
 dll
 D:\Installer\System.IO.Pipes.dll
-182.1 KB
+133.2 KB
 dll
 D:\Installer\System.IO.UnmanagedMemoryStream.dll
-15.6 KB
+15.1 KB
 dll
 D:\Installer\System.Linq.Async.dll
 1.1 MB
 dll
 D:\Installer\System.Linq.dll
-494.1 KB
+525.7 KB
 dll
 D:\Installer\System.Linq.Expressions.dll
 3.7 MB
 dll
 D:\Installer\System.Linq.Parallel.dll
-830.1 KB
+828.7 KB
 dll
 D:\Installer\System.Linq.Queryable.dll
-226.1 KB
+223.2 KB
 dll
 D:\Installer\System.Memory.dll
-158.1 KB
+169.7 KB
 dll
 D:\Installer\System.Net.dll
-17.7 KB
+17.6 KB
 dll
 D:\Installer\System.Net.Http.dll
 1.7 MB
 dll
 D:\Installer\System.Net.Http.Json.dll
-106.1 KB
+80.2 KB
 dll
 D:\Installer\System.Net.HttpListener.dll
-690.1 KB
+624.2 KB
 dll
 D:\Installer\System.Net.Mail.dll
-434.1 KB
+539.2 KB
 dll
 D:\Installer\System.Net.NameResolution.dll
-114.1 KB
+98.7 KB
 dll
 D:\Installer\System.Net.NetworkInformation.dll
-166.1 KB
+147.2 KB
 dll
 D:\Installer\System.Net.Ping.dll
-98.1 KB
+77.2 KB
 dll
 D:\Installer\System.Net.Primitives.dll
-222.2 KB
+209.2 KB
 dll
 D:\Installer\System.Net.Quic.dll
-262.1 KB
+288.2 KB
 dll
 D:\Installer\System.Net.Requests.dll
-350.1 KB
+341.2 KB
 dll
 D:\Installer\System.Net.Security.dll
-606.2 KB
+666.2 KB
 dll
 D:\Installer\System.Net.ServicePoint.dll
-46.1 KB
+36.2 KB
 dll
 D:\Installer\System.Net.Sockets.dll
-550.1 KB
+494.7 KB
 dll
 D:\Installer\System.Net.WebClient.dll
-170.1 KB
+162.7 KB
 dll
 D:\Installer\System.Net.WebHeaderCollection.dll
-66.2 KB
+59.2 KB
 dll
 D:\Installer\System.Net.WebProxy.dll
-46.1 KB
+31.2 KB
 dll
 D:\Installer\System.Net.WebSockets.Client.dll
-102.1 KB
+74.7 KB
 dll
 D:\Installer\System.Net.WebSockets.dll
-190.1 KB
+177.7 KB
 dll
 D:\Installer\System.Numerics.dll
 15.6 KB
@@ -666,34 +786,34 @@ D:\Installer\System.Numerics.Vectors.dll
 15.6 KB
 dll
 D:\Installer\System.ObjectModel.dll
-82.1 KB
+89.2 KB
 dll
 D:\Installer\System.Printing.dll
-978.1 KB
+972.2 KB
 dll
 D:\Installer\System.Private.CoreLib.dll
-11.1 MB
+10.1 MB
 dll
 D:\Installer\System.Private.DataContractSerialization.dll
-2.1 MB
+2 MB
 dll
 D:\Installer\System.Private.Uri.dll
-258.2 KB
+246.7 KB
 dll
 D:\Installer\System.Private.Xml.dll
-8 MB
+8.1 MB
 dll
 D:\Installer\System.Private.Xml.Linq.dll
-402.1 KB
+395.7 KB
 dll
 D:\Installer\System.Reflection.DispatchProxy.dll
-74.1 KB
+64.7 KB
 dll
 D:\Installer\System.Reflection.dll
-16.1 KB
+16.2 KB
 dll
 D:\Installer\System.Reflection.Emit.dll
-15.6 KB
+15.7 KB
 dll
 D:\Installer\System.Reflection.Emit.ILGeneration.dll
 15.7 KB
@@ -702,7 +822,7 @@ D:\Installer\System.Reflection.Emit.Lightweight.dll
 15.6 KB
 dll
 D:\Installer\System.Reflection.Extensions.dll
-15.2 KB
+15.1 KB
 dll
 D:\Installer\System.Reflection.Metadata.dll
 1.1 MB
@@ -711,10 +831,10 @@ D:\Installer\System.Reflection.Primitives.dll
 15.7 KB
 dll
 D:\Installer\System.Reflection.TypeExtensions.dll
-42.1 KB
+32.7 KB
 dll
 D:\Installer\System.Resources.Extensions.dll
-126.2 KB
+118.2 KB
 dll
 D:\Installer\System.Resources.Reader.dll
 15.1 KB
@@ -723,181 +843,175 @@ D:\Installer\System.Resources.ResourceManager.dll
 15.7 KB
 dll
 D:\Installer\System.Resources.Writer.dll
-54.2 KB
+44.2 KB
 dll
 D:\Installer\System.Runtime.CompilerServices.Unsafe.dll
-15.6 KB
+22.2 KB
 dll
 D:\Installer\System.Runtime.CompilerServices.VisualC.dll
-34.2 KB
+19.7 KB
 dll
 D:\Installer\System.Runtime.dll
-42.2 KB
+41.6 KB
 dll
 D:\Installer\System.Runtime.Extensions.dll
 17.6 KB
 dll
 D:\Installer\System.Runtime.Handles.dll
-15.7 KB
+15.1 KB
 dll
 D:\Installer\System.Runtime.InteropServices.dll
-62.1 KB
-dll
-D:\Installer\System.Runtime.InteropServices.JavaScript.dll
-50.1 KB
+50.7 KB
 dll
 D:\Installer\System.Runtime.InteropServices.RuntimeInformation.dll
-15.7 KB
+31.2 KB
 dll
 D:\Installer\System.Runtime.Intrinsics.dll
-16.6 KB
+16.2 KB
 dll
 D:\Installer\System.Runtime.Loader.dll
-15.7 KB
+15.6 KB
 dll
 D:\Installer\System.Runtime.Numerics.dll
-326.1 KB
+216.7 KB
 dll
 D:\Installer\System.Runtime.Serialization.dll
-17.2 KB
-dll
-D:\Installer\System.Runtime.Serialization.Formatters.dll
-322.1 KB
-dll
-D:\Installer\System.Runtime.Serialization.Json.dll
-15.7 KB
-dll
-D:\Installer\System.Runtime.Serialization.Primitives.dll
-42.1 KB
-dll
-D:\Installer\System.Runtime.Serialization.Xml.dll
-16.6 KB
-dll
-D:\Installer\System.Security.AccessControl.dll
-234.2 KB
-dll
-D:\Installer\System.Security.Claims.dll
-98.2 KB
-dll
-D:\Installer\System.Security.Cryptography.Algorithms.dll
 17.1 KB
 dll
-D:\Installer\System.Security.Cryptography.Cng.dll
+D:\Installer\System.Runtime.Serialization.Formatters.dll
+314.7 KB
+dll
+D:\Installer\System.Runtime.Serialization.Json.dll
+15.6 KB
+dll
+D:\Installer\System.Runtime.Serialization.Primitives.dll
+28.2 KB
+dll
+D:\Installer\System.Runtime.Serialization.Xml.dll
 16.1 KB
+dll
+D:\Installer\System.Security.AccessControl.dll
+210.2 KB
+dll
+D:\Installer\System.Security.Claims.dll
+92.2 KB
+dll
+D:\Installer\System.Security.Cryptography.Algorithms.dll
+787.7 KB
+dll
+D:\Installer\System.Security.Cryptography.Cng.dll
+475.2 KB
 dll
 D:\Installer\System.Security.Cryptography.Csp.dll
-16.1 KB
-dll
-D:\Installer\System.Security.Cryptography.dll
-1.9 MB
+185.2 KB
 dll
 D:\Installer\System.Security.Cryptography.Encoding.dll
-15.6 KB
+91.7 KB
 dll
 D:\Installer\System.Security.Cryptography.OpenSsl.dll
-15.7 KB
+31.2 KB
 dll
 D:\Installer\System.Security.Cryptography.Pkcs.dll
-862.2 KB
+803.7 KB
 dll
 D:\Installer\System.Security.Cryptography.Primitives.dll
-15.6 KB
+131.7 KB
 dll
 D:\Installer\System.Security.Cryptography.ProtectedData.dll
-58.2 KB
+43.1 KB
 dll
 D:\Installer\System.Security.Cryptography.X509Certificates.dll
-17.2 KB
+554.1 KB
 dll
 D:\Installer\System.Security.Cryptography.Xml.dll
-434.2 KB
+435.2 KB
 dll
 D:\Installer\System.Security.dll
-18.7 KB
+18.1 KB
 dll
 D:\Installer\System.Security.Permissions.dll
-182.2 KB
+168.2 KB
 dll
 D:\Installer\System.Security.Principal.dll
-15.7 KB
+15.2 KB
 dll
 D:\Installer\System.Security.Principal.Windows.dll
-186.1 KB
+148.2 KB
 dll
 D:\Installer\System.Security.SecureString.dll
-15.7 KB
+15.2 KB
 dll
 D:\Installer\System.ServiceModel.Web.dll
 17.2 KB
 dll
 D:\Installer\System.ServiceProcess.dll
-16.2 KB
+16.1 KB
 dll
 D:\Installer\System.Text.Encoding.CodePages.dll
-862.1 KB
+850.7 KB
 dll
 D:\Installer\System.Text.Encoding.dll
-15.6 KB
+15.7 KB
 dll
 D:\Installer\System.Text.Encoding.Extensions.dll
-15.6 KB
+15.7 KB
 dll
 D:\Installer\System.Text.Encodings.Web.dll
-134.1 KB
+69.6 KB
 dll
 D:\Installer\System.Text.Json.dll
-1.4 MB
+530.7 KB
 dll
 D:\Installer\System.Text.RegularExpressions.dll
-950.1 KB
+517.7 KB
 dll
 D:\Installer\System.Threading.AccessControl.dll
-94.2 KB
+71.7 KB
 dll
 D:\Installer\System.Threading.Channels.dll
-134.1 KB
+122.2 KB
 dll
 D:\Installer\System.Threading.dll
-86.1 KB
+78.2 KB
 dll
 D:\Installer\System.Threading.Overlapped.dll
-15.6 KB
+15.7 KB
 dll
 D:\Installer\System.Threading.Tasks.Dataflow.dll
-518.1 KB
+493.7 KB
 dll
 D:\Installer\System.Threading.Tasks.dll
 16.7 KB
 dll
 D:\Installer\System.Threading.Tasks.Extensions.dll
-16.2 KB
+15.7 KB
 dll
 D:\Installer\System.Threading.Tasks.Parallel.dll
-142.2 KB
+135.7 KB
 dll
 D:\Installer\System.Threading.Thread.dll
 15.7 KB
 dll
 D:\Installer\System.Threading.ThreadPool.dll
-15.6 KB
+15.7 KB
 dll
 D:\Installer\System.Threading.Timer.dll
-15.2 KB
+15.1 KB
 dll
 D:\Installer\System.Transactions.dll
-17.1 KB
+16.6 KB
 dll
 D:\Installer\System.Transactions.Local.dll
-582.1 KB
+343.2 KB
 dll
 D:\Installer\System.ValueTuple.dll
-15.7 KB
+15.1 KB
 dll
 D:\Installer\System.Web.dll
-15.7 KB
+15.6 KB
 dll
 D:\Installer\System.Web.HttpUtility.dll
-62.1 KB
+51.6 KB
 dll
 D:\Installer\System.Windows.Controls.Ribbon.dll
 1.4 MB
@@ -906,7 +1020,7 @@ D:\Installer\System.Windows.dll
 16.2 KB
 dll
 D:\Installer\System.Windows.Extensions.dll
-110.2 KB
+74.6 KB
 dll
 D:\Installer\System.Windows.Forms.Design.dll
 5.1 MB
@@ -918,13 +1032,13 @@ D:\Installer\System.Windows.Forms.dll
 12.7 MB
 dll
 D:\Installer\System.Windows.Forms.Primitives.dll
-938.2 KB
+773.7 KB
 dll
 D:\Installer\System.Windows.Input.Manipulations.dll
-134.2 KB
+125.1 KB
 dll
 D:\Installer\System.Windows.Presentation.dll
-30.2 KB
+19.7 KB
 dll
 D:\Installer\System.Xaml.dll
 1.4 MB
@@ -933,19 +1047,19 @@ D:\Installer\System.Xml.dll
 24.2 KB
 dll
 D:\Installer\System.Xml.Linq.dll
-16.2 KB
+16.1 KB
 dll
 D:\Installer\System.Xml.ReaderWriter.dll
 21.7 KB
 dll
 D:\Installer\System.Xml.Serialization.dll
-16.7 KB
+16.1 KB
 dll
 D:\Installer\System.Xml.XDocument.dll
 15.6 KB
 dll
 D:\Installer\System.Xml.XmlDocument.dll
-16.1 KB
+15.6 KB
 dll
 D:\Installer\System.Xml.XmlSerializer.dll
 17.6 KB
@@ -954,19 +1068,22 @@ D:\Installer\System.Xml.XPath.dll
 15.7 KB
 dll
 D:\Installer\System.Xml.XPath.XDocument.dll
-30.1 KB
+17.7 KB
+dll
+D:\Installer\ucrtbase.dll
+1.1 MB
 dll
 D:\Installer\UIAutomationClient.dll
-406.2 KB
+401.2 KB
 dll
 D:\Installer\UIAutomationClientSideProviders.dll
-862.2 KB
+853.1 KB
 dll
 D:\Installer\UIAutomationProvider.dll
-62.2 KB
+49.2 KB
 dll
 D:\Installer\UIAutomationTypes.dll
-302.2 KB
+295.1 KB
 dll
 D:\Installer\vcruntime140_cor3.dll
 106.9 KB
@@ -975,7 +1092,7 @@ D:\Installer\WindowsBase.dll
 2.2 MB
 dll
 D:\Installer\WindowsFormsIntegration.dll
-206.2 KB
+201.2 KB
 dll
 D:\Installer\wpfgfx_cor3.dll
 1.9 MB
@@ -986,6 +1103,45 @@ dll
 D:\Installer\YoutubeExplode.dll
 287.5 KB
 dll
+D:\Installer\cs\
+N/A
+[Folder]
+D:\Installer\de\
+N/A
+[Folder]
+D:\Installer\es\
+N/A
+[Folder]
+D:\Installer\fr\
+N/A
+[Folder]
+D:\Installer\it\
+N/A
+[Folder]
+D:\Installer\ja\
+N/A
+[Folder]
+D:\Installer\ko\
+N/A
+[Folder]
+D:\Installer\pl\
+N/A
+[Folder]
+D:\Installer\pt-BR\
+N/A
+[Folder]
+D:\Installer\ru\
+N/A
+[Folder]
+D:\Installer\tr\
+N/A
+[Folder]
+D:\Installer\zh-Hans\
+N/A
+[Folder]
+D:\Installer\zh-Hant\
+N/A
+[Folder]
 [Licence_Begin]
 39130
 {\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil Arial;}}

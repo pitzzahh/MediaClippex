@@ -15,13 +15,10 @@ namespace MediaClippex.MVVM.ViewModel;
 // ReSharper disable once ClassNeverInstantiated.Global
 public partial class CheckUpdateViewModel : BaseViewModel
 {
-    private static string Owner => "pitzzahh";
-    private static string Repo => "MediaClippex";
+    private static string? _latestVersion = "?";
 
     [ObservableProperty] private bool _isProgressIndeterminate;
     [ObservableProperty] private string _progressInfo = string.Empty;
-
-    private static string? _latestVersion = "?";
 
     public CheckUpdateViewModel()
     {
@@ -34,6 +31,9 @@ public partial class CheckUpdateViewModel : BaseViewModel
         });
     }
 
+    private static string Owner => "pitzzahh";
+    private static string Repo => "MediaClippex";
+
     public async Task CheckForUpdate()
     {
         var checkUpdateView = BuilderServices.Resolve<CheckUpdateView>();
@@ -41,19 +41,8 @@ public partial class CheckUpdateViewModel : BaseViewModel
         {
             IsProgressIndeterminate = true;
             ProgressInfo = "Checking for updates...";
-            var currentVersion = ReadCurrentVersion();
-
-            var latestRelease = await GetLatestRelease();
-
-            _latestVersion = latestRelease.TagName;
-
-            if (currentVersion == null)
-            {
-                MessageBox.Show("Unable to read current version.", "Update Error");
-                return;
-            }
-
-            if (ShouldUpdate(currentVersion, _latestVersion))
+            var isUpdateAvailable = await IsUpdateAvailable();
+            if (isUpdateAvailable)
             {
                 IsProgressIndeterminate = false;
                 ProgressInfo = "";
@@ -73,6 +62,17 @@ public partial class CheckUpdateViewModel : BaseViewModel
                 "Update Error");
             Application.Current.Dispatcher.Invoke(() => { checkUpdateView.Hide(); });
         }
+    }
+
+    private static async Task<bool> IsUpdateAvailable()
+    {
+        var currentVersion = ReadCurrentVersion();
+
+        var latestRelease = await GetLatestRelease();
+
+        _latestVersion = latestRelease.TagName;
+
+        return currentVersion != null && ShouldUpdate(currentVersion, _latestVersion);
     }
 
     private static void UpdateProcess()
@@ -113,5 +113,10 @@ public partial class CheckUpdateViewModel : BaseViewModel
     public static string? ReadCurrentVersion()
     {
         return Assembly.GetExecutingAssembly().GetName().Version?.ToString();
+    }
+
+    public static async Task InitCheckUpdate()
+    {
+        if (await IsUpdateAvailable()) UpdateProcess();
     }
 }
