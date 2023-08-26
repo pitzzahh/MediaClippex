@@ -28,14 +28,14 @@ jobs:
 
       - name: Zip Files
         run: |
-          Compress-Archive -Path ${{ github.workspace }}/MediaClippex/bin/Release/${{ env.DOTNET_VERSION }}/win-x64/publish/* -DestinationPath ${{ github.workspace }}/MediaClippex/Update.zip
+          Compress-Archive -Path ${{ github.workspace }}/Launcher/bin/Release/${{ env.DOTNET_VERSION }}/win-x64/publish/* -DestinationPath ${{ github.workspace }}/Launcher/Update.zip
 
       - name: Deploy Update File
         id: deploy_artifacts
         uses: actions/upload-artifact@v2
         with:
           name: MediaClippex-Update
-          path: ${{ github.workspace }}/MediaClippex/Update.zip
+          path: ${{ github.workspace }}/Launcher/Update.zip
 
       - name: Create Release
         id: create_release
