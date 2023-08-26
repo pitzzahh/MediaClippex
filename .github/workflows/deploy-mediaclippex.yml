@@ -5,7 +5,7 @@ on:
       - "*.*.*.*"
 
 env:
-  PROJECT_PATH: "Launcher/Launcher.csproj"
+  PROJECT_PATH: "MediaClippex/MediaClippex.csproj"
   DOTNET_VERSION: "net7.0-windows"
 
 jobs:
@@ -24,18 +24,18 @@ jobs:
         run: dotnet restore ${{ env.PROJECT_PATH }}
 
       - name: Publish the project
-        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 --self-contained -p:PublishReadyToRun=true -p:DeleteExistingFiles=true
+        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 --no-self-contained -p:PublishReadyToRun=true -p:DeleteExistingFiles=true
 
       - name: Zip Files
         run: |
-          Compress-Archive -Path ${{ github.workspace }}/Launcher/bin/Release/${{ env.DOTNET_VERSION }}/win-x64/publish/* -DestinationPath ${{ github.workspace }}/Launcher/Update.zip
+          Compress-Archive -Path ${{ github.workspace }}/MediaClippex/bin/Release/${{ env.DOTNET_VERSION }}/win-x64/publish/* -DestinationPath ${{ github.workspace }}/MediaClippex/Update.zip
 
       - name: Deploy Update File
         id: deploy_artifacts
         uses: actions/upload-artifact@v2
         with:
           name: MediaClippex-Update
-          path: ${{ github.workspace }}/Launcher/Update.zip
+          path: ${{ github.workspace }}/MediaClippex/Update.zip
 
       - name: Create Release
         id: create_release
@@ -53,6 +53,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/Launcher/Update.zip
+          asset_path: ${{ github.workspace }}/MediaClippex/Update.zip
           asset_name: Update.zip
           asset_content_type: application/zip
