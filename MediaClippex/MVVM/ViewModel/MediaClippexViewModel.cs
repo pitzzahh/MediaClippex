@@ -70,6 +70,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         NightMode = SettingsService.IsDarkModeEnabledByDefault();
         Task.Run(GetQueuingVideos);
         Task.Run(GetDownloadedVideos);
+        Task.Run(CheckUpdateViewModel.InitCheckUpdate);
     }
 
     private static IUnitOfWork UnitOfWork { get; set; } = null!;
@@ -313,7 +314,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             : $"Download [{VideoService.GetVideoFileSizeFormatted(manifest, video, SelectedQuality)}]";
     }
 
-    public async Task GetQueuingVideos()
+    private async Task GetQueuingVideos()
     {
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
