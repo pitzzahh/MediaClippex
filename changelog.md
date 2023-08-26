@@ -1,6 +1,9 @@
 ﻿# Changelog
+## Version 4.4.23.162
+- 🔄 Fixed update issue
+___
 ## Version 4.4.20.137
-- 🔄 Some UI enhancement
+- 🔄 Fixed multi download issue
 ___
 ## Version 4.3.20.135
 - 🔄 Some UI enhancement
