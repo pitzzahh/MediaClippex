@@ -70,7 +70,6 @@ public partial class MediaClippexViewModel : BaseViewModel
         NightMode = SettingsService.IsDarkModeEnabledByDefault();
         Task.Run(GetQueuingVideos);
         Task.Run(GetDownloadedVideos);
-        Task.Run(CheckUpdateViewModel.InitCheckUpdate);
     }
 
     private static IUnitOfWork UnitOfWork { get; set; } = null!;

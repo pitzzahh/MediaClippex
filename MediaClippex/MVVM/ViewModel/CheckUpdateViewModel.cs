@@ -114,9 +114,4 @@ public partial class CheckUpdateViewModel : BaseViewModel
     {
         return Assembly.GetExecutingAssembly().GetName().Version?.ToString();
     }
-
-    public static async Task InitCheckUpdate()
-    {
-        if (await IsUpdateAvailable()) UpdateProcess();
-    }
 }
