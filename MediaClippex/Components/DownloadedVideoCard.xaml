@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
+             xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
              d:DataContext="{d:DesignInstance viewModel:DownloadedVideoCardViewModel}"
              mc:Ignorable="d"
-             Height="150"
+             Height="160"
              HorizontalAlignment="Stretch"
              Background="{DynamicResource bg-000}">
 
@@ -66,6 +67,7 @@
         <Grid Grid.Column="1" Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Video Info -->
@@ -131,6 +133,21 @@
                     </TextBlock>
                 </Grid>
             </ScrollViewer>
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <moderncontrols:ModernButton
+                    LeftIcon="{materialIcons:MaterialIconExt Kind=Delete}"
+                    IconPadding="5 0 0 0"
+                    Margin="0 5"
+                    Command="{Binding DeleteVideoCommand}"
+                    DefaultForeground="{DynamicResource fg-200}"
+                    DefaultBackground="{DynamicResource danger}">
+
+                    <!-- Tooltip -->
+                    <moderncontrols:ModernButton.ToolTip>
+                        <ToolTip Content="Delete" />
+                    </moderncontrols:ModernButton.ToolTip>
+                </moderncontrols:ModernButton>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>
