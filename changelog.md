@@ -1,5 +1,8 @@
 ﻿# Changelog
-## Version 4.4.25.166
+## Version 4.4.26.167
+- 🔄 Fixed check for update showing twice on startup
+___
+- ## Version 4.4.25.166
 - 🔄 Fixed Queue keep showing when there is no queue
 - 🔄 Set min width
 ___
