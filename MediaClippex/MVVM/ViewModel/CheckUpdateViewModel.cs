@@ -20,17 +20,6 @@ public partial class CheckUpdateViewModel : BaseViewModel
     [ObservableProperty] private bool _isProgressIndeterminate;
     [ObservableProperty] private string _progressInfo = string.Empty;
 
-    public CheckUpdateViewModel()
-    {
-        Task.Run(async () =>
-        {
-            var currentVersion = ReadCurrentVersion();
-            if (currentVersion == null) return;
-            var latestRelease = await GetLatestRelease();
-            if (ShouldUpdate(currentVersion, latestRelease.TagName)) UpdateProcess();
-        });
-    }
-
     private static string Owner => "pitzzahh";
     private static string Repo => "MediaClippex";
 
@@ -113,5 +102,20 @@ public partial class CheckUpdateViewModel : BaseViewModel
     public static string? ReadCurrentVersion()
     {
         return Assembly.GetExecutingAssembly().GetName().Version?.ToString();
+    }
+
+    public static void InitCheckUpdate()
+    {
+        Task.Run(async () =>
+        {
+            while (true)
+            {
+                var currentVersion = ReadCurrentVersion();
+                if (currentVersion == null) return;
+                var latestRelease = await GetLatestRelease();
+                if (ShouldUpdate(currentVersion, latestRelease.TagName)) UpdateProcess();
+                await Task.Delay(TimeSpan.FromMinutes(5));
+            }
+        });
     }
 }

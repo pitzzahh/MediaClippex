@@ -70,6 +70,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         NightMode = SettingsService.IsDarkModeEnabledByDefault();
         Task.Run(GetQueuingVideos);
         Task.Run(GetDownloadedVideos);
+        CheckUpdateViewModel.InitCheckUpdate();
     }
 
     private static IUnitOfWork UnitOfWork { get; set; } = null!;
@@ -112,7 +113,6 @@ public partial class MediaClippexViewModel : BaseViewModel
         set
         {
             _selectedIndex = value;
-            OnPropertyChanged();
             ChangeColorTheme();
         }
     }
@@ -126,13 +126,13 @@ public partial class MediaClippexViewModel : BaseViewModel
         set
         {
             _nightMode = value;
-            OnPropertyChanged();
             ChangeBaseTheme();
         }
     }
 
     private void ChangeBaseTheme()
     {
+        OnPropertyChanged();
         ThemeManager.Instance
             .SetBaseTheme(NightMode ? "Dark" : "Light");
     }
