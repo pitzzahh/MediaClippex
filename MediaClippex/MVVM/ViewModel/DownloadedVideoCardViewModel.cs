@@ -63,6 +63,9 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
     [RelayCommand]
     private async Task DeleteVideo()
     {
+        var messageBoxResult = MessageBox.Show($"Are you sure you want to delete \"{Title}\"?", $"Delete {FileType}",
+            MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        if (messageBoxResult != MessageBoxResult.Yes) return;
         if (string.IsNullOrEmpty(Path) || !File.Exists(Path)) return;
         try
         {
