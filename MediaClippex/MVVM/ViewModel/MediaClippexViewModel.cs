@@ -148,13 +148,15 @@ public partial class MediaClippexViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(Url))
         {
-            MessageBox.Show("Please enter a URL.");
+            MessageBox.Show("Please enter a URL.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
         if (!StringService.IsYouTubeVideoUrl(Url))
         {
-            MessageBox.Show("Please enter a valid YouTube URL.");
+            MessageBox.Show("Please enter a valid YouTube URL.", "Warning", MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            Url = "";
             return;
         }
 
@@ -168,7 +170,7 @@ public partial class MediaClippexViewModel : BaseViewModel
 
             if (_video == null)
             {
-                MessageBox.Show("Video not found.");
+                MessageBox.Show("Video not found.", "Cannot resolve", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -194,7 +196,8 @@ public partial class MediaClippexViewModel : BaseViewModel
         }
         catch (Exception e)
         {
-            MessageBox.Show($"Something went wrong resolving the url: {e.Message}");
+            MessageBox.Show($"Something went wrong resolving the url: {e.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
             IsProcessing = false;
             IsProgressIndeterminate = false;
             ProgressInfo = "";
@@ -207,7 +210,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         if (_video == null) return;
         if (string.IsNullOrWhiteSpace(SelectedQuality))
         {
-            MessageBox.Show("Please select a quality.");
+            MessageBox.Show("Please select a quality.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -250,7 +253,8 @@ public partial class MediaClippexViewModel : BaseViewModel
         }
         catch (Exception e)
         {
-            MessageBox.Show($"Something went wrong downloading: {e.Message}");
+            MessageBox.Show($"Something went wrong downloading: {e.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
         finally
         {
@@ -335,7 +339,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                MessageBox.Show(e.Message, "Error loading Queues", MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
             }
         });
@@ -366,7 +370,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                MessageBox.Show(e.Message, "Error loading downloads", MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
             }
         });
