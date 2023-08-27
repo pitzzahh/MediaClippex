@@ -25,7 +25,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     private readonly string _selectedQuality;
     private readonly string _url;
     [ObservableProperty] private string _duration;
-    [ObservableProperty] private string? _fileType;
+    [ObservableProperty] private string _fileType;
     [ObservableProperty] private bool _isProcessing;
     [ObservableProperty] private bool _paused;
     [ObservableProperty] private double _progress;
