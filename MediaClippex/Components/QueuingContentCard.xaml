@@ -16,7 +16,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Style="{StaticResource FadeInAnimation}">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />

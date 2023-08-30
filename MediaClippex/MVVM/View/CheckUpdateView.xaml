@@ -14,7 +14,7 @@
                              Title="Checking for Update" 
                              Height="300" 
                              Width="300">
-    <Grid Background="Transparent">
+    <Grid Background="Transparent" Style="{StaticResource FadeInAnimation}">
         <ProgressBar IsIndeterminate="{Binding IsProgressIndeterminate}">
             <ProgressBar.Style>
                 <Style TargetType="ProgressBar">
