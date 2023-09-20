@@ -362,16 +362,15 @@ public partial class MediaClippexViewModel : BaseViewModel
                         video.FileType,
                         video.Path is null
                             ? "Cannot be determined"
-                            : StringService.ConvertBytesToFormattedString(new FileInfo(video.Path).Length),
+                            : StringService.ConvertBytesToFormattedString(new FileInfo(video.Path).Length) ?? "Cannot be determined",
                         video.Path,
                         video.Duration,
                         video.ThumbnailUrl
                     ));
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                MessageBox.Show(e.Message, "Error loading downloads", MessageBoxButton.OK, MessageBoxImage.Error);
-                throw;
+                // do nothing
             }
         });
     }
