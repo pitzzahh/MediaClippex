@@ -114,7 +114,7 @@ public partial class CheckUpdateViewModel : BaseViewModel
                 if (currentVersion == null) return;
                 var latestRelease = await GetLatestRelease();
                 if (ShouldUpdate(currentVersion, latestRelease.TagName)) UpdateProcess();
-                await Task.Delay(TimeSpan.FromMinutes(5));
+                await Task.Delay(TimeSpan.FromHours(1));
             }
         });
     }
