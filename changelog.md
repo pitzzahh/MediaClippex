@@ -1,4 +1,7 @@
 ﻿# Changelog
+## Version 4.4.29.175
+- 🔄 Fixed update keeps showing
+___
 ## Version 4.4.27.169
 - 🔄 Fixed check for update showing not showing on startup
 - ✨ Added delete downloaded video button
