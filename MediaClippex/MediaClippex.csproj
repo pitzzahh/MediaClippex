@@ -14,19 +14,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Converters\" />
-        <Folder Include="Interfaces\" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Page Update="MVVM\View\MediaClippexView.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <XamlRuntime>Wpf</XamlRuntime>
-            <SubType>Designer</SubType>
-        </Page>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
         <PackageReference Include="Google.Cloud.Firestore" Version="3.3.0"/>
         <PackageReference Include="Material.Icons.WPF" Version="2.0.0" />
@@ -37,10 +24,16 @@
         <PackageReference Include="Russkyc.ModernControls.WPF" Version="1.9.18" />
         <PackageReference Include="YoutubeExplode" Version="6.3.2" />
         <PackageReference Include="YoutubeExplode.Converter" Version="6.3.2" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="Resources\Icon.ico" />
+	
+		<Folder Include="Converters\" />
+        <Folder Include="Interfaces\" />
+					
+	    <Page Update="MVVM\View\MediaClippexView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+		 <None Remove="Resources\Icon.ico" />
         <Resource Include="Resources\Icon.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Resource>
