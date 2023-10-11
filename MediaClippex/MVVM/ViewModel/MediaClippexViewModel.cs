@@ -268,7 +268,6 @@ public partial class MediaClippexViewModel : BaseViewModel
                 return;
             foreach (var playlistVideo in _readOnlyList)
             {
-                MessageBox.Show($"{playlistVideo}");
                 try
                 {
                     if (!playlistVideo.Duration.HasValue) return;
