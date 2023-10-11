@@ -1,4 +1,8 @@
 ﻿# Changelog
+## Version 4.5.31.176
+- 🔥 HotFix messagebox keep showing on each playlist video download
+- 📢 Added more bugs and errors
+___
 ## Version 4.5.30.176
 - 🔥 HotFix not downloading
 - 📢 Added more bugs and errors
