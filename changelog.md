@@ -1,4 +1,8 @@
 ﻿# Changelog
+## Version 4.5.30.176
+- 🔥 HotFix not downloading
+- 📢 Added more bugs and errors
+___
 ## Version 4.5.29.175
 - ✨ Added playlist download feature
 - 🔄 Fixed app being slow and unresponsive
