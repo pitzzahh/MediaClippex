@@ -31,7 +31,7 @@ ___
 - App Update functionality
 - **Download multiple videos/audios at once. (NEW)**
 - **Cancel current downloading content. (NEW)** 
-- **Download video from a playlist. (NEW)**
+- **Download a playlist. (NEW)**
 - ~~Pause and resume downloads.~~ (Coming soon, or not)
 
 ## Usage
