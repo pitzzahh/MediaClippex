@@ -247,7 +247,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         }
     }
 
-    // TODO: Add way to download the resolved playlist
+    // TODO: refactor this, it's inefficient
     [RelayCommand]
     private void Download()
     {
