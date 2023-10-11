@@ -113,7 +113,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         try
         {
             // Starting of download
-            var streamManifest = await VideoService.GetManifest(_url);
+            var streamManifest = await VideoService.GetVideoManifest(_url);
 
             var savedPath = await InternalDownloadProcess(isAudio, streamManifest, audioFilePath, progressHandler,
                 videoFilePath);
