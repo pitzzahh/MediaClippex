@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -289,14 +289,13 @@ public partial class MediaClippexViewModel : BaseViewModel
                             queuingContentCardViewModel.Duration,
                             playlistVideo.Thumbnails.GetWithHighestResolution().Url,
                             IsAudioOnly ? "Audio" : "Video",
-                            Url,
+                            playlistVideo.Url,
                             0,
                             "Just Started",
                             SelectedQuality,
                             false,
                             IsAudioOnly)
                     );
-                    Url = "";
                     var addedToQueueDb = UnitOfWork.Complete();
                     if (addedToQueueDb == 0) return;
                     HasQueue = true;
@@ -349,7 +348,6 @@ public partial class MediaClippexViewModel : BaseViewModel
                         false,
                         IsAudioOnly)
                 );
-                Url = "";
                 var addedToQueueDb = UnitOfWork.Complete();
                 if (addedToQueueDb == 0) return;
                 HasQueue = true;
@@ -369,6 +367,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                 IsResolved = false;
             }
         }
+        Url = "";
     }
 
     [RelayCommand]
