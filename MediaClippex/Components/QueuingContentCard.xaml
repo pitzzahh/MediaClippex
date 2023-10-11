@@ -16,7 +16,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Style="{StaticResource FadeInAnimation}">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
@@ -57,7 +57,7 @@
                     <TextBlock Grid.Row="1" Foreground="{DynamicResource fg-000}"
                                FontSize="16">
                         <TextBlock.Inlines>
-                            <Bold>Duration: </Bold>
+                            <Bold>Duration:</Bold>
                             <Run Text="{Binding Duration}" />
                         </TextBlock.Inlines>
                     </TextBlock>
@@ -65,7 +65,7 @@
                                TextWrapping="Wrap"
                                FontSize="16">
                         <TextBlock.Inlines>
-                            <Bold>File type: </Bold>
+                            <Bold>File type:</Bold>
                             <Run Text="{Binding FileType}" />
                         </TextBlock.Inlines>
                     </TextBlock>
@@ -77,6 +77,7 @@
                 <moderncontrols:ModernButton
                     LeftIcon="{materialIcons:MaterialIconExt Kind=Pause}"
                     IconPadding="5 0 0 0"
+                    IsEnabled="False"
                     Command="{Binding PauseDownloadCommand}"
                     DefaultForeground="{DynamicResource fg-200}"
                     DefaultBackground="{DynamicResource warning}" />

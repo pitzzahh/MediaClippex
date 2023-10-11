@@ -353,25 +353,30 @@ public partial class MediaClippexViewModel : BaseViewModel
             var videos = UnitOfWork.VideosRepository.GetAll().ToList();
             HasDownloadHistory = videos.Count > 0;
             if (!HasDownloadHistory) return;
-            try
+
+            foreach (var video in videos)
             {
-                foreach (var video in videos)
-                    DownloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
-                        video.Title,
-                        video.Description,
-                        video.FileType,
-                        video.Path is null
+                var fileSize = "Cannot be determined";
+                try
+                {
+                    fileSize = video.Path is null
                             ? "Cannot be determined"
-                            : StringService.ConvertBytesToFormattedString(new FileInfo(video.Path).Length),
-                        video.Path,
-                        video.Duration,
-                        video.ThumbnailUrl
-                    ));
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Error loading downloads", MessageBoxButton.OK, MessageBoxImage.Error);
-                throw;
+                            : StringService.ConvertBytesToFormattedString(new FileInfo(video.Path).Length);
+                }
+                catch (Exception)
+                {
+                    fileSize = "Cannot be determined";
+                }
+
+                DownloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
+                  video.Title,
+                  video.Description,
+                  video.FileType,
+                  fileSize,
+                  video.Path,
+                  video.Duration,
+                  video.ThumbnailUrl
+                ));
             }
         });
     }

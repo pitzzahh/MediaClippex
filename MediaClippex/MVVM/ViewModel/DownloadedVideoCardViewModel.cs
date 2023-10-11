@@ -44,7 +44,11 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
     [RelayCommand]
     private void OpenVideo()
     {
-        if (string.IsNullOrEmpty(Path) || !File.Exists(Path)) return;
+        if (string.IsNullOrEmpty(Path) || !File.Exists(Path))
+        {
+            MessageBox.Show("File has been deleted or moved to a new directory.", "Cannot find file", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
         try
         {
             Process.Start(new ProcessStartInfo
