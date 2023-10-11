@@ -21,7 +21,7 @@ public static class StringService
 
         return TimeSpan.FromSeconds(totalSeconds);
     }
-    
+
     public static string ConvertBytesToFormattedString(long bytes)
     {
         const int byteConversion = 1024;
@@ -69,6 +69,11 @@ public static class StringService
         return YoutubeUrlRegex().Match(url).Success;
     }
 
+    public static bool IsYouTubePlaylistUrl(string url)
+    {
+        return YoutubePlaylistRegex().Match(url).Success;
+    }
+
     public static string FixFileName(string fileName)
     {
         return Path.GetInvalidFileNameChars()
@@ -77,6 +82,13 @@ public static class StringService
 
     private static Regex YoutubeUrlRegex()
     {
-        return new Regex("(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|shorts/|watch\\?v=|watch\\?.+&v=))([^?&\"'>]+)(?:&list=([^?&\"'>]+))?");
+        return new Regex(
+            "(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|shorts/|watch\\?v=|watch\\?.+&v=))([^?&\"'>]+)(?:&list=([^?&\"'>]+))?");
+    }
+
+    private static Regex YoutubePlaylistRegex()
+    {
+        // This regular expression matches YouTube playlist URLs
+        return new Regex("(?:youtu\\.be/|youtube\\.com/playlist\\?list=)([^?&\"'>]+)");
     }
 }
