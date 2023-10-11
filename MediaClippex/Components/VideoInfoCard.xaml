@@ -9,7 +9,7 @@
              Height="150"
              Background="{DynamicResource bg-000}">
 
-    <Grid>
+    <Grid Style="{StaticResource FadeInFromBottomAnimation}">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />

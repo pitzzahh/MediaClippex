@@ -12,7 +12,7 @@
              HorizontalAlignment="Stretch"
              Background="{DynamicResource bg-000}">
 
-    <Grid>
+    <Grid Style="{StaticResource FadeInFromBottomAnimation}">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
@@ -22,7 +22,7 @@
         <!-- Video Image -->
         <moderncontrols:ModernButton Background="Transparent" Padding="3" Command="{Binding OpenVideoCommand}">
             <Grid>
-                <Image Source="{Binding ImageUrl}" Stretch="UniformToFill" />
+                <Image Source="{Binding ImageUrl}" Stretch="Uniform" />
 
                 <!-- Play Icon -->
                 <Image Source="../Resources/play_icon.png"
