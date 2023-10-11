@@ -251,9 +251,6 @@ public partial class MediaClippexViewModel : BaseViewModel
     [RelayCommand]
     private void Download()
     {
-        if (_video == null) return;
-        if (_readOnlyList == null) return;
-
         if (string.IsNullOrWhiteSpace(SelectedQuality))
         {
             MessageBox.Show("Please select a quality.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -265,8 +262,10 @@ public partial class MediaClippexViewModel : BaseViewModel
         IsDownloading = true;
         IsProcessing = false;
 
-
         if (IsPlaylist)
+        {
+            if (_readOnlyList == null)
+                return;
             foreach (var playlistVideo in _readOnlyList)
             {
                 MessageBox.Show($"{playlistVideo}");
@@ -318,7 +317,11 @@ public partial class MediaClippexViewModel : BaseViewModel
                     IsResolved = false;
                 }
             }
+        }
         else
+        {
+            if (_video == null) return;
+
             try
             {
                 if (!_video.Duration.HasValue) return;
@@ -366,6 +369,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                 IsAudioOnly = false;
                 IsResolved = false;
             }
+        }
     }
 
     [RelayCommand]
