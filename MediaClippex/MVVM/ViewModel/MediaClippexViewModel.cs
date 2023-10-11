@@ -14,6 +14,7 @@ using MediaClippex.Services;
 using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Implementations;
 using YoutubeExplode.Common;
+using YoutubeExplode.Playlists;
 using YoutubeExplode.Videos.Streams;
 using Video = YoutubeExplode.Videos.Video;
 
@@ -36,6 +37,7 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     private bool _isAudioOnly;
     [ObservableProperty] private bool _isDownloading;
+    [ObservableProperty] private bool _isPlaylist;
     [ObservableProperty] private bool _isProcessing;
     [ObservableProperty] private bool _isProgressIndeterminate;
     [ObservableProperty] private bool _isResolved;
@@ -46,6 +48,8 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     [ObservableProperty]
     private ObservableCollection<QueuingContentCardViewModel> _queuingContentCardViewModels = new();
+
+    private IReadOnlyList<PlaylistVideo>? _readOnlyList;
 
     private int _selectedIndex;
 
@@ -152,7 +156,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             return;
         }
 
-        if (!StringService.IsYouTubeVideoUrl(Url))
+        if (!StringService.IsYouTubeVideoUrl(Url) && !StringService.IsYouTubePlaylistUrl(Url))
         {
             MessageBox.Show("Please enter a valid YouTube URL.", "Warning", MessageBoxButton.OK,
                 MessageBoxImage.Warning);
@@ -160,54 +164,96 @@ public partial class MediaClippexViewModel : BaseViewModel
             return;
         }
 
-        try
-        {
-            ProgressInfo = "Processing URL...";
-            IsProgressIndeterminate = true;
-            IsProcessing = true;
-            ShowPreview = false;
-            _video = await VideoService.GetVideo(Url);
+        IsPlaylist = StringService.IsYouTubePlaylistUrl(Url);
 
-            if (_video == null)
+        ProgressInfo = "Processing URL...";
+        IsProgressIndeterminate = true;
+        IsProcessing = true;
+
+        if (IsPlaylist)
+        {
+            ShowPreview = false;
+            _readOnlyList = await VideoService.GetPlaylistVideos(Url);
+            if (_readOnlyList.Count == 0)
             {
-                MessageBox.Show("Video not found.", "Cannot resolve", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Playlist not found.", "Cannot resolve", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
                 return;
             }
 
-            var manifest = await VideoService.GetManifest(Url);
+            var playlistInfo = await VideoService.GetPlaylistInfo(Url);
+            var streamManifest = await VideoService.GetVideoManifest(_readOnlyList[0].Url);
+
             ShowPreview = true;
             IsProgressIndeterminate = false;
             IsProcessing = false;
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                if (_video == null) return;
                 var videoInfoCardViewModel = BuilderServices.Resolve<VideoInfoCardViewModel>();
-                videoInfoCardViewModel.Title = _video.Title;
-                videoInfoCardViewModel.ImageUrl = _video.Thumbnails.GetWithHighestResolution().Url;
-                videoInfoCardViewModel.Duration =
-                    StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault());
-                videoInfoCardViewModel.Description = _video.Description;
+                videoInfoCardViewModel.Title = playlistInfo.Title;
+                videoInfoCardViewModel.ImageUrl = playlistInfo.Thumbnails.GetWithHighestResolution().Url;
+                videoInfoCardViewModel.Duration = "N/A";
+                videoInfoCardViewModel.Description = playlistInfo.Description;
             });
+
             IsResolved = true;
-            InitializeVideoResolutions(manifest);
+            InitializeVideoResolutions(streamManifest);
             GetDownloadSize();
-            InitializeAudioResolutions(manifest);
+            InitializeAudioResolutions(streamManifest);
             OnPropertyChanged();
         }
-        catch (Exception e)
+        else
         {
-            MessageBox.Show($"Something went wrong resolving the url: {e.Message}", "Error", MessageBoxButton.OK,
-                MessageBoxImage.Error);
-            IsProcessing = false;
-            IsProgressIndeterminate = false;
-            ProgressInfo = "";
+            try
+            {
+                ShowPreview = false;
+                _video = await VideoService.GetVideo(Url);
+
+                if (_video == null)
+                {
+                    MessageBox.Show("Video not found.", "Cannot resolve", MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                var manifest = await VideoService.GetVideoManifest(Url);
+                ShowPreview = true;
+                IsProgressIndeterminate = false;
+                IsProcessing = false;
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    if (_video == null) return;
+                    var videoInfoCardViewModel = BuilderServices.Resolve<VideoInfoCardViewModel>();
+                    videoInfoCardViewModel.Title = _video.Title;
+                    videoInfoCardViewModel.ImageUrl = _video.Thumbnails.GetWithHighestResolution().Url;
+                    videoInfoCardViewModel.Duration =
+                        StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault());
+                    videoInfoCardViewModel.Description = _video.Description;
+                });
+                IsResolved = true;
+                InitializeVideoResolutions(manifest);
+                GetDownloadSize();
+                InitializeAudioResolutions(manifest);
+                OnPropertyChanged();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Something went wrong resolving the url: {e.Message}", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                IsProcessing = false;
+                IsProgressIndeterminate = false;
+                ProgressInfo = "";
+            }
         }
     }
 
+    // TODO: Add way to download the resolved playlist
     [RelayCommand]
     private void Download()
     {
         if (_video == null) return;
+        if (_readOnlyList == null) return;
+
         if (string.IsNullOrWhiteSpace(SelectedQuality))
         {
             MessageBox.Show("Please select a quality.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -218,53 +264,108 @@ public partial class MediaClippexViewModel : BaseViewModel
 
         IsDownloading = true;
         IsProcessing = false;
-        try
-        {
-            if (!_video.Duration.HasValue) return;
-            var queuingContentCardViewModel = new QueuingContentCardViewModel(
-                _video.Title,
-                StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault()),
-                _video.Thumbnails.GetWithHighestResolution().Url,
-                Url,
-                SelectedQuality,
-                true,
-                IsAudioOnly,
-                _video.Description
-            );
-            QueuingContentCardViewModels.Add(queuingContentCardViewModel);
-            // Adding to QueuingContent Table
-            UnitOfWork.QueuingContentRepository.Add(
-                new QueuingContent(
-                    queuingContentCardViewModel.Title,
-                    queuingContentCardViewModel.Duration,
-                    queuingContentCardViewModel.ThumbnailUrl,
-                    IsAudioOnly ? "Audio" : "Video",
+
+
+        if (IsPlaylist)
+            foreach (var playlistVideo in _readOnlyList)
+            {
+                MessageBox.Show($"{playlistVideo}");
+                try
+                {
+                    if (!playlistVideo.Duration.HasValue) return;
+                    var queuingContentCardViewModel = new QueuingContentCardViewModel(
+                        playlistVideo.Title,
+                        StringService.ConvertToTimeFormat(playlistVideo.Duration.GetValueOrDefault()),
+                        playlistVideo.Thumbnails.GetWithHighestResolution().Url,
+                        playlistVideo.Url,
+                        SelectedQuality,
+                        true,
+                        IsAudioOnly,
+                        "N/A"
+                    );
+                    QueuingContentCardViewModels.Add(queuingContentCardViewModel);
+                    // Adding to QueuingContent Table
+                    UnitOfWork.QueuingContentRepository.Add(
+                        new QueuingContent(
+                            playlistVideo.Title,
+                            queuingContentCardViewModel.Duration,
+                            playlistVideo.Thumbnails.GetWithHighestResolution().Url,
+                            IsAudioOnly ? "Audio" : "Video",
+                            Url,
+                            0,
+                            "Just Started",
+                            SelectedQuality,
+                            false,
+                            IsAudioOnly)
+                    );
+                    Url = "";
+                    var addedToQueueDb = UnitOfWork.Complete();
+                    if (addedToQueueDb == 0) return;
+                    HasQueue = true;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Something went wrong downloading: {e.Message}", "Error", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+                finally
+                {
+                    ProgressInfo = "";
+                    IsDownloading = false;
+                    IsProcessing = false;
+                    ShowPreview = false;
+                    IsAudioOnly = false;
+                    IsResolved = false;
+                }
+            }
+        else
+            try
+            {
+                if (!_video.Duration.HasValue) return;
+                var queuingContentCardViewModel = new QueuingContentCardViewModel(
+                    _video.Title,
+                    StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault()),
+                    _video.Thumbnails.GetWithHighestResolution().Url,
                     Url,
-                    0,
-                    "Just Started",
                     SelectedQuality,
-                    false,
-                    IsAudioOnly)
-            );
-            Url = "";
-            var addedToQueueDb = UnitOfWork.Complete();
-            if (addedToQueueDb == 0) return;
-            HasQueue = true;
-        }
-        catch (Exception e)
-        {
-            MessageBox.Show($"Something went wrong downloading: {e.Message}", "Error", MessageBoxButton.OK,
-                MessageBoxImage.Error);
-        }
-        finally
-        {
-            ProgressInfo = "";
-            IsDownloading = false;
-            IsProcessing = false;
-            ShowPreview = false;
-            IsAudioOnly = false;
-            IsResolved = false;
-        }
+                    true,
+                    IsAudioOnly,
+                    _video.Description
+                );
+                QueuingContentCardViewModels.Add(queuingContentCardViewModel);
+                // Adding to QueuingContent Table
+                UnitOfWork.QueuingContentRepository.Add(
+                    new QueuingContent(
+                        queuingContentCardViewModel.Title,
+                        queuingContentCardViewModel.Duration,
+                        queuingContentCardViewModel.ThumbnailUrl,
+                        IsAudioOnly ? "Audio" : "Video",
+                        Url,
+                        0,
+                        "Just Started",
+                        SelectedQuality,
+                        false,
+                        IsAudioOnly)
+                );
+                Url = "";
+                var addedToQueueDb = UnitOfWork.Complete();
+                if (addedToQueueDb == 0) return;
+                HasQueue = true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Something went wrong downloading: {e.Message}", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            finally
+            {
+                ProgressInfo = "";
+                IsDownloading = false;
+                IsProcessing = false;
+                ShowPreview = false;
+                IsAudioOnly = false;
+                IsResolved = false;
+            }
     }
 
     [RelayCommand]
@@ -309,7 +410,7 @@ public partial class MediaClippexViewModel : BaseViewModel
     private async Task GetFileSize()
     {
         if (string.IsNullOrEmpty(Url)) return;
-        var manifest = await VideoService.GetManifest(Url);
+        var manifest = await VideoService.GetVideoManifest(Url);
         var video = await VideoService.GetVideo(Url);
         if (!video.Duration.HasValue) return;
         DownloadButtonContent = IsAudioOnly
@@ -356,12 +457,12 @@ public partial class MediaClippexViewModel : BaseViewModel
 
             foreach (var video in videos)
             {
-                var fileSize = "Cannot be determined";
+                string fileSize;
                 try
                 {
                     fileSize = video.Path is null
-                            ? "Cannot be determined"
-                            : StringService.ConvertBytesToFormattedString(new FileInfo(video.Path).Length);
+                        ? "Cannot be determined"
+                        : StringService.ConvertBytesToFormattedString(new FileInfo(video.Path).Length);
                 }
                 catch (Exception)
                 {
@@ -369,13 +470,13 @@ public partial class MediaClippexViewModel : BaseViewModel
                 }
 
                 DownloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
-                  video.Title,
-                  video.Description,
-                  video.FileType,
-                  fileSize,
-                  video.Path,
-                  video.Duration,
-                  video.ThumbnailUrl
+                    video.Title,
+                    video.Description,
+                    video.FileType,
+                    fileSize,
+                    video.Path,
+                    video.Duration,
+                    video.ThumbnailUrl
                 ));
             }
         });
