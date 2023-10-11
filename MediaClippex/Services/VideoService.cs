@@ -31,9 +31,9 @@ public static class VideoService
         return await Youtube.Videos.Streams.GetManifestAsync(url);
     }
 
-    public static async Task<IReadOnlyList<PlaylistVideo>> GetPlaylistVideos(string playlistUrl, int limit = 5)
+    public static async Task<IReadOnlyList<PlaylistVideo>> GetPlaylistVideos(string playlistUrl)
     {
-        return await Youtube.Playlists.GetVideosAsync(playlistUrl).CollectAsync(limit);
+        return await Youtube.Playlists.GetVideosAsync(playlistUrl);
     }
 
     public static IVideoStreamInfo GetVideoOnlyStreamInfo(StreamManifest manifest, string quality)
