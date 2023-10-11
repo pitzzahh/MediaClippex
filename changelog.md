@@ -1,4 +1,9 @@
 ﻿# Changelog
+## Version 4.5.29.175
+- ✨ Added playlist download feature
+- 🔄 Fixed app being slow and unresponsive
+- 📢 Added more bugs and errors
+___
 ## Version 4.4.29.175
 - 🔄 Fixed update keeps showing
 ___
