@@ -21,8 +21,7 @@ public static class VideoService
         return await Youtube.Videos.GetAsync(url);
     }
 
-
-    public static async Task<Playlist> GetPlaylists(string url)
+    public static async Task<Playlist> GetPlaylistInfo(string url)
     {
         return await Youtube.Playlists.GetAsync(url);
     }
@@ -32,9 +31,9 @@ public static class VideoService
         return await Youtube.Videos.Streams.GetManifestAsync(url);
     }
 
-    public static async Task<IReadOnlyList<PlaylistVideo>> GetPlaylistVideos(string playlistUrl)
+    public static async Task<IReadOnlyList<PlaylistVideo>> GetPlaylistVideos(string playlistUrl, int limit = 5)
     {
-        return await Youtube.Playlists.GetVideosAsync(playlistUrl);
+        return await Youtube.Playlists.GetVideosAsync(playlistUrl).CollectAsync(limit);
     }
 
     public static IVideoStreamInfo GetVideoOnlyStreamInfo(StreamManifest manifest, string quality)
