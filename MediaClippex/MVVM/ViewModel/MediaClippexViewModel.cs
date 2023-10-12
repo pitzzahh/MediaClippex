@@ -311,7 +311,6 @@ public partial class MediaClippexViewModel : BaseViewModel
                     IsDownloading = false;
                     IsProcessing = false;
                     ShowPreview = false;
-                    IsAudioOnly = false;
                     IsResolved = false;
                 }
             }
