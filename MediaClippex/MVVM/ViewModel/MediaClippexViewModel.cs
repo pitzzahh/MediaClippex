@@ -116,18 +116,17 @@ public partial class MediaClippexViewModel : BaseViewModel
             return;
         }
 
-        PreviewCardViewModels.Clear();
         IsPlaylist = StringService.IsYouTubePlaylistUrl(Url);
 
         ProgressInfo = "Processing URL...";
         IsProgressIndeterminate = true;
         IsProcessing = true;
-        ShowPreview = false;
 
         try
         {
             if (IsPlaylist)
             {
+                PreviewCardViewModels.Clear();
                 _readOnlyList = await VideoService.GetPlaylistVideos(Url);
 
                 if (_readOnlyList.Count == 0)
@@ -181,6 +180,10 @@ public partial class MediaClippexViewModel : BaseViewModel
             ShowPreview = false;
             IsProcessing = false;
         }
+        finally
+        {
+            Url = "";
+        }
     }
 
     [RelayCommand]
@@ -197,26 +200,18 @@ public partial class MediaClippexViewModel : BaseViewModel
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
             QueuingContentCardViewModels.Clear();
-            var queuingVideos = UnitOfWork.QueuingContentRepository.GetAll().ToList();
+            var queuingVideos = UnitOfWork.QueuingContentRepository.GetAll().Reverse().ToList();
             HasQueue = queuingVideos.Count > 0;
             if (!HasQueue) return;
-            try
-            {
-                foreach (var video in queuingVideos)
-                    QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
-                        video.Title,
-                        video.Duration,
-                        video.ThumbnailUrl,
-                        video.Url,
-                        video.SelectedQuality,
-                        !video.Paused
-                    ));
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Error loading Queues", MessageBoxButton.OK, MessageBoxImage.Error);
-                throw;
-            }
+            foreach (var video in queuingVideos)
+                QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
+                    video.Title,
+                    video.Duration,
+                    video.ThumbnailUrl,
+                    video.Url,
+                    video.SelectedQuality,
+                    !video.Paused
+                ));
         });
     }
 
@@ -225,7 +220,7 @@ public partial class MediaClippexViewModel : BaseViewModel
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
             DownloadedVideoCardViewModels.Clear();
-            var videos = UnitOfWork.VideosRepository.GetAll().ToList();
+            var videos = UnitOfWork.VideosRepository.GetAll().Reverse().ToList();
             HasDownloadHistory = videos.Count > 0;
             if (!HasDownloadHistory) return;
 
