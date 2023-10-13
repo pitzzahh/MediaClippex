@@ -28,7 +28,6 @@
 
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
-        <PackageReference Include="Google.Cloud.Firestore" Version="3.3.0"/>
         <PackageReference Include="Material.Icons.WPF" Version="2.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10" />
         <PackageReference Include="Octokit" Version="6.2.1" />
