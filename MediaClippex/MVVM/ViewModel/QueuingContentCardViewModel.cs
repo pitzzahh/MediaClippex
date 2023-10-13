@@ -44,21 +44,10 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         FileType = isAudio ? "Audio" : "Video";
         if (newDownload) _cancellationTokenSource = new CancellationTokenSource();
         UnitOfWork = BuilderServices.Resolve<IUnitOfWork>();
-        Task.Run(() => newDownload ? DownloadProcess(isAudio) : SetPaused());
+        if (newDownload) Task.Run(() => DownloadProcess(isAudio));
     }
 
     private IUnitOfWork UnitOfWork { get; }
-
-    // TODO: implement pausing of download
-    private Task SetPaused()
-    {
-        var queuingVideos = UnitOfWork.QueuingContentRepository.Find(e => e.Title.Equals(Title));
-        var firstOrDefault = queuingVideos.First();
-        Progress = firstOrDefault.Progress;
-        ProgressInfo = firstOrDefault.ProgressInfo;
-        IsProcessing = false;
-        return Task.CompletedTask;
-    }
 
     [RelayCommand]
     private void PauseDownload()
