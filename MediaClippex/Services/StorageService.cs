@@ -47,6 +47,8 @@ public class StorageService
 
                 _unitOfWork.QueuingContentRepository
                     .Remove(foundQueuingVideo);
+
+                mediaClippexViewModel.HasQueue = mediaClippexViewModel.QueuingContentCardViewModels.Count > 0;
             }
             finally
             {
