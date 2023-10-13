@@ -6,6 +6,10 @@
              StartupUri="MVVM/View/MediaClippexView.xaml">
     <Application.Resources>
         <ResourceDictionary>
+
+            <DataTemplate DataType="{x:Type viewModel:PreviewCardViewModel}">
+                <components:PreviewCard />
+            </DataTemplate>
             
             <DataTemplate DataType="{x:Type viewModel:DownloadedVideoCardViewModel}">
                 <components:DownloadedVideoCard />
