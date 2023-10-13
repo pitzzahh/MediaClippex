@@ -58,7 +58,6 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            // Handle any exceptions that might occur
             MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -69,7 +68,7 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
         var messageBoxResult = MessageBox.Show($"Are you sure you want to delete \"{Title}\"?", $"Delete {FileType}",
             MessageBoxButton.YesNo, MessageBoxImage.Warning);
         if (messageBoxResult != MessageBoxResult.Yes) return;
-        if (string.IsNullOrEmpty(Path) || !File.Exists(Path)) return;
+
         try
         {
             var foundDownloadedVideo = UnitOfWork.VideosRepository
@@ -81,7 +80,7 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
             UnitOfWork.VideosRepository
                 .Remove(foundDownloadedVideo);
             if (UnitOfWork.Complete() == 0) return;
-            File.Delete(Path);
+            if (string.IsNullOrEmpty(Path) && File.Exists(Path)) File.Delete(Path);
             await BuilderServices.Resolve<MediaClippexViewModel>().GetDownloadedVideos();
         }
         catch (Exception)
