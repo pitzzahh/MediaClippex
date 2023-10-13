@@ -1,4 +1,8 @@
 ﻿# Changelog
+## Version 4.6.33.190
+- 🔄 Optimizations
+- ✨ Download history now shows latest download at top list
+___
 ## Version 4.6.32.185
 - 🔄 Optimizations
 ___
