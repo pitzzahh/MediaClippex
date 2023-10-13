@@ -47,8 +47,8 @@ public partial class PreviewCardViewModel : BaseViewModel
             var manifest = await VideoService.GetVideoManifest(_url);
             IsResolved = true;
             InitializeVideoResolutions(manifest);
-            GetDownloadSize();
             InitializeAudioResolutions(manifest);
+            GetDownloadSize();
             OnPropertyChanged();
         });
     }
@@ -129,7 +129,7 @@ public partial class PreviewCardViewModel : BaseViewModel
     private void Remove()
     {
         var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
-        mediaClippexViewModel.HasQueue = true;
+        mediaClippexViewModel.HasQueue = mediaClippexViewModel.QueuingContentCardViewModels.Count > 0;
         mediaClippexViewModel.PreviewCardViewModels.Remove(this);
         mediaClippexViewModel.ShowPreview = mediaClippexViewModel.PreviewCardViewModels.Count != 0;
     }
@@ -147,7 +147,11 @@ public partial class PreviewCardViewModel : BaseViewModel
 
         try
         {
-            var queuingContentCardViewModel = new QueuingContentCardViewModel(
+            var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
+            mediaClippexViewModel.PreviewCardViewModels.Remove(this);
+            mediaClippexViewModel.ShowPreview = mediaClippexViewModel.PreviewCardViewModels.Count > 0;
+            mediaClippexViewModel.HasQueue = true;
+            mediaClippexViewModel.QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
                 Title ?? "404 Title Not Found",
                 Duration ?? "00:00:00",
                 ThumbnailUrl ??
@@ -156,19 +160,15 @@ public partial class PreviewCardViewModel : BaseViewModel
                 SelectedQuality,
                 true,
                 IsAudioOnly
-            );
+            ));
 
-            var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
-            mediaClippexViewModel.HasQueue = true;
-            mediaClippexViewModel.PreviewCardViewModels.Remove(this);
-            mediaClippexViewModel.ShowPreview = mediaClippexViewModel.PreviewCardViewModels.Count != 0;
-            mediaClippexViewModel.QueuingContentCardViewModels.Add(queuingContentCardViewModel);
             // Adding to QueuingContent Table
             UnitOfWork.QueuingContentRepository.Add(
                 new QueuingContent(
-                    queuingContentCardViewModel.Title,
-                    queuingContentCardViewModel.Duration,
-                    queuingContentCardViewModel.ThumbnailUrl,
+                    Title ?? "404 Title Not Found",
+                    Duration ?? "00:00:00",
+                    ThumbnailUrl ??
+                    "https://media.istockphoto.com/id/1147544806/vector/no-thumbnail-image-vector-graphic.jpg?s=170667a&w=0&k=20&c=-r15fTq303g-Do1h-F1jLdxddwkg4ZTtkdQK1XP2sFk=",
                     IsAudioOnly ? "Audio" : "Video",
                     _url,
                     0,
@@ -178,7 +178,8 @@ public partial class PreviewCardViewModel : BaseViewModel
                     IsAudioOnly)
             );
             var addedToQueueDb = UnitOfWork.Complete();
-            if (addedToQueueDb == 0) MessageBox.Show("Cannot add to db", "Something went wrong", MessageBoxButton.OK);
+            if (addedToQueueDb == 0)
+                MessageBox.Show("Cannot add to db", "Something went wrong", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         catch (Exception e)
         {
