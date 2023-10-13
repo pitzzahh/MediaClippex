@@ -1,4 +1,7 @@
 ﻿# Changelog
+## Version 4.6.32.185
+- 🔄 Optimizations
+___
 ## Version 4.6.31.181
 - 🔥 Fixed playlist download issue
 - ✨ Can now custom download for each video in a playlist
