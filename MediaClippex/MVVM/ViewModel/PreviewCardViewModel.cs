@@ -133,7 +133,6 @@ public partial class PreviewCardViewModel : BaseViewModel
         mediaClippexViewModel.PreviewCardViewModels.Remove(this);
     }
 
-    // TODO: refactor this, it's inefficient
     [RelayCommand]
     private void Download()
     {
