@@ -21,7 +21,7 @@ public class StorageService
         var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
 
         // Needs to run on the Current dispatcher in order to remove the view models
-        Application.Current.Dispatcher.Invoke(() =>
+        Application.Current.Dispatcher.InvokeAsync(() =>
         {
             try
             {
