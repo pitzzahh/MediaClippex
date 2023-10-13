@@ -21,7 +21,6 @@ namespace MediaClippex.MVVM.ViewModel;
 public partial class QueuingContentCardViewModel : BaseViewModel
 {
     private readonly CancellationTokenSource _cancellationTokenSource = null!;
-    private readonly string _description;
     private readonly string _selectedQuality;
     private readonly string _url;
     [ObservableProperty] private string _duration;
@@ -34,14 +33,13 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     [ObservableProperty] private string _title;
 
     public QueuingContentCardViewModel(string title, string duration, string thumbnailUrl, string url,
-        string selectedQuality, bool newDownload = true!, bool isAudio = false, string description = "Awesome content")
+        string selectedQuality, bool newDownload = true!, bool isAudio = false)
     {
         Title = title;
         Duration = duration;
         ThumbnailUrl = thumbnailUrl;
         _url = url;
         _selectedQuality = selectedQuality;
-        _description = description;
         IsProcessing = true;
         FileType = isAudio ? "Audio" : "Video";
         if (newDownload) _cancellationTokenSource = new CancellationTokenSource();
@@ -125,7 +123,6 @@ public partial class QueuingContentCardViewModel : BaseViewModel
                 ThumbnailUrl,
                 Title,
                 Duration,
-                _description,
                 FileType,
                 savedPath
             ));
@@ -135,7 +132,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
 
             var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
             mediaClippexViewModel.HasQueue = mediaClippexViewModel.QueuingContentCardViewModels.Count > 0;
-            await Task.Run(mediaClippexViewModel.GetDownloadedVideos);
+            await mediaClippexViewModel.GetDownloadedVideos();
         }
         catch (Exception e)
         {
