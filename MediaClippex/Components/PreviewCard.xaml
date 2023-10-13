@@ -10,6 +10,7 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d"
              Height="150"
+             HorizontalAlignment="Stretch"
              Background="{DynamicResource bg-000}">
 
     <UserControl.Resources>
@@ -96,7 +97,6 @@
                             <TextBlock Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
                             <moderncontrols:ModernButton LeftIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
                                                          IconPadding="5 0 0 0"
-                                                         IsEnabled="{Binding IsResolved}"
                                                          Command="{Binding RemoveCommand}"
                                                          DefaultForeground="{DynamicResource fg-200}"
                                                          DefaultBackground="{DynamicResource danger}" />
@@ -106,6 +106,7 @@
                             <TextBlock Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
                             <moderncontrols:ModernButton Content="{Binding DownloadButtonContent}"
                                                          FontWeight="Medium"
+                                                         ToolTip="Remove preview"
                                                          IconPadding="5 0 0 0"
                                                          LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Download}"
                                                          IsEnabled="{Binding IsResolved}"
