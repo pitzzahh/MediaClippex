@@ -131,6 +131,7 @@ public partial class PreviewCardViewModel : BaseViewModel
         var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
         mediaClippexViewModel.HasQueue = true;
         mediaClippexViewModel.PreviewCardViewModels.Remove(this);
+        mediaClippexViewModel.ShowPreview = mediaClippexViewModel.PreviewCardViewModels.Count != 0;
     }
 
     [RelayCommand]
@@ -147,9 +148,10 @@ public partial class PreviewCardViewModel : BaseViewModel
         try
         {
             var queuingContentCardViewModel = new QueuingContentCardViewModel(
-                Title ?? "Default title",
+                Title ?? "404 Title Not Found",
                 Duration ?? "00:00:00",
-                ThumbnailUrl ?? "https://climate.onep.go.th/wp-content/uploads/2020/01/default-image.jpg",
+                ThumbnailUrl ??
+                "https://media.istockphoto.com/id/1147544806/vector/no-thumbnail-image-vector-graphic.jpg?s=170667a&w=0&k=20&c=-r15fTq303g-Do1h-F1jLdxddwkg4ZTtkdQK1XP2sFk=",
                 _url,
                 SelectedQuality,
                 true,
