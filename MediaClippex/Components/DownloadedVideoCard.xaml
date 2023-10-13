@@ -79,7 +79,6 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
-                        <RowDefinition />
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
@@ -120,15 +119,6 @@
                         <TextBlock.Inlines>
                             <Bold>Saved Path: </Bold>
                             <Run Text="{Binding Path}" />
-                        </TextBlock.Inlines>
-                    </TextBlock>
-
-                    <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
-                               TextWrapping="Wrap"
-                               FontSize="16">
-                        <TextBlock.Inlines>
-                            <Bold>Description: </Bold>
-                            <Run Text="{Binding Description}" />
                         </TextBlock.Inlines>
                     </TextBlock>
                 </Grid>
