@@ -14,8 +14,6 @@ namespace MediaClippex.MVVM.ViewModel;
 // ReSharper disable once ClassNeverInstantiated.Global
 public partial class DownloadedVideoCardViewModel : BaseViewModel
 {
-    [ObservableProperty] private string? _description;
-
     [ObservableProperty] private string? _duration;
     [ObservableProperty] private string? _fileSize;
 
@@ -26,11 +24,10 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
     [ObservableProperty] private string? _path;
     [ObservableProperty] private string? _title;
 
-    public DownloadedVideoCardViewModel(string? title, string? description, string? fileType, string? fileSize,
+    public DownloadedVideoCardViewModel(string? title, string? fileType, string? fileSize,
         string? path, string? duration, string? imageUrl)
     {
         Title = title;
-        Description = description;
         FileType = fileType;
         FileSize = fileSize;
         Path = path;
@@ -46,9 +43,11 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
     {
         if (string.IsNullOrEmpty(Path) || !File.Exists(Path))
         {
-            MessageBox.Show("File has been deleted or moved to a new directory.", "Cannot find file", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("File has been deleted or moved to a new directory.", "Cannot find file",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
+
         try
         {
             Process.Start(new ProcessStartInfo
@@ -83,7 +82,7 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
                 .Remove(foundDownloadedVideo);
             if (UnitOfWork.Complete() == 0) return;
             File.Delete(Path);
-            await Task.Run(BuilderServices.Resolve<MediaClippexViewModel>().GetDownloadedVideos);
+            await BuilderServices.Resolve<MediaClippexViewModel>().GetDownloadedVideos();
         }
         catch (Exception)
         {
