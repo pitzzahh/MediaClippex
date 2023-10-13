@@ -12,7 +12,7 @@
              HorizontalAlignment="Stretch"
              Background="{DynamicResource bg-000}">
 
-    <Grid Style="{StaticResource FadeInFromBottomAnimation}">
+    <Grid>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
@@ -115,6 +115,7 @@
                     </TextBlock>
 
                     <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Foreground="{DynamicResource fg-000}"
+                               TextWrapping="Wrap"
                                FontSize="16">
                         <TextBlock.Inlines>
                             <Bold>Saved Path: </Bold>
