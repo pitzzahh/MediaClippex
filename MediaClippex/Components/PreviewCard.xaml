@@ -14,6 +14,7 @@
              Background="{DynamicResource bg-000}">
 
     <UserControl.Resources>
+        <system:Double x:Key="Shortest">120</system:Double>
         <system:Double x:Key="Short">180</system:Double>
     </UserControl.Resources>
 
@@ -80,7 +81,7 @@
                             <moderncontrols:ModernComboBox ItemsSource="{Binding Qualities}"
                                                            HorizontalAlignment="Left"
                                                            SelectedItem="{Binding SelectedQuality}"
-                                                           Width="{StaticResource Short}"
+                                                           Width="{StaticResource Shortest}"
                                                            IsEnabled="{Binding IsResolved}" />
                         </StackPanel>
 
@@ -95,8 +96,9 @@
 
                         <StackPanel Grid.Column="2" Margin="2 0">
                             <TextBlock Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
-                            <moderncontrols:ModernButton LeftIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
+                            <moderncontrols:ModernButton LeftIcon="{materialIcons:MaterialIconExt Kind=Delete}"
                                                          IconPadding="5 0 0 0"
+                                                         ToolTip="Remove preview"
                                                          Command="{Binding RemoveCommand}"
                                                          DefaultForeground="{DynamicResource fg-200}"
                                                          DefaultBackground="{DynamicResource danger}" />
@@ -106,7 +108,6 @@
                             <TextBlock Foreground="{DynamicResource fg-000}" Margin="0 0 0 5" />
                             <moderncontrols:ModernButton Content="{Binding DownloadButtonContent}"
                                                          FontWeight="Medium"
-                                                         ToolTip="Remove preview"
                                                          IconPadding="5 0 0 0"
                                                          LeftCenterIcon="{materialIcons:MaterialIconExt Kind=Download}"
                                                          IsEnabled="{Binding IsResolved}"
