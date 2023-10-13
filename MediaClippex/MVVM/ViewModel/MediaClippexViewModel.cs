@@ -122,12 +122,12 @@ public partial class MediaClippexViewModel : BaseViewModel
         ProgressInfo = "Processing URL...";
         IsProgressIndeterminate = true;
         IsProcessing = true;
+        ShowPreview = false;
 
         try
         {
             if (IsPlaylist)
             {
-                ShowPreview = false;
                 _readOnlyList = await VideoService.GetPlaylistVideos(Url);
 
                 if (_readOnlyList.Count == 0)
@@ -152,7 +152,6 @@ public partial class MediaClippexViewModel : BaseViewModel
             }
             else
             {
-                ShowPreview = false;
                 _video = await VideoService.GetVideo(Url);
 
                 if (_video == null)
@@ -246,7 +245,6 @@ public partial class MediaClippexViewModel : BaseViewModel
 
                 DownloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
                     video.Title,
-                    video.Description,
                     video.FileType,
                     fileSize,
                     video.Path,
