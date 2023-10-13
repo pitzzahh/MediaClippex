@@ -1,4 +1,8 @@
 ﻿# Changelog
+## Version 4.6.31.181
+- 🔥 Fixed playlist download issue
+- ✨ Can now custom download for each video in a playlist
+___
 ## Version 4.5.31.176
 - 🔥 HotFix messagebox keep showing on each playlist video download
 - 📢 Added more bugs and errors
