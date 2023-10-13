@@ -4,13 +4,12 @@ namespace MediaClippex.MVVM.Model;
 
 public class Video
 {
-    public Video(string thumbnailUrl, string? title, string? duration, string? description, string? fileType,
+    public Video(string thumbnailUrl, string? title, string? duration, string? fileType,
         string? path)
     {
         ThumbnailUrl = thumbnailUrl;
         Title = title;
         Duration = duration;
-        Description = description;
         FileType = fileType;
         Path = path;
     }
@@ -20,7 +19,6 @@ public class Video
     public string ThumbnailUrl { get; set; }
     public string? Title { get; set; }
     public string? Duration { get; set; }
-    public string? Description { get; set; }
     public string? FileType { get; set; }
     public string? Path { get; set; }
 }
