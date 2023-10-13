@@ -18,7 +18,7 @@ public static class BuildContainer
             .AddTransient<MediaClippexDataContext>()
             .AddTransient<IUnitOfWork, UnitOfWork>()
             .AddSingleton<StorageService>()
-            .AddSingleton<VideoInfoCardViewModel>()
+            .AddSingleton<PreviewCardViewModel>()
             .AddSingleton<DownloadedVideoCardViewModel>()
             .AddSingleton<QueuingContentCardViewModel>()
             .AddSingleton<MediaClippexViewModel>()
