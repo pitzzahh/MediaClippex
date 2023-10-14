@@ -13,6 +13,6 @@ public class MediaClippexDataContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=mediaclippex.db"); // SQLite connection string
+        optionsBuilder.UseSqlite("Data Source=data.db"); // SQLite connection string
     }
 }
