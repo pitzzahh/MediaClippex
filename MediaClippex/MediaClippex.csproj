@@ -7,9 +7,9 @@
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <Company>pitzzahh</Company>
-        <Version>4.6.33.190</Version>
-        <FileVersion>4.6.33.190</FileVersion>
-        <ProductVersion>4.6.33.190</ProductVersion>
+        <Version>4.6.34.200</Version>
+        <FileVersion>4.6.34.200</FileVersion>
+        <ProductVersion>4.6.34.200</ProductVersion>
         <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     </PropertyGroup>
 
