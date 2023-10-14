@@ -63,11 +63,11 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private async Task DeleteVideo()
+    private Task DeleteVideo()
     {
         var messageBoxResult = MessageBox.Show($"Are you sure you want to delete \"{Title}\"?", $"Delete {FileType}",
             MessageBoxButton.YesNo, MessageBoxImage.Warning);
-        if (messageBoxResult != MessageBoxResult.Yes) return;
+        if (messageBoxResult != MessageBoxResult.Yes) return Task.CompletedTask;
 
         try
         {
@@ -75,17 +75,19 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
                 .Find(v => v.Title != null && v.Title.Equals(Title))
                 .FirstOrDefault();
 
-            if (foundDownloadedVideo == null) return;
+            if (foundDownloadedVideo == null) return Task.CompletedTask;
 
             UnitOfWork.VideosRepository
                 .Remove(foundDownloadedVideo);
-            if (UnitOfWork.Complete() == 0) return;
+            if (UnitOfWork.Complete() == 0) return Task.CompletedTask;
             if (string.IsNullOrEmpty(Path) && File.Exists(Path)) File.Delete(Path);
-            await BuilderServices.Resolve<MediaClippexViewModel>().GetDownloadedVideos();
+            BuilderServices.Resolve<MediaClippexViewModel>().DownloadedVideoCardViewModels.Remove(this);
         }
         catch (Exception)
         {
             // Handle any exceptions that might occur
         }
+
+        return Task.CompletedTask;
     }
 }

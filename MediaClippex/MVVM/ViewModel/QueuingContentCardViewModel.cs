@@ -71,7 +71,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         var messageBoxResult = MessageBox.Show("Do you want to cancel the download?", "Cancel Download",
             MessageBoxButton.YesNo);
         if (messageBoxResult != MessageBoxResult.Yes) return;
-        BuilderServices.Resolve<StorageService>().RemoveFromQueue(Title);
+        BuilderServices.Resolve<StorageService>().RemoveFromQueue(this);
         _cancellationTokenSource.Cancel();
     }
 
@@ -96,44 +96,56 @@ public partial class QueuingContentCardViewModel : BaseViewModel
                     break;
             }
         });
-
+        string? savedPath = null;
         try
         {
             // Starting of download
             var streamManifest = await VideoService.GetVideoManifest(_url);
 
-            var savedPath = await InternalDownloadProcess(isAudio, streamManifest, audioFilePath, progressHandler,
+            savedPath = await InternalDownloadProcess(isAudio, streamManifest, audioFilePath, progressHandler,
                 videoFilePath);
 
             ProgressInfo = "Done";
-            BuilderServices.Resolve<StorageService>().RemoveFromQueue(Title);
 
             UnitOfWork.VideosRepository.Add(new Video(
                 ThumbnailUrl,
                 Title,
                 Duration,
                 FileType,
-                savedPath
+                savedPath,
+                savedPath is null
+                    ? "Cannot be determined"
+                    : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length)
             ));
 
-            var downloadedContentAdded = UnitOfWork.Complete();
-            if (downloadedContentAdded == 0) return;
-
-            var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
-            mediaClippexViewModel.HasQueue = mediaClippexViewModel.QueuingContentCardViewModels.Count > 0;
-            await mediaClippexViewModel.GetDownloadedVideos();
+            UnitOfWork.Complete();
         }
-        catch (Exception e)
+        finally
         {
-            MessageBox.Show($"Something went wrong while downloading internally: {e.Message}");
+            BuilderServices.Resolve<StorageService>().RemoveFromQueue(this);
+            Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                BuilderServices.Resolve<MediaClippexViewModel>()
+                    .DownloadedVideoCardViewModels
+                    .Insert(0, new DownloadedVideoCardViewModel(
+                        Title,
+                        FileType,
+                        savedPath is null
+                            ? "Cannot be determined"
+                            : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length),
+                        savedPath,
+                        Duration,
+                        ThumbnailUrl
+                    ));
+            });
         }
     }
 
-    private async Task<string> InternalDownloadProcess(bool isAudio, StreamManifest streamManifest,
+    private async Task<string?> InternalDownloadProcess(bool isAudio, StreamManifest streamManifest,
         string audioFilePath,
         Progress<double> progressHandler, string videoFilePath)
     {
-        string savedPath;
+        string? savedPath;
         if (isAudio)
         {
             var audioStreamInfo = VideoService.GetAudioOnlyStream(streamManifest, _selectedQuality);

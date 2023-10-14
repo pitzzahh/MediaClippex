@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -195,9 +194,9 @@ public partial class MediaClippexViewModel : BaseViewModel
         await ((CheckUpdateViewModel)checkUpdateView.DataContext).CheckForUpdate();
     }
 
-    private async Task GetQueuingVideos()
+    private void GetQueuingVideos()
     {
-        await Application.Current.Dispatcher.InvokeAsync(() =>
+        Application.Current.Dispatcher.InvokeAsync(() =>
         {
             QueuingContentCardViewModels.Clear();
             var queuingVideos = UnitOfWork.QueuingContentRepository.GetAll().Reverse().ToList();
@@ -215,9 +214,9 @@ public partial class MediaClippexViewModel : BaseViewModel
         });
     }
 
-    public async Task GetDownloadedVideos()
+    private void GetDownloadedVideos()
     {
-        await Application.Current.Dispatcher.InvokeAsync(() =>
+        Application.Current.Dispatcher.InvokeAsync(() =>
         {
             DownloadedVideoCardViewModels.Clear();
             var videos = UnitOfWork.VideosRepository.GetAll().Reverse().ToList();
@@ -226,22 +225,10 @@ public partial class MediaClippexViewModel : BaseViewModel
 
             foreach (var video in videos)
             {
-                string fileSize;
-                try
-                {
-                    fileSize = video.Path is null
-                        ? "Cannot be determined"
-                        : StringService.ConvertBytesToFormattedString(new FileInfo(video.Path).Length);
-                }
-                catch (Exception)
-                {
-                    fileSize = "Cannot be determined";
-                }
-
                 DownloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
                     video.Title,
                     video.FileType,
-                    fileSize,
+                    video.FileSize,
                     video.Path,
                     video.Duration,
                     video.ThumbnailUrl
