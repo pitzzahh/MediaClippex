@@ -1,4 +1,8 @@
 ﻿# Changelog
+## Version 4.6.34.200
+- 🔄 Optimizations
+- ✨ Fixed download history lagging on remove of any queue or downloaded video
+___
 ## Version 4.6.33.190
 - 🔄 Optimizations
 - ✨ Download history now shows latest download at top list
