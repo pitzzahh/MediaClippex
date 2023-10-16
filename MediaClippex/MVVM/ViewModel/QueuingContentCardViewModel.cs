@@ -10,17 +10,18 @@ using MediaClippex.DB.Core;
 using MediaClippex.Helpers;
 using MediaClippex.MVVM.Model;
 using MediaClippex.Services;
-using Russkyc.DependencyInjection.Implementations;
+using Russkyc.DependencyInjection.Attributes;
+using Russkyc.DependencyInjection.Enums;
+using Russkyc.DependencyInjection.Interfaces;
 using YoutubeExplode.Videos.Streams;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-// ReSharper disable once ClassNeverInstantiated.Global
-// I do not know if this is good practice or not, did not even test it yet.
-// pausing and resuming will not work yet, because it does not know how to do so.
+[Service(Scope.Singleton, Registration.AsInterfaces)]
 public partial class QueuingContentCardViewModel : BaseViewModel
 {
     private readonly CancellationTokenSource _cancellationTokenSource = null!;
+    private readonly IServicesContainer _container;
     private readonly string _selectedQuality;
     private readonly string _url;
     [ObservableProperty] private string _duration;
@@ -32,9 +33,11 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     [ObservableProperty] private string _thumbnailUrl;
     [ObservableProperty] private string _title;
 
-    public QueuingContentCardViewModel(string title, string duration, string thumbnailUrl, string url,
+    public QueuingContentCardViewModel(IServicesContainer container, string title, string duration, string thumbnailUrl,
+        string url,
         string selectedQuality, bool newDownload = true!, bool isAudio = false)
     {
+        _container = container;
         Title = title;
         Duration = duration;
         ThumbnailUrl = thumbnailUrl;
@@ -43,7 +46,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         IsProcessing = true;
         FileType = isAudio ? "Audio" : "Video";
         if (newDownload) _cancellationTokenSource = new CancellationTokenSource();
-        UnitOfWork = BuilderServices.Resolve<IUnitOfWork>();
+        UnitOfWork = _container.Resolve<IUnitOfWork>();
         if (newDownload) Task.Run(() => DownloadProcess(isAudio));
     }
 
@@ -71,7 +74,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         var messageBoxResult = MessageBox.Show("Do you want to cancel the download?", "Cancel Download",
             MessageBoxButton.YesNo);
         if (messageBoxResult != MessageBoxResult.Yes) return;
-        BuilderServices.Resolve<StorageService>().RemoveFromQueue(this);
+        _container.Resolve<StorageService>().RemoveFromQueue(this);
         _cancellationTokenSource.Cancel();
     }
 
@@ -122,12 +125,13 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         }
         finally
         {
-            BuilderServices.Resolve<StorageService>().RemoveFromQueue(this);
+            _container.Resolve<StorageService>().RemoveFromQueue(this);
             Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                BuilderServices.Resolve<MediaClippexViewModel>()
+                _container.Resolve<HomeViewModel>()
                     .DownloadedVideoCardViewModels
-                    .Insert(0, new DownloadedVideoCardViewModel(
+                    .Insert(0, new DownloadedContentCardViewModel(
+                        _container,
                         Title,
                         FileType,
                         savedPath is null

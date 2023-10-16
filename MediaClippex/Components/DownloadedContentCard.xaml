@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="MediaClippex.Components.DownloadedVideoCard"
+﻿<UserControl x:Class="MediaClippex.Components.DownloadedContentCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,7 +6,7 @@
              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
              xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
-             d:DataContext="{d:DesignInstance viewModel:DownloadedVideoCardViewModel}"
+             d:DataContext="{d:DesignInstance viewModel:DownloadedContentCardViewModel}"
              mc:Ignorable="d"
              Height="160"
              HorizontalAlignment="Stretch"
@@ -126,7 +126,7 @@
             </ScrollViewer>
             <StackPanel Grid.Row="1" Orientation="Horizontal">
                 <moderncontrols:ModernButton
-                    LeftIcon="{materialIcons:MaterialIconExt Kind=Delete}"
+                    Icon="{materialIcons:MaterialIconExt Kind=Delete}"
                     IconPadding="5 0 0 0"
                     Margin="0 5"
                     Command="{Binding DeleteVideoCommand}"

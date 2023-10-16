@@ -75,7 +75,7 @@
             <StackPanel Grid.Row="3" Orientation="Horizontal">
 
                 <moderncontrols:ModernButton
-                    LeftIcon="{materialIcons:MaterialIconExt Kind=Pause}"
+                    Icon="{materialIcons:MaterialIconExt Kind=Pause}"
                     IconPadding="5 0 0 0"
                     IsEnabled="False"
                     Command="{Binding PauseDownloadCommand}"
@@ -85,7 +85,7 @@
                 <Separator Width="5" Background="Transparent" />
 
                 <moderncontrols:ModernButton
-                    LeftIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
+                    Icon="{materialIcons:MaterialIconExt Kind=Cancel}"
                     IconPadding="5 0 0 0"
                     Command="{Binding CancelDownloadCommand}"
                     DefaultForeground="{DynamicResource fg-200}"

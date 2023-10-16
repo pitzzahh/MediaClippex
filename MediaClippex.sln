@@ -2,10 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaClippex", "MediaClippex\MediaClippex.csproj", "{9930BDFB-52BD-4D79-B2AE-24E1125CDA9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elevator", "Elevator\Elevator.csproj", "{CFA35A99-8C3F-4285-9129-6100A49FAB07}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Launcher\Launcher.csproj", "{77A67DB1-69CD-4212-88D4-759BA0CC44D2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,13 +12,5 @@ Global
 		{9930BDFB-52BD-4D79-B2AE-24E1125CDA9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9930BDFB-52BD-4D79-B2AE-24E1125CDA9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9930BDFB-52BD-4D79-B2AE-24E1125CDA9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CFA35A99-8C3F-4285-9129-6100A49FAB07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CFA35A99-8C3F-4285-9129-6100A49FAB07}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CFA35A99-8C3F-4285-9129-6100A49FAB07}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CFA35A99-8C3F-4285-9129-6100A49FAB07}.Release|Any CPU.Build.0 = Release|Any CPU
-		{77A67DB1-69CD-4212-88D4-759BA0CC44D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77A67DB1-69CD-4212-88D4-759BA0CC44D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77A67DB1-69CD-4212-88D4-759BA0CC44D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77A67DB1-69CD-4212-88D4-759BA0CC44D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

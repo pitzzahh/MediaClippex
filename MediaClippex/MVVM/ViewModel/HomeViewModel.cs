@@ -7,21 +7,24 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
-using MediaClippex.MVVM.View;
 using MediaClippex.Services;
 using org.russkyc.moderncontrols.Helpers;
-using Russkyc.DependencyInjection.Implementations;
+using Russkyc.DependencyInjection.Attributes;
+using Russkyc.DependencyInjection.Enums;
+using Russkyc.DependencyInjection.Interfaces;
 using YoutubeExplode.Common;
 using YoutubeExplode.Playlists;
 using YoutubeExplode.Videos;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-// ReSharper disable once ClassNeverInstantiated.Global
-public partial class MediaClippexViewModel : BaseViewModel
+[Service(registration: Registration.AsInterfaces)]
+public partial class HomeViewModel : BaseViewModel
 {
+    private readonly IServicesContainer _container;
+
     [ObservableProperty]
-    private ObservableCollection<DownloadedVideoCardViewModel> _downloadedVideoCardViewModels = new();
+    private ObservableCollection<DownloadedContentCardViewModel> _downloadedVideoCardViewModels = new();
 
     [ObservableProperty] private bool _hasDownloadHistory;
     [ObservableProperty] private bool _hasQueue;
@@ -43,46 +46,25 @@ public partial class MediaClippexViewModel : BaseViewModel
 
     private IReadOnlyList<PlaylistVideo>? _readOnlyList;
 
-    private int _selectedIndex;
-
     [ObservableProperty] private bool _showPreview;
     [ObservableProperty] private string? _status;
-    [ObservableProperty] private ObservableCollection<string> _themes = new();
+
     [ObservableProperty] private string _title = "MediaClippex ";
     [ObservableProperty] private string? _url;
 
     private Video? _video;
 
-    public MediaClippexViewModel(IUnitOfWork unitOfWork)
+    public HomeViewModel(IServicesContainer container)
     {
-        UnitOfWork = unitOfWork;
-        ThemeManager.Instance
-            .GetColorThemes()
-            .ToList()
-            .ForEach(Themes.Add);
-        Title += "v" + CheckUpdateViewModel.ReadCurrentVersion();
-        SelectedIndex = 3;
+        _container = container;
+        UnitOfWork = container.Resolve<IUnitOfWork>();
         NightMode = SettingsService.IsDarkModeEnabledByDefault();
         Task.Run(GetQueuingVideos);
         Task.Run(GetDownloadedVideos);
-        CheckUpdateViewModel.InitCheckUpdate();
     }
 
     private static IUnitOfWork UnitOfWork { get; set; } = null!;
 
-
-    // ReSharper disable once MemberCanBePrivate.Global
-    public int SelectedIndex
-    {
-        get => _selectedIndex;
-        // ReSharper disable once PropertyCanBeMadeInitOnly.Global
-        // ReSharper disable once UnusedMember.Global
-        set
-        {
-            _selectedIndex = value;
-            ThemeManager.Instance.SetColorTheme(Themes[SelectedIndex]);
-        }
-    }
 
     // ReSharper disable once MemberCanBePrivate.Global
     public bool NightMode
@@ -141,6 +123,7 @@ public partial class MediaClippexViewModel : BaseViewModel
 
                 foreach (var playlistVideo in _readOnlyList)
                     PreviewCardViewModels.Add(new PreviewCardViewModel(
+                        _container,
                         playlistVideo.Title,
                         StringService.ConvertToTimeFormat(playlistVideo.Duration.GetValueOrDefault()),
                         playlistVideo.Author.ChannelTitle,
@@ -164,6 +147,7 @@ public partial class MediaClippexViewModel : BaseViewModel
                 IsProgressIndeterminate = false;
 
                 PreviewCardViewModels.Add(new PreviewCardViewModel(
+                    _container,
                     _video.Title,
                     StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault()),
                     _video.Author.ChannelTitle,
@@ -185,15 +169,6 @@ public partial class MediaClippexViewModel : BaseViewModel
         }
     }
 
-    [RelayCommand]
-    private static async Task CheckForUpdates()
-    {
-        var checkUpdateView = BuilderServices.Resolve<CheckUpdateView>();
-        if (checkUpdateView.IsVisible) checkUpdateView.Hide();
-        checkUpdateView.Show();
-        await ((CheckUpdateViewModel)checkUpdateView.DataContext).CheckForUpdate();
-    }
-
     private void GetQueuingVideos()
     {
         Application.Current.Dispatcher.InvokeAsync(() =>
@@ -204,6 +179,7 @@ public partial class MediaClippexViewModel : BaseViewModel
             if (!HasQueue) return;
             foreach (var video in queuingVideos)
                 QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
+                    _container,
                     video.Title,
                     video.Duration,
                     video.ThumbnailUrl,
@@ -225,7 +201,8 @@ public partial class MediaClippexViewModel : BaseViewModel
 
             foreach (var video in videos)
             {
-                DownloadedVideoCardViewModels.Add(new DownloadedVideoCardViewModel(
+                DownloadedVideoCardViewModels.Add(new DownloadedContentCardViewModel(
+                    _container,
                     video.Title,
                     video.FileType,
                     video.FileSize,

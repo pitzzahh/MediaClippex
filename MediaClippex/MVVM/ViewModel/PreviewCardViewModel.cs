@@ -9,15 +9,18 @@ using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
 using MediaClippex.MVVM.Model;
 using MediaClippex.Services;
-using Russkyc.DependencyInjection.Implementations;
+using Russkyc.DependencyInjection.Attributes;
+using Russkyc.DependencyInjection.Enums;
+using Russkyc.DependencyInjection.Interfaces;
 using YoutubeExplode.Videos.Streams;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-// ReSharper disable once ClassNeverInstantiated.Global
+[Service(Scope.Singleton, Registration.AsInterfaces)]
 public partial class PreviewCardViewModel : BaseViewModel
 {
     private readonly List<string> _audioQualities = new();
+    private readonly IServicesContainer _container;
     private readonly string? _url;
     private readonly List<string> _videoQualities = new();
     [ObservableProperty] private string? _author;
@@ -33,9 +36,10 @@ public partial class PreviewCardViewModel : BaseViewModel
     [ObservableProperty] private string? _thumbnailUrl;
     [ObservableProperty] private string? _title;
 
-    public PreviewCardViewModel(string? title, string? duration, string? author, string? thumbnailUrl, string? url)
+    public PreviewCardViewModel(IServicesContainer container, string? title, string? duration, string? author,
+        string? thumbnailUrl, string? url)
     {
-        UnitOfWork = BuilderServices.Resolve<IUnitOfWork>();
+        _container = container;
         _title = title;
         _duration = duration;
         _author = author;
@@ -52,8 +56,6 @@ public partial class PreviewCardViewModel : BaseViewModel
             OnPropertyChanged();
         });
     }
-
-    private IUnitOfWork UnitOfWork { get; }
 
     // ReSharper disable once MemberCanBePrivate.Global
     public string SelectedQuality
@@ -128,7 +130,7 @@ public partial class PreviewCardViewModel : BaseViewModel
     [RelayCommand]
     private void Remove()
     {
-        var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
+        var mediaClippexViewModel = _container.Resolve<HomeViewModel>();
         mediaClippexViewModel.HasQueue = mediaClippexViewModel.QueuingContentCardViewModels.Count > 0;
         mediaClippexViewModel.PreviewCardViewModels.Remove(this);
         mediaClippexViewModel.ShowPreview = mediaClippexViewModel.PreviewCardViewModels.Count != 0;
@@ -147,11 +149,12 @@ public partial class PreviewCardViewModel : BaseViewModel
 
         try
         {
-            var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
+            var mediaClippexViewModel = _container.Resolve<HomeViewModel>();
             mediaClippexViewModel.PreviewCardViewModels.Remove(this);
             mediaClippexViewModel.ShowPreview = mediaClippexViewModel.PreviewCardViewModels.Count > 0;
             mediaClippexViewModel.HasQueue = true;
             mediaClippexViewModel.QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
+                _container,
                 Title ?? "404 Title Not Found",
                 Duration ?? "00:00:00",
                 ThumbnailUrl ??
@@ -163,7 +166,8 @@ public partial class PreviewCardViewModel : BaseViewModel
             ));
 
             // Adding to QueuingContent Table
-            UnitOfWork.QueuingContentRepository.Add(
+            var unitOfWork = _container.Resolve<IUnitOfWork>();
+            unitOfWork.QueuingContentRepository.Add(
                 new QueuingContent(
                     Title ?? "404 Title Not Found",
                     Duration ?? "00:00:00",
@@ -177,7 +181,7 @@ public partial class PreviewCardViewModel : BaseViewModel
                     false,
                     IsAudioOnly)
             );
-            var addedToQueueDb = UnitOfWork.Complete();
+            var addedToQueueDb = unitOfWork.Complete();
             if (addedToQueueDb == 0)
                 MessageBox.Show("Cannot add to db", "Something went wrong", MessageBoxButton.OK, MessageBoxImage.Error);
         }

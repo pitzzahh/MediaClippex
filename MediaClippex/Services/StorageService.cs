@@ -2,24 +2,26 @@
 using System.Windows;
 using MediaClippex.DB.Core;
 using MediaClippex.MVVM.ViewModel;
-using Russkyc.DependencyInjection.Implementations;
+using Russkyc.DependencyInjection.Attributes;
+using Russkyc.DependencyInjection.Enums;
+using Russkyc.DependencyInjection.Interfaces;
 
 namespace MediaClippex.Services;
 
-// ReSharper disable once ClassNeverInstantiated.Global
+[Service(Scope.Singleton)]
 public class StorageService
 {
+    private readonly IServicesContainer _container;
     private readonly IUnitOfWork _unitOfWork;
 
-    public StorageService(IUnitOfWork unitOfWork)
+    public StorageService(IUnitOfWork unitOfWork, IServicesContainer container)
     {
         _unitOfWork = unitOfWork;
+        _container = container;
     }
 
     public void RemoveFromQueue(QueuingContentCardViewModel vm)
     {
-        var mediaClippexViewModel = BuilderServices.Resolve<MediaClippexViewModel>();
-
         // Needs to run on the Current dispatcher in order to remove the view models
         Application.Current.Dispatcher.InvokeAsync(() =>
         {
@@ -37,8 +39,9 @@ public class StorageService
             {
                 _unitOfWork.Complete();
                 _unitOfWork.Dispose();
-                BuilderServices.Resolve<MediaClippexViewModel>().QueuingContentCardViewModels.Remove(vm);
-                mediaClippexViewModel.HasQueue = mediaClippexViewModel.QueuingContentCardViewModels.Count > 0;
+                var homeViewModel = _container.Resolve<HomeViewModel>();
+                homeViewModel.QueuingContentCardViewModels.Remove(vm);
+                homeViewModel.HasQueue = homeViewModel.QueuingContentCardViewModels.Count > 0;
             }
         });
     }
