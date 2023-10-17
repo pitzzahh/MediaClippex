@@ -127,7 +127,7 @@
             <StackPanel Grid.Row="1" Orientation="Horizontal">
                 <moderncontrols:ModernButton
                     Icon="{materialIcons:MaterialIconExt Kind=Delete}"
-                    IconPadding="5 0 0 0"
+                    IconPadding="5"
                     Margin="0 5"
                     Command="{Binding DeleteVideoCommand}"
                     DefaultForeground="{DynamicResource fg-200}"

@@ -76,7 +76,7 @@
 
                 <moderncontrols:ModernButton
                     Icon="{materialIcons:MaterialIconExt Kind=Pause}"
-                    IconPadding="5 0 0 0"
+                    IconPadding="5"
                     IsEnabled="False"
                     Command="{Binding PauseDownloadCommand}"
                     DefaultForeground="{DynamicResource fg-200}"
@@ -86,7 +86,7 @@
 
                 <moderncontrols:ModernButton
                     Icon="{materialIcons:MaterialIconExt Kind=Cancel}"
-                    IconPadding="5 0 0 0"
+                    IconPadding="5"
                     Command="{Binding CancelDownloadCommand}"
                     DefaultForeground="{DynamicResource fg-200}"
                     DefaultBackground="{DynamicResource danger}" />
