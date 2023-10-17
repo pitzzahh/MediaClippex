@@ -9,11 +9,12 @@ using Russkyc.DependencyInjection.Interfaces;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-[Service(Scope.Singleton, Registration.AsInterfaces)]
+[Service(Scope.Singleton)]
 public partial class MainViewModel : BaseViewModel
 {
     private readonly IServicesContainer _container;
     [ObservableProperty] private BaseViewModel? _context;
+    [ObservableProperty] private bool _isHome;
     [ObservableProperty] private bool _isNightMode;
     private int _selectedIndex;
     [ObservableProperty] private ObservableCollection<string> _themes = new();
@@ -26,6 +27,7 @@ public partial class MainViewModel : BaseViewModel
             .ToList()
             .ForEach(Themes.Add);
         SelectedIndex = 3;
+        IsHome = true;
         Context = _container.Resolve<HomeViewModel>();
     }
 
@@ -45,12 +47,19 @@ public partial class MainViewModel : BaseViewModel
     [RelayCommand]
     private void NavigateToHome() // violates dry, will fix soon
     {
-        Context = _container.Resolve<HomeViewModel>();
+        var homeViewModel = _container.Resolve<HomeViewModel>();
+        if (Context == homeViewModel) return;
+
+        IsHome = true;
+        Context = homeViewModel;
     }
 
     [RelayCommand]
     private void NavigateToAbout() // violates dry, will fix soon (also violates dry, the comment)
     {
-        Context = _container.Resolve<AboutViewModel>();
+        var aboutViewModel = _container.Resolve<AboutViewModel>();
+        if (Context == aboutViewModel) return;
+        IsHome = false;
+        Context = aboutViewModel;
     }
 }
