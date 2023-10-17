@@ -43,5 +43,8 @@
         <Resource Include="Resources\play_icon.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Resource>
+        <None Update="DownloadFFmpeg.ps1">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 </Project>
