@@ -1,8 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using MediaClippex.MVVM.View;
+using MediaClippex.MVVM.ViewModel;
 using Russkyc.DependencyInjection.Helpers;
 using Russkyc.DependencyInjection.Implementations;
 
@@ -13,14 +12,6 @@ namespace MediaClippex;
 /// </summary>
 public partial class App
 {
-    public App()
-    {
-        var ffmpegFile = Path.Combine(AppContext.BaseDirectory, "ffmpeg.exe");
-        if (File.Exists(ffmpegFile)) return;
-        Process.Start(Path.Combine(AppContext.BaseDirectory, "Launcher.exe"));
-        Current.Shutdown();
-    }
-
     protected override void OnStartup(StartupEventArgs e)
     {
         var servicesContainer = new ServicesCollection()
@@ -28,6 +19,9 @@ public partial class App
             .AddServicesFromReferenceAssemblies()
             .Build();
         servicesContainer.Resolve<MainView>().Show();
+        var homeViewModel = servicesContainer.Resolve<HomeViewModel>();
+        Task.Run(homeViewModel.GetQueuingVideos);
+        Task.Run(homeViewModel.GetDownloadedVideos);
         base.OnStartup(e);
     }
 }
