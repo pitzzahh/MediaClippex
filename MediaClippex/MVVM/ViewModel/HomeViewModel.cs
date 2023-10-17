@@ -14,11 +14,10 @@ using Russkyc.DependencyInjection.Enums;
 using Russkyc.DependencyInjection.Interfaces;
 using YoutubeExplode.Common;
 using YoutubeExplode.Playlists;
-using YoutubeExplode.Videos;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-[Service(Scope.Singleton, Registration.AsInterfaces)]
+[Service(Scope.Singleton)]
 public partial class HomeViewModel : BaseViewModel
 {
     private readonly IServicesContainer _container;
@@ -29,7 +28,6 @@ public partial class HomeViewModel : BaseViewModel
     [ObservableProperty] private bool _hasDownloadHistory;
     [ObservableProperty] private bool _hasQueue;
     [ObservableProperty] private string? _imagePreview;
-
     [ObservableProperty] private bool _isDownloading;
     [ObservableProperty] private bool _isPlaylist;
     [ObservableProperty] private bool _isProcessing;
@@ -45,25 +43,16 @@ public partial class HomeViewModel : BaseViewModel
     private ObservableCollection<QueuingContentCardViewModel> _queuingContentCardViewModels = new();
 
     private IReadOnlyList<PlaylistVideo>? _readOnlyList;
-
     [ObservableProperty] private bool _showPreview;
     [ObservableProperty] private string? _status;
-
     [ObservableProperty] private string _title = "MediaClippex ";
     [ObservableProperty] private string? _url;
-
-    private Video? _video;
 
     public HomeViewModel(IServicesContainer container)
     {
         _container = container;
-        UnitOfWork = container.Resolve<IUnitOfWork>();
         NightMode = SettingsService.IsDarkModeEnabledByDefault();
-        Task.Run(GetQueuingVideos);
-        Task.Run(GetDownloadedVideos);
     }
-
-    private static IUnitOfWork UnitOfWork { get; set; } = null!;
 
 
     // ReSharper disable once MemberCanBePrivate.Global
@@ -133,14 +122,7 @@ public partial class HomeViewModel : BaseViewModel
             }
             else
             {
-                _video = await VideoService.GetVideo(Url);
-
-                if (_video == null)
-                {
-                    MessageBox.Show("Video not found.", "Cannot resolve", MessageBoxButton.OK,
-                        MessageBoxImage.Information);
-                    return;
-                }
+                var video = await VideoService.GetVideo(Url);
 
                 IsProcessing = false;
                 ShowPreview = true;
@@ -148,10 +130,10 @@ public partial class HomeViewModel : BaseViewModel
 
                 PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
                     _container,
-                    _video.Title,
-                    StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault()),
-                    _video.Author.ChannelTitle,
-                    _video.Thumbnails.GetWithHighestResolution().Url,
+                    video.Title,
+                    StringService.ConvertToTimeFormat(video.Duration.GetValueOrDefault()),
+                    video.Author.ChannelTitle,
+                    video.Thumbnails.GetWithHighestResolution().Url,
                     Url
                 ));
             }
@@ -169,48 +151,56 @@ public partial class HomeViewModel : BaseViewModel
         }
     }
 
-    private void GetQueuingVideos()
+    public void GetQueuingVideos()
     {
-        Application.Current.Dispatcher.InvokeAsync(() =>
+        var task = Task.Run(
+            () => _container.Resolve<IUnitOfWork>().QueuingContentRepository.GetAll().Reverse().ToList());
+
+        task.GetAwaiter().OnCompleted(() =>
         {
-            QueuingContentCardViewModels.Clear();
-            var queuingVideos = UnitOfWork.QueuingContentRepository.GetAll().Reverse().ToList();
-            HasQueue = queuingVideos.Count > 0;
-            if (!HasQueue) return;
-            foreach (var video in queuingVideos)
-                QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
-                    _container,
-                    video.Title,
-                    video.Duration,
-                    video.ThumbnailUrl,
-                    video.Url,
-                    video.SelectedQuality,
-                    !video.Paused
-                ));
+            Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                QueuingContentCardViewModels.Clear();
+                var queuingContents = task.Result;
+                HasQueue = queuingContents.Count > 0;
+                if (!HasQueue) return;
+                foreach (var video in queuingContents)
+                    QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
+                        _container,
+                        video.Title,
+                        video.Duration,
+                        video.ThumbnailUrl,
+                        video.Url,
+                        video.SelectedQuality,
+                        !video.Paused
+                    ));
+            });
         });
     }
 
-    private void GetDownloadedVideos()
+    public void GetDownloadedVideos()
     {
-        Application.Current.Dispatcher.InvokeAsync(() =>
+        var task = Task.Run(() => _container.Resolve<IUnitOfWork>().VideosRepository.GetAll().Reverse().ToList());
+        task.GetAwaiter().OnCompleted(() =>
         {
-            DownloadedVideoCardViewModels.Clear();
-            var videos = UnitOfWork.VideosRepository.GetAll().Reverse().ToList();
-            HasDownloadHistory = videos.Count > 0;
-            if (!HasDownloadHistory) return;
-
-            foreach (var video in videos)
+            Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                DownloadedVideoCardViewModels.Add(new DownloadedContentCardViewModel(
-                    _container,
-                    video.Title,
-                    video.FileType,
-                    video.FileSize,
-                    video.Path,
-                    video.Duration,
-                    video.ThumbnailUrl
-                ));
-            }
+                DownloadedVideoCardViewModels.Clear();
+                var videos = task.Result;
+                HasDownloadHistory = videos.Count > 0;
+                if (!HasDownloadHistory) return;
+
+                foreach (var video in videos)
+                    DownloadedVideoCardViewModels.Add(new DownloadedContentCardViewModel(
+                        _container,
+                        video.Title,
+                        video.FileType,
+                        video.FileSize,
+                        video.Path,
+                        video.Duration,
+                        video.ThumbnailUrl
+                    ));
+            });
         });
     }
 }
