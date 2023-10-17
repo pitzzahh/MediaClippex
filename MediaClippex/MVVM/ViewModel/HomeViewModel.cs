@@ -18,7 +18,7 @@ using YoutubeExplode.Videos;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-[Service(registration: Registration.AsInterfaces)]
+[Service(Scope.Singleton, Registration.AsInterfaces)]
 public partial class HomeViewModel : BaseViewModel
 {
     private readonly IServicesContainer _container;
@@ -122,7 +122,7 @@ public partial class HomeViewModel : BaseViewModel
                 IsProgressIndeterminate = false;
 
                 foreach (var playlistVideo in _readOnlyList)
-                    PreviewCardViewModels.Add(new PreviewCardViewModel(
+                    PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
                         _container,
                         playlistVideo.Title,
                         StringService.ConvertToTimeFormat(playlistVideo.Duration.GetValueOrDefault()),
@@ -146,7 +146,7 @@ public partial class HomeViewModel : BaseViewModel
                 ShowPreview = true;
                 IsProgressIndeterminate = false;
 
-                PreviewCardViewModels.Add(new PreviewCardViewModel(
+                PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
                     _container,
                     _video.Title,
                     StringService.ConvertToTimeFormat(_video.Duration.GetValueOrDefault()),
