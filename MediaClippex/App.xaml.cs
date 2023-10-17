@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using MediaClippex.MVVM.View;
 using MediaClippex.MVVM.ViewModel;
@@ -14,6 +17,19 @@ public partial class App
 {
     protected override void OnStartup(StartupEventArgs e)
     {
+        try
+        {
+            Process.Start("powershell.exe",
+                $"-ExecutionPolicy Bypass -File \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DownloadFFmpeg.ps1")}\"");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error downloading FFmpeg: {ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            Current.Shutdown(-1);
+            return;
+        }
+
         var servicesContainer = new ServicesCollection()
             .AddServices()
             .AddServicesFromReferenceAssemblies()
