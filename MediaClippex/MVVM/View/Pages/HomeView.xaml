@@ -5,6 +5,8 @@
              xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
+             d:DataContext="{d:DesignInstance viewModel:HomeViewModel, IsDesignTimeCreatable=True}"
              Background="{DynamicResource bg-000}"
              mc:Ignorable="d">
 
@@ -12,7 +14,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
 
-    <Grid Margin="5" Style="{DynamicResource FadeInFromBottomAnimation}">
+    <Grid Style="{DynamicResource FadeInFromBottomAnimation}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -44,7 +46,6 @@
                 Grid.Column="1"
                 FontSize="16"
                 IconSize="20"
-                IconPadding="5"
                 Height="38"
                 Icon="{materialIcons:MaterialIconExt Kind=Search}"
                 Margin="0 5 0 0"
@@ -69,8 +70,9 @@
                     <ProgressBar
                         IsIndeterminate="{Binding IsProgressIndeterminate}"
                         Background="{DynamicResource bg-400}"
-                        Foreground="#7F05FF"
+                        Foreground="{DynamicResource fg-000}"
                         BorderBrush="Transparent" />
+                    
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource fg-000}"
