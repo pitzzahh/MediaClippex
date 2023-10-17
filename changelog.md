@@ -1,4 +1,8 @@
 ﻿# Changelog
+## Version 5.6.34 (Breaking changes)
+- 🔄 Optimizations
+- ✨ New UI Look
+___
 ## Version 4.6.34.200
 - 🔄 Optimizations
 - ✨ Fixed download history lagging on remove of any queue or downloaded video
