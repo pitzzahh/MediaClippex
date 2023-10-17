@@ -17,7 +17,7 @@ public class GithubUpdater : IUpdater
         new GithubPackageResolver(
             "pitzzahh",
             "MediaClippex",
-            "Update.zip"
+            "mediaclippex-standalone-*.zip"
         ),
         new ZipPackageExtractor()
     );
@@ -29,7 +29,7 @@ public class GithubUpdater : IUpdater
         return $"{_latestVersion!.Major}.{_latestVersion.Minor}.{_latestVersion.Build}";
     }
 
-    public async Task<bool> CheckForUpdates(bool silent = false)
+    public async Task<bool> CheckForUpdates()
     {
         var result = await _updateManager.CheckForUpdatesAsync();
         if (result.LastVersion == null) return false;
@@ -40,7 +40,7 @@ public class GithubUpdater : IUpdater
 
         _latestVersion = result.LastVersion;
 
-        if (!silent && ShouldUpdate(readCurrentVersion, _latestVersion))
+        if (ShouldUpdate(readCurrentVersion, _latestVersion))
             return MessageBox.Show("Update available", "New update available. Update to a new version",
                 MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK;
         MessageBox.Show("No update", "You have the latest version of the app", MessageBoxButton.OK,
