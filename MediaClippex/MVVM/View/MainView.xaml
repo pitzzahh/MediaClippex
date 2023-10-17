@@ -6,7 +6,8 @@
                              xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
                              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
                              xmlns:pages="clr-namespace:MediaClippex.MVVM.View.Pages"
-                             xmlns:viewModels="clr-namespace:MediaClippex.MVVM.ViewModel"
+                             xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
+                             d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=True}"
                              mc:Ignorable="d"
                              Title="MediaClippex"
                              Icon="../../Resources/Icon.ico"
@@ -24,17 +25,21 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <moderncontrols:ModernButton Grid.Column="2"
-                                         Margin="5,5,0,5"
-                                         Padding="5,3"
-                                         Command="{Binding NavigateToHomeCommand}"
-                                         Icon="{materialIcons:MaterialIconExt Kind=Home}" />
+            <moderncontrols:ModernRadioButton Grid.Column="1"
+                                              Margin="5,5,0,5"
+                                              Padding="4"
+                                              IsChecked="{Binding IsHome}"
+                                              IsEnabled="{Binding !IsHome}"
+                                              Command="{Binding NavigateToHomeCommand}"
+                                              Icon="{materialIcons:MaterialIconExt Kind=Home}" />
 
-            <moderncontrols:ModernButton Grid.Column="1"
-                                         Margin="5,5,0,5"
-                                         Padding="5,3"
-                                         Command="{Binding NavigateToAboutCommand}"
-                                         Icon="{materialIcons:MaterialIconExt Kind=About}" />
+            <moderncontrols:ModernRadioButton Grid.Column="2"
+                                              Margin="5,5,0,5"
+                                              Padding="4"
+                                              IsChecked="{Binding !IsHome, UpdateSourceTrigger=PropertyChanged}"
+                                              IsEnabled="{Binding IsHome, UpdateSourceTrigger=PropertyChanged}"
+                                              Command="{Binding NavigateToAboutCommand}"
+                                              Icon="{materialIcons:MaterialIconExt Kind=About}" />
 
             <moderncontrols:ModernComboBox Grid.Column="3"
                                            Width="90"
@@ -49,13 +54,18 @@
 
     <ContentControl Content="{Binding Context, UpdateSourceTrigger=PropertyChanged}">
         <ContentControl.Resources>
-            <DataTemplate DataType="{x:Type viewModels:HomeViewModel}">
-                <pages:HomeView />
+            <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
+                <Border Margin="5">
+                    <pages:HomeView />
+                </Border>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:AboutViewModel}">
-                <pages:AboutView />
+            <DataTemplate DataType="{x:Type viewModel:AboutViewModel}">
+                <Border Margin="5">
+                    <pages:AboutView />
+                </Border>
             </DataTemplate>
         </ContentControl.Resources>
     </ContentControl>
+
 
 </moderncontrols:ModernWindow>
