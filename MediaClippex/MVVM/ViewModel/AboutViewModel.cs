@@ -12,15 +12,15 @@ using Russkyc.DependencyInjection.Interfaces;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-[Service(registration: Registration.AsInterfaces)]
+[Service(Scope.Singleton)]
 public partial class AboutViewModel : BaseViewModel
 {
     private readonly IUpdater _iUpdater;
 
+    [ObservableProperty] private string _checkUpdateButtonContent = "Check for updates";
     [ObservableProperty] private string? _currentVersion;
-
+    [ObservableProperty] private bool _isLatestVersion;
     [ObservableProperty] private bool _isUpdating;
-
     [ObservableProperty] private double _progress;
 
     public AboutViewModel(IServicesContainer container)
@@ -34,8 +34,10 @@ public partial class AboutViewModel : BaseViewModel
     {
         try
         {
+            CheckUpdateButtonContent = "Checking for update...";
             var hasUpdate = await _iUpdater.CheckForUpdates();
-            if (!hasUpdate) return;
+            IsLatestVersion = !hasUpdate;
+            if (IsLatestVersion) return;
             IsUpdating = true;
             await _iUpdater.PerformUpdate(new Progress<double>(val => Progress = val * 100));
         }
@@ -46,6 +48,7 @@ public partial class AboutViewModel : BaseViewModel
         finally
         {
             IsUpdating = false;
+            CheckUpdateButtonContent = "Check for update";
         }
     }
 }
