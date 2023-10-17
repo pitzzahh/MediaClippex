@@ -6,8 +6,7 @@
              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              Background="{DynamicResource bg-000}"
-             mc:Ignorable="d"
-             Height="450" Width="800">
+             mc:Ignorable="d">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -70,7 +69,7 @@
                     <ProgressBar
                         IsIndeterminate="{Binding IsProgressIndeterminate}"
                         Background="{DynamicResource bg-400}"
-                        Foreground="{DynamicResource success-darken}"
+                        Foreground="#7F05FF"
                         BorderBrush="Transparent" />
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"
