@@ -84,7 +84,9 @@ public partial class DownloadedContentCardViewModel : BaseViewModel
                 .Remove(foundDownloadedVideo);
             if (unitOfWork.Complete() == 0) return Task.CompletedTask;
             if (string.IsNullOrEmpty(Path) && File.Exists(Path)) File.Delete(Path);
-            _container.Resolve<HomeViewModel>().DownloadedVideoCardViewModels.Remove(this);
+            var homeViewModel = _container.Resolve<HomeViewModel>();
+            homeViewModel.DownloadedVideoCardViewModels.Remove(this);
+            homeViewModel.HasDownloadHistory = homeViewModel.DownloadedVideoCardViewModels.Count > 0;
         }
         catch (Exception)
         {
