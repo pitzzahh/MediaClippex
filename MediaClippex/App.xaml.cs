@@ -10,34 +10,43 @@ using Russkyc.DependencyInjection.Implementations;
 
 namespace MediaClippex;
 
-/// <summary>
-///     Interaction logic for App.xaml
-/// </summary>
 public partial class App
 {
-    protected override void OnStartup(StartupEventArgs e)
+    protected override async void OnStartup(StartupEventArgs e)
     {
         try
         {
-            Process.Start("powershell.exe",
-                $"-ExecutionPolicy Bypass -File \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DownloadFFmpeg.ps1")}\"");
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments =
+                    $"-ExecutionPolicy Bypass -File \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DownloadFFmpeg.ps1")}\"",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true
+            };
+            var process = new Process { StartInfo = processStartInfo };
+            process.Start();
+            await process.WaitForExitAsync();
+
+            var servicesContainer = new ServicesCollection()
+                .AddServices()
+                .AddServicesFromReferenceAssemblies()
+                .Build();
+
+            servicesContainer.Resolve<MainView>().Show();
+
+            var homeViewModel = servicesContainer.Resolve<HomeViewModel>();
+            await Task.Run(homeViewModel.GetQueuingVideos);
+            await Task.Run(homeViewModel.GetDownloadedVideos);
+            base.OnStartup(e);
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Error downloading FFmpeg: {ex.Message}", "Error", MessageBoxButton.OK,
                 MessageBoxImage.Error);
-            Current.Shutdown(-1);
-            return;
+            Current.Shutdown(7);
+            Environment.Exit(7);
         }
-
-        var servicesContainer = new ServicesCollection()
-            .AddServices()
-            .AddServicesFromReferenceAssemblies()
-            .Build();
-        servicesContainer.Resolve<MainView>().Show();
-        var homeViewModel = servicesContainer.Resolve<HomeViewModel>();
-        Task.Run(homeViewModel.GetQueuingVideos);
-        Task.Run(homeViewModel.GetDownloadedVideos);
-        base.OnStartup(e);
     }
 }
