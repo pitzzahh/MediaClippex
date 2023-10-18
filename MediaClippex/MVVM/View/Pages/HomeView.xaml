@@ -69,8 +69,8 @@
                       Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ProgressBar
                         IsIndeterminate="{Binding IsProgressIndeterminate}"
-                        Background="{DynamicResource bg-400}"
-                        Foreground="{DynamicResource fg-000}"
+                        Background="{DynamicResource primary-default}"
+                        Foreground="{DynamicResource inverted-lighten-3}"
                         BorderBrush="Transparent" />
                     
                     <TextBlock HorizontalAlignment="Center"
