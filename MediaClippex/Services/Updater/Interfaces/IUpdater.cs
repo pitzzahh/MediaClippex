@@ -6,6 +6,6 @@ namespace MediaClippex.Services.Updater.Interfaces;
 public interface IUpdater
 {
     string GetLatestVersion();
-    Task<bool> CheckForUpdates();
+    Task<UpdateStatus> CheckForUpdates();
     Task PerformUpdate(IProgress<double> progress);
 }
