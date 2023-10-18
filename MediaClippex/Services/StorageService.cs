@@ -45,4 +45,17 @@ public class StorageService
             }
         });
     }
+
+    public void AddToDownloadHistory(DownloadedContentCardViewModel vm)
+    {
+        // Needs to run on the Current dispatcher in order to remove the view models
+        Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            var viewModel = _container.Resolve<HomeViewModel>();
+            viewModel
+                .DownloadedVideoCardViewModels
+                .Insert(0, vm);
+            viewModel.HasDownloadHistory = true;
+        });
+    }
 }
