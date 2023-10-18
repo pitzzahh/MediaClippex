@@ -19,10 +19,11 @@ namespace MediaClippex.MVVM.ViewModel;
 [Service]
 public partial class QueuingContentCardViewModel : BaseViewModel
 {
-    private readonly CancellationTokenSource _cancellationTokenSource = new();
     private readonly IServicesContainer _container;
     private readonly string _selectedQuality;
     private readonly string _url;
+    public readonly CancellationTokenSource CancellationTokenSource = new();
+    [ObservableProperty] private bool _canCancelDownload = true;
     [ObservableProperty] private string _duration;
     [ObservableProperty] private string _fileType;
     [ObservableProperty] private bool _isProcessing;
@@ -73,7 +74,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             MessageBoxButton.YesNo);
         if (messageBoxResult != MessageBoxResult.Yes) return;
         _container.Resolve<StorageService>().RemoveFromQueue(this);
-        _cancellationTokenSource.Cancel();
+        CancellationTokenSource.Cancel();
     }
 
     private async Task DownloadProcess(bool isAudio)
@@ -87,23 +88,19 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         var progressHandler = new Progress<double>(p =>
         {
             Progress = p * 100;
-            switch (Progress)
-            {
-                case 60:
-                    CancelDownloadCommand.CanExecute(false);
-                    break;
-                case 80:
-                    ProgressInfo = "Almost finished";
-                    break;
-            }
+            if (Progress <= 85) return;
+            CanCancelDownload = false;
+            ProgressInfo = "Almost finished";
         });
-        string? savedPath = null;
+
+        var storageService = _container.Resolve<StorageService>();
+
         try
         {
             // Starting of download
             var streamManifest = await VideoService.GetVideoManifest(_url);
 
-            savedPath = await InternalDownloadProcess(isAudio, streamManifest, audioFilePath, progressHandler,
+            var savedPath = await InternalDownloadProcess(isAudio, streamManifest, audioFilePath, progressHandler,
                 videoFilePath);
 
             ProgressInfo = "Done";
@@ -118,13 +115,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
                     ? "Cannot be determined"
                     : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length)
             ));
-
             UnitOfWork.Complete();
-        }
-        finally
-        {
-            var storageService = _container.Resolve<StorageService>();
-            storageService.RemoveFromQueue(this);
             storageService.AddToDownloadHistory(new DownloadedContentCardViewModel(
                 _container,
                 Title,
@@ -136,6 +127,11 @@ public partial class QueuingContentCardViewModel : BaseViewModel
                 Duration,
                 ThumbnailUrl
             ));
+        }
+        finally
+        {
+            storageService.RemoveFromQueue(this);
+            UnitOfWork.Dispose();
         }
     }
 
@@ -149,7 +145,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             var audioStreamInfo = VideoService.GetAudioOnlyStream(streamManifest, _selectedQuality);
 
             await VideoService.DownloadAudioOnly(audioStreamInfo, audioFilePath, progressHandler,
-                _cancellationTokenSource.Token);
+                CancellationTokenSource.Token);
             savedPath = $"{audioFilePath}.mp3";
         }
         else
@@ -157,7 +153,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             var audioStreamInfo = streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate();
             var videoStreamInfo = VideoService.GetVideoOnlyStreamInfo(streamManifest, _selectedQuality);
             await VideoService.DownloadMuxed(audioStreamInfo, videoStreamInfo, videoFilePath, progressHandler,
-                _cancellationTokenSource.Token);
+                CancellationTokenSource.Token);
             savedPath = $"{videoFilePath}.{videoStreamInfo.Container}";
         }
 
