@@ -25,8 +25,9 @@
 
         <!-- Video Image -->
         <Image Source="{Binding ThumbnailUrl}"
+               Stretch="Uniform"
                VerticalAlignment="Center"
-               HorizontalAlignment="Left" />
+               HorizontalAlignment="Center" />
 
         <Grid Grid.Column="1" Margin="5">
             <Grid.RowDefinitions>
