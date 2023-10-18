@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using MediaClippex.DB.Core;
 using MediaClippex.MVVM.ViewModel;
+using MediaClippex.Services;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Interfaces;
 
@@ -40,8 +41,17 @@ public partial class MainView
                 foreach (var queuingContent in queuingContents)
                     queuingContent.Paused = true;
             else
+            {
                 foreach (var queuingContent in queuingContents)
                     unitOfWork.QueuingContentRepository.Remove(queuingContent);
+
+                foreach (var vm in _container.Resolve<HomeViewModel>().QueuingContentCardViewModels.ToList())
+                {
+                    _container.Resolve<StorageService>().RemoveFromQueue(vm);
+                    vm.CancellationTokenSource.Cancel();
+                }
+            }
+
             unitOfWork.Complete();
         }
 
