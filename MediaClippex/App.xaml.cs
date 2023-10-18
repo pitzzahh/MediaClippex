@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using MediaClippex.MVVM.View;
 using MediaClippex.MVVM.ViewModel;
@@ -37,8 +36,8 @@ public partial class App
             servicesContainer.Resolve<MainView>().Show();
 
             var homeViewModel = servicesContainer.Resolve<HomeViewModel>();
-            await Task.Run(homeViewModel.GetQueuingVideos);
-            await Task.Run(homeViewModel.GetDownloadedVideos);
+            homeViewModel.GetQueuingVideos();
+            homeViewModel.GetDownloadedVideos();
             base.OnStartup(e);
         }
         catch (Exception ex)
