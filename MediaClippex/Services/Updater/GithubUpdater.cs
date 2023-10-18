@@ -10,7 +10,7 @@ using Russkyc.DependencyInjection.Enums;
 
 namespace MediaClippex.Services.Updater;
 
-[Service(Scope.Singleton)]
+[Service(Scope.Singleton, Registration.AsInterfaces)]
 public class GithubUpdater : IUpdater
 {
     private readonly IUpdateManager _updateManager = new UpdateManager(
@@ -32,18 +32,18 @@ public class GithubUpdater : IUpdater
     public async Task<bool> CheckForUpdates()
     {
         var result = await _updateManager.CheckForUpdatesAsync();
-        if (result.LastVersion == null) return false;
+        if (result.LastVersion is null) return false;
 
         var readCurrentVersion = ReadCurrentVersion();
 
-        if (readCurrentVersion == null) return false;
+        if (readCurrentVersion is null) return false;
 
         _latestVersion = result.LastVersion;
 
         if (ShouldUpdate(readCurrentVersion, _latestVersion))
-            return MessageBox.Show("Update available", "New update available. Update to a new version",
+            return MessageBox.Show("New update available. Update to a new version", "Update available",
                 MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK;
-        MessageBox.Show("No update", "You have the latest version of the app", MessageBoxButton.OK,
+        MessageBox.Show("You have the latest version of the app", "No update", MessageBoxButton.OK,
             MessageBoxImage.Information);
         return false;
     }
