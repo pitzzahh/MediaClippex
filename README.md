@@ -32,6 +32,7 @@ ___
 - **Download multiple videos/audios at once. (NEW)**
 - **Cancel current downloading content. (NEW)** 
 - **Download a playlist. (NEW)**
+- **Lists all the resolved content and choose which to download. (NEW)**
 - ~~Pause and resume downloads.~~ (Coming soon, or not)
 
 ## Usage
@@ -39,8 +40,6 @@ ___
 1. Download the setup [here](https://github.com/pitzzahh/MediaClippex/releases/download/5.6.34/MediaClippex.Setup.exe).
 2. Install the setup.
 3. Run the `MediaClippex` app.
-4. Download ffmpeg on first launch **REQUIRED**
-5. App will ask to open app after downloading or you can open it manually.
 6. Enter the video URL of the media you want to download.
 
 ## Quick links
