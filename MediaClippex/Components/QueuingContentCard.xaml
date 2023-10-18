@@ -87,6 +87,7 @@
                 <moderncontrols:ModernButton
                     Icon="{materialIcons:MaterialIconExt Kind=Cancel}"
                     IconPadding="5"
+                    IsEnabled="{Binding CanCancelDownload}"
                     Command="{Binding CancelDownloadCommand}"
                     DefaultForeground="{DynamicResource fg-200}"
                     DefaultBackground="{DynamicResource danger}" />
