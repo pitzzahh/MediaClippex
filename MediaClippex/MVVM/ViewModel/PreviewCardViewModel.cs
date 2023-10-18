@@ -161,7 +161,6 @@ public partial class PreviewCardViewModel : BaseViewModel
                 "https://media.istockphoto.com/id/1147544806/vector/no-thumbnail-image-vector-graphic.jpg?s=170667a&w=0&k=20&c=-r15fTq303g-Do1h-F1jLdxddwkg4ZTtkdQK1XP2sFk=",
                 _url,
                 SelectedQuality,
-                true,
                 IsAudioOnly
             ));
 
