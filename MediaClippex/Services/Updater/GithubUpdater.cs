@@ -10,7 +10,7 @@ using Russkyc.DependencyInjection.Enums;
 
 namespace MediaClippex.Services.Updater;
 
-[Service(Scope.Singleton, Registration.AsInterfaces)]
+[Service(Scope.Singleton)]
 public class GithubUpdater : IUpdater
 {
     private readonly IUpdateManager _updateManager = new UpdateManager(
