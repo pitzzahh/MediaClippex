@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -37,19 +38,22 @@ public partial class MainView
                 $"You have {queuingContentsCount} remaining queue.\nSave queue? the queue will re-download upon next launch",
                 "Notice",
                 MessageBoxButton.YesNo, MessageBoxImage.Information);
+
+            var queuingContentCardViewModels =
+                _container.Resolve<HomeViewModel>().QueuingContentCardViewModels.ToList();
+            var storageService = _container.Resolve<StorageService>();
+
             if (messageBoxResult is MessageBoxResult.Yes)
+            {
                 foreach (var queuingContent in queuingContents)
                     queuingContent.Paused = true;
+                CancelDownloadingVideos(queuingContentCardViewModels, storageService);
+            }
             else
             {
                 foreach (var queuingContent in queuingContents)
                     unitOfWork.QueuingContentRepository.Remove(queuingContent);
-
-                foreach (var vm in _container.Resolve<HomeViewModel>().QueuingContentCardViewModels.ToList())
-                {
-                    _container.Resolve<StorageService>().RemoveFromQueue(vm);
-                    vm.CancellationTokenSource.Cancel();
-                }
+                CancelDownloadingVideos(queuingContentCardViewModels, storageService, true);
             }
 
             unitOfWork.Complete();
@@ -58,5 +62,16 @@ public partial class MainView
         Application.Current.Shutdown();
         Environment.Exit(0);
         base.OnClosing(e);
+    }
+
+    private static void CancelDownloadingVideos(List<QueuingContentCardViewModel> queuingContentCardViewModels,
+        StorageService storageService, bool deleteFromDb = false)
+    {
+        foreach (var vm in queuingContentCardViewModels)
+        {
+            if (deleteFromDb)
+                storageService.RemoveFromQueue(vm);
+            vm.CancellationTokenSource.Cancel();
+        }
     }
 }
