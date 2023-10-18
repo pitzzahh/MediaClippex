@@ -34,10 +34,33 @@ public partial class AboutViewModel : BaseViewModel
         try
         {
             CheckUpdateButtonContent = "Checking for update...";
-            var hasUpdate = await _updater.CheckForUpdates();
-            IsLatestVersion = !hasUpdate;
+            var status = await _updater.CheckForUpdates();
+            switch (status)
+            {
+                case UpdateStatus.Available:
+                    MessageBox.Show("New update available. Update to a new version", "Update available",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case UpdateStatus.NotAvailable:
+                    MessageBox.Show("You have the latest version of the app", "No update", MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    break;
+                case UpdateStatus.NoAsset:
+                    MessageBox.Show("No packages found or\nYou have the latest version", "Info", MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    break;
+                case UpdateStatus.Error:
+                    MessageBox.Show("Cannot read current version", "Read error", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            IsLatestVersion = status is UpdateStatus.NotAvailable or UpdateStatus.NoAsset or UpdateStatus.Error;
             if (IsLatestVersion) return;
             IsUpdating = true;
+            CurrentVersion = $"New version after installation: {_updater.GetLatestVersion()}";
             await _updater.PerformUpdate(new Progress<double>(val => Progress = val * 100));
         }
         catch (HttpRequestException e)

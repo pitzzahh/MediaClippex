@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows;
 using MediaClippex.Services.Updater.Interfaces;
 using Onova;
 using Onova.Services;
@@ -29,23 +28,18 @@ public class GithubUpdater : IUpdater
         return $"{_latestVersion!.Major}.{_latestVersion.Minor}.{_latestVersion.Build}";
     }
 
-    public async Task<bool> CheckForUpdates()
+    public async Task<UpdateStatus> CheckForUpdates()
     {
         var result = await _updateManager.CheckForUpdatesAsync();
-        if (result.LastVersion is null) return false;
+        if (result.LastVersion is null) return UpdateStatus.NoAsset;
 
         var readCurrentVersion = ReadCurrentVersion();
 
-        if (readCurrentVersion is null) return false;
+        if (readCurrentVersion is null) return UpdateStatus.Error;
 
         _latestVersion = result.LastVersion;
 
-        if (ShouldUpdate(readCurrentVersion, _latestVersion))
-            return MessageBox.Show("New update available. Update to a new version", "Update available",
-                MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK;
-        MessageBox.Show("You have the latest version of the app", "No update", MessageBoxButton.OK,
-            MessageBoxImage.Information);
-        return false;
+        return ShouldUpdate(readCurrentVersion, _latestVersion) ? UpdateStatus.Available : UpdateStatus.NotAvailable;
     }
 
     public async Task PerformUpdate(IProgress<double> progress)
