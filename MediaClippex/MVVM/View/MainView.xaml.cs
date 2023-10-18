@@ -1,8 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
+using MediaClippex.DB.Core;
 using MediaClippex.MVVM.ViewModel;
 using Russkyc.DependencyInjection.Attributes;
+using Russkyc.DependencyInjection.Interfaces;
 
 namespace MediaClippex.MVVM.View;
 
@@ -12,14 +15,36 @@ namespace MediaClippex.MVVM.View;
 [Service]
 public partial class MainView
 {
-    public MainView(MainViewModel mainViewModel)
+    private readonly IServicesContainer _container;
+
+    public MainView(MainViewModel mainViewModel, IServicesContainer container)
     {
+        _container = container;
         InitializeComponent();
         DataContext = mainViewModel;
     }
 
     protected override void OnClosing(CancelEventArgs e)
     {
+        var unitOfWork = _container.Resolve<IUnitOfWork>();
+        var queuingContents = unitOfWork.QueuingContentRepository.GetAll().ToList();
+        var queuingContentsCount = queuingContents.Count;
+        var hasQueue = queuingContentsCount > 0;
+        if (hasQueue)
+        {
+            var messageBoxResult = MessageBox.Show(
+                $"You have {queuingContentsCount} remaining queue.\nSave queue? the queue will re-download upon next launch",
+                "Notice",
+                MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (messageBoxResult is MessageBoxResult.Yes)
+                foreach (var queuingContent in queuingContents)
+                    queuingContent.Paused = true;
+            else
+                foreach (var queuingContent in queuingContents)
+                    unitOfWork.QueuingContentRepository.Remove(queuingContent);
+            unitOfWork.Complete();
+        }
+
         Application.Current.Shutdown();
         Environment.Exit(0);
         base.OnClosing(e);
