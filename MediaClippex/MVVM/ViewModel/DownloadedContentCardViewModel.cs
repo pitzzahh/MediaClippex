@@ -69,7 +69,7 @@ public partial class DownloadedContentCardViewModel : BaseViewModel
     {
         var messageBoxResult = MessageBox.Show($"Are you sure you want to delete \"{Title}\"?", $"Delete {FileType}",
             MessageBoxButton.YesNo, MessageBoxImage.Warning);
-        if (messageBoxResult != MessageBoxResult.Yes) return Task.CompletedTask;
+        if (messageBoxResult is not MessageBoxResult.Yes) return Task.CompletedTask;
 
         try
         {
@@ -78,19 +78,20 @@ public partial class DownloadedContentCardViewModel : BaseViewModel
                 .Find(v => v.Title != null && v.Title.Equals(Title))
                 .FirstOrDefault();
 
-            if (foundDownloadedVideo == null) return Task.CompletedTask;
+            if (foundDownloadedVideo is null) return Task.CompletedTask;
 
             unitOfWork.VideosRepository
                 .Remove(foundDownloadedVideo);
-            if (unitOfWork.Complete() == 0) return Task.CompletedTask;
+            if (unitOfWork.Complete() is 0) return Task.CompletedTask;
             if (string.IsNullOrEmpty(Path) && File.Exists(Path)) File.Delete(Path);
             var homeViewModel = _container.Resolve<HomeViewModel>();
             homeViewModel.DownloadedVideoCardViewModels.Remove(this);
             homeViewModel.HasDownloadHistory = homeViewModel.DownloadedVideoCardViewModels.Count > 0;
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            // Handle any exceptions that might occur
+            MessageBox.Show($"Something went deleting video: {e.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
 
         return Task.CompletedTask;
