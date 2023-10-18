@@ -11,16 +11,15 @@ using MediaClippex.Helpers;
 using MediaClippex.MVVM.Model;
 using MediaClippex.Services;
 using Russkyc.DependencyInjection.Attributes;
-using Russkyc.DependencyInjection.Enums;
 using Russkyc.DependencyInjection.Interfaces;
 using YoutubeExplode.Videos.Streams;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-[Service(Scope.Singleton, Registration.AsInterfaces)]
+[Service]
 public partial class QueuingContentCardViewModel : BaseViewModel
 {
-    private readonly CancellationTokenSource _cancellationTokenSource = null!;
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
     private readonly IServicesContainer _container;
     private readonly string _selectedQuality;
     private readonly string _url;
@@ -35,7 +34,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
 
     public QueuingContentCardViewModel(IServicesContainer container, string title, string duration, string thumbnailUrl,
         string url,
-        string selectedQuality, bool newDownload = true!, bool isAudio = false)
+        string selectedQuality, bool isAudio = false)
     {
         _container = container;
         Title = title;
@@ -45,9 +44,8 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         _selectedQuality = selectedQuality;
         IsProcessing = true;
         FileType = isAudio ? "Audio" : "Video";
-        if (newDownload) _cancellationTokenSource = new CancellationTokenSource();
         UnitOfWork = _container.Resolve<IUnitOfWork>();
-        if (newDownload) Task.Run(() => DownloadProcess(isAudio));
+        Task.Run(() => DownloadProcess(isAudio));
     }
 
     private IUnitOfWork UnitOfWork { get; }
@@ -91,10 +89,10 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             Progress = p * 100;
             switch (Progress)
             {
-                case 60d:
+                case 60:
                     CancelDownloadCommand.CanExecute(false);
                     break;
-                case 80d:
+                case 80:
                     ProgressInfo = "Almost finished";
                     break;
             }
@@ -125,23 +123,19 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         }
         finally
         {
-            _container.Resolve<StorageService>().RemoveFromQueue(this);
-            Application.Current.Dispatcher.InvokeAsync(() =>
-            {
-                _container.Resolve<HomeViewModel>()
-                    .DownloadedVideoCardViewModels
-                    .Insert(0, new DownloadedContentCardViewModel(
-                        _container,
-                        Title,
-                        FileType,
-                        savedPath is null
-                            ? "Cannot be determined"
-                            : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length),
-                        savedPath,
-                        Duration,
-                        ThumbnailUrl
-                    ));
-            });
+            var storageService = _container.Resolve<StorageService>();
+            storageService.RemoveFromQueue(this);
+            storageService.AddToDownloadHistory(new DownloadedContentCardViewModel(
+                _container,
+                Title,
+                FileType,
+                savedPath is null
+                    ? "Cannot be determined"
+                    : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length),
+                savedPath,
+                Duration,
+                ThumbnailUrl
+            ));
         }
     }
 
