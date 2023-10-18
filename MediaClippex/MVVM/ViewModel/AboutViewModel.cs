@@ -8,14 +8,13 @@ using MediaClippex.Services.Updater;
 using MediaClippex.Services.Updater.Interfaces;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
-using Russkyc.DependencyInjection.Interfaces;
 
 namespace MediaClippex.MVVM.ViewModel;
 
 [Service(Scope.Singleton)]
 public partial class AboutViewModel : BaseViewModel
 {
-    private readonly IUpdater _iUpdater;
+    private readonly IUpdater _updater;
 
     [ObservableProperty] private string _checkUpdateButtonContent = "Check for updates";
     [ObservableProperty] private string? _currentVersion;
@@ -23,9 +22,9 @@ public partial class AboutViewModel : BaseViewModel
     [ObservableProperty] private bool _isUpdating;
     [ObservableProperty] private double _progress;
 
-    public AboutViewModel(IServicesContainer container)
+    public AboutViewModel(IUpdater updater)
     {
-        _iUpdater = container.Resolve<IUpdater>();
+        _updater = updater;
         CurrentVersion = $"Version: {GithubUpdater.ReadCurrentVersion()}";
     }
 
@@ -35,15 +34,15 @@ public partial class AboutViewModel : BaseViewModel
         try
         {
             CheckUpdateButtonContent = "Checking for update...";
-            var hasUpdate = await _iUpdater.CheckForUpdates();
+            var hasUpdate = await _updater.CheckForUpdates();
             IsLatestVersion = !hasUpdate;
             if (IsLatestVersion) return;
             IsUpdating = true;
-            await _iUpdater.PerformUpdate(new Progress<double>(val => Progress = val * 100));
+            await _updater.PerformUpdate(new Progress<double>(val => Progress = val * 100));
         }
         catch (HttpRequestException e)
         {
-            MessageBox.Show("Error", e.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally
         {
