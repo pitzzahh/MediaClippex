@@ -171,8 +171,7 @@ public partial class HomeViewModel : BaseViewModel
                         video.Duration,
                         video.ThumbnailUrl,
                         video.Url,
-                        video.SelectedQuality,
-                        !video.Paused
+                        video.SelectedQuality
                     ));
             });
         });
