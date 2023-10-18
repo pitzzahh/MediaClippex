@@ -7,13 +7,16 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
-using Russkyc.DependencyInjection.Implementations;
+using Russkyc.DependencyInjection.Attributes;
+using Russkyc.DependencyInjection.Enums;
+using Russkyc.DependencyInjection.Interfaces;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-// ReSharper disable once ClassNeverInstantiated.Global
-public partial class DownloadedVideoCardViewModel : BaseViewModel
+[Service(Scope.Singleton)]
+public partial class DownloadedContentCardViewModel : BaseViewModel
 {
+    private readonly IServicesContainer _container;
     [ObservableProperty] private string? _duration;
     [ObservableProperty] private string? _fileSize;
 
@@ -24,19 +27,18 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
     [ObservableProperty] private string? _path;
     [ObservableProperty] private string? _title;
 
-    public DownloadedVideoCardViewModel(string? title, string? fileType, string? fileSize,
+    public DownloadedContentCardViewModel(IServicesContainer container, string? title, string? fileType,
+        string? fileSize,
         string? path, string? duration, string? imageUrl)
     {
+        _container = container;
         Title = title;
         FileType = fileType;
         FileSize = fileSize;
         Path = path;
         Duration = duration;
         ImageUrl = imageUrl;
-        UnitOfWork = BuilderServices.Resolve<IUnitOfWork>();
     }
-
-    private IUnitOfWork UnitOfWork { get; }
 
     [RelayCommand]
     private void OpenVideo()
@@ -67,25 +69,29 @@ public partial class DownloadedVideoCardViewModel : BaseViewModel
     {
         var messageBoxResult = MessageBox.Show($"Are you sure you want to delete \"{Title}\"?", $"Delete {FileType}",
             MessageBoxButton.YesNo, MessageBoxImage.Warning);
-        if (messageBoxResult != MessageBoxResult.Yes) return Task.CompletedTask;
+        if (messageBoxResult is not MessageBoxResult.Yes) return Task.CompletedTask;
 
         try
         {
-            var foundDownloadedVideo = UnitOfWork.VideosRepository
+            var unitOfWork = _container.Resolve<IUnitOfWork>();
+            var foundDownloadedVideo = unitOfWork.VideosRepository
                 .Find(v => v.Title != null && v.Title.Equals(Title))
                 .FirstOrDefault();
 
-            if (foundDownloadedVideo == null) return Task.CompletedTask;
+            if (foundDownloadedVideo is null) return Task.CompletedTask;
 
-            UnitOfWork.VideosRepository
+            unitOfWork.VideosRepository
                 .Remove(foundDownloadedVideo);
-            if (UnitOfWork.Complete() == 0) return Task.CompletedTask;
-            if (string.IsNullOrEmpty(Path) && File.Exists(Path)) File.Delete(Path);
-            BuilderServices.Resolve<MediaClippexViewModel>().DownloadedVideoCardViewModels.Remove(this);
+            if (unitOfWork.Complete() is 0) return Task.CompletedTask;
+            if (!string.IsNullOrEmpty(Path) && File.Exists(Path)) File.Delete(Path);
+            var homeViewModel = _container.Resolve<HomeViewModel>();
+            homeViewModel.DownloadedVideoCardViewModels.Remove(this);
+            homeViewModel.HasDownloadHistory = homeViewModel.DownloadedVideoCardViewModels.Count > 0;
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            // Handle any exceptions that might occur
+            MessageBox.Show($"Something went deleting video: {e.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
 
         return Task.CompletedTask;

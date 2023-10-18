@@ -75,8 +75,8 @@
             <StackPanel Grid.Row="3" Orientation="Horizontal">
 
                 <moderncontrols:ModernButton
-                    LeftIcon="{materialIcons:MaterialIconExt Kind=Pause}"
-                    IconPadding="5 0 0 0"
+                    Icon="{materialIcons:MaterialIconExt Kind=Pause}"
+                    IconPadding="5"
                     IsEnabled="False"
                     Command="{Binding PauseDownloadCommand}"
                     DefaultForeground="{DynamicResource fg-200}"
@@ -85,8 +85,9 @@
                 <Separator Width="5" Background="Transparent" />
 
                 <moderncontrols:ModernButton
-                    LeftIcon="{materialIcons:MaterialIconExt Kind=Cancel}"
-                    IconPadding="5 0 0 0"
+                    Icon="{materialIcons:MaterialIconExt Kind=Cancel}"
+                    IconPadding="5"
+                    IsEnabled="{Binding CanCancelDownload}"
                     Command="{Binding CancelDownloadCommand}"
                     DefaultForeground="{DynamicResource fg-200}"
                     DefaultBackground="{DynamicResource danger}" />
@@ -94,11 +95,10 @@
             <Grid Grid.Row="4" Margin="0 2"
                   Background="Transparent"
                   Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ProgressBar
-                    Background="{DynamicResource bg-400}"
-                    Value="{Binding Progress}"
-                    Foreground="{DynamicResource success-darken}"
-                    BorderBrush="Transparent" />
+
+                <moderncontrols:ModernProgressbar Margin="0 10"
+                                                  Width="Auto"
+                                                  Progress="{Binding Progress}" />
                 <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource fg-000}"

@@ -1,10 +1,12 @@
 ﻿using System;
 using MediaClippex.DB.Core;
 using MediaClippex.DB.Persistence.Repositories;
+using Russkyc.DependencyInjection.Attributes;
+using Russkyc.DependencyInjection.Enums;
 
 namespace MediaClippex.DB.Persistence;
 
-// ReSharper disable once ClassNeverInstantiated.Global
+[Service(Scope.Singleton, Registration.AsSelfAndInterfaces)]
 public class UnitOfWork : IUnitOfWork
 {
     private readonly MediaClippexDataContext _context;

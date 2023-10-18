@@ -1,8 +1,8 @@
 ﻿namespace MediaClippex.Components;
 
-public partial class DownloadedVideoCard
+public partial class DownloadedContentCard
 {
-    public DownloadedVideoCard()
+    public DownloadedContentCard()
     {
         InitializeComponent();
     }

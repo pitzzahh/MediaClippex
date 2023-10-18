@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="MediaClippex.MVVM.View.Pages.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             Background="{DynamicResource bg-000}"
+             xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
+             xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
+             d:DataContext="{d:DesignInstance viewModel:AboutViewModel, IsDesignTimeCreatable=True}"
+             mc:Ignorable="d"
+             Height="450" Width="800">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <Grid Style="{DynamicResource FadeInFromBottomAnimation}">
+
+        <StackPanel>
+            <TextBlock Text="MediaClippex"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"
+                       FontSize="26"
+                       Margin="0 50 0 30"
+                       Foreground="{DynamicResource fg-000}" />
+
+            <TextBlock Text="Simple youtube downloader, download playlists, videos and audios in just simple steps."
+                       VerticalAlignment="Center"
+                       FontSize="16"
+                       Margin="0 0 0 10"
+                       HorizontalAlignment="Center"
+                       Foreground="{DynamicResource fg-000}" />
+
+            <TextBlock Text="Developed by Peter John Arao"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Foreground="{DynamicResource fg-300}" />
+
+            <StackPanel Margin="0 50 0 0">
+                <TextBlock Text="{Binding CurrentVersion}" Margin="0 10"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource fg-600}" />
+                <moderncontrols:ModernButton
+                    Content="{Binding CheckUpdateButtonContent, UpdateSourceTrigger=PropertyChanged}"
+                    Width="150"
+                                             Command="{Binding CheckForUpdateCommand}"
+                                             IsEnabled="{Binding !IsUpdating}"
+                                             Icon="{wpf:MaterialIconExt Kind=Restore}" />
+
+                <moderncontrols:ModernProgressbar Margin="0 10"
+                                                  Width="500"
+                                                  Progress="{Binding Progress}"
+                                                  Visibility="{Binding IsUpdating, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <TextBlock Text="You have the latest version of the app" Margin="0 20"
+                           HorizontalAlignment="Center"
+                           Visibility="{Binding IsLatestVersion, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Foreground="{DynamicResource fg-600}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -10,19 +10,20 @@ using MediaClippex.DB.Core;
 using MediaClippex.Helpers;
 using MediaClippex.MVVM.Model;
 using MediaClippex.Services;
-using Russkyc.DependencyInjection.Implementations;
+using Russkyc.DependencyInjection.Attributes;
+using Russkyc.DependencyInjection.Interfaces;
 using YoutubeExplode.Videos.Streams;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-// ReSharper disable once ClassNeverInstantiated.Global
-// I do not know if this is good practice or not, did not even test it yet.
-// pausing and resuming will not work yet, because it does not know how to do so.
+[Service]
 public partial class QueuingContentCardViewModel : BaseViewModel
 {
-    private readonly CancellationTokenSource _cancellationTokenSource = null!;
+    private readonly IServicesContainer _container;
     private readonly string _selectedQuality;
     private readonly string _url;
+    public readonly CancellationTokenSource CancellationTokenSource = new();
+    [ObservableProperty] private bool _canCancelDownload = true;
     [ObservableProperty] private string _duration;
     [ObservableProperty] private string _fileType;
     [ObservableProperty] private bool _isProcessing;
@@ -32,9 +33,11 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     [ObservableProperty] private string _thumbnailUrl;
     [ObservableProperty] private string _title;
 
-    public QueuingContentCardViewModel(string title, string duration, string thumbnailUrl, string url,
-        string selectedQuality, bool newDownload = true!, bool isAudio = false)
+    public QueuingContentCardViewModel(IServicesContainer container, string title, string duration, string thumbnailUrl,
+        string url,
+        string selectedQuality, bool isAudio = false)
     {
+        _container = container;
         Title = title;
         Duration = duration;
         ThumbnailUrl = thumbnailUrl;
@@ -42,9 +45,8 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         _selectedQuality = selectedQuality;
         IsProcessing = true;
         FileType = isAudio ? "Audio" : "Video";
-        if (newDownload) _cancellationTokenSource = new CancellationTokenSource();
-        UnitOfWork = BuilderServices.Resolve<IUnitOfWork>();
-        if (newDownload) Task.Run(() => DownloadProcess(isAudio));
+        UnitOfWork = _container.Resolve<IUnitOfWork>();
+        Task.Run(() => DownloadProcess(isAudio));
     }
 
     private IUnitOfWork UnitOfWork { get; }
@@ -71,8 +73,8 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         var messageBoxResult = MessageBox.Show("Do you want to cancel the download?", "Cancel Download",
             MessageBoxButton.YesNo);
         if (messageBoxResult != MessageBoxResult.Yes) return;
-        BuilderServices.Resolve<StorageService>().RemoveFromQueue(this);
-        _cancellationTokenSource.Cancel();
+        _container.Resolve<StorageService>().RemoveFromQueue(this);
+        CancellationTokenSource.Cancel();
     }
 
     private async Task DownloadProcess(bool isAudio)
@@ -86,23 +88,19 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         var progressHandler = new Progress<double>(p =>
         {
             Progress = p * 100;
-            switch (Progress)
-            {
-                case 60d:
-                    CancelDownloadCommand.CanExecute(false);
-                    break;
-                case 80d:
-                    ProgressInfo = "Almost finished";
-                    break;
-            }
+            if (Progress <= 85) return;
+            CanCancelDownload = false;
+            ProgressInfo = "Almost finished";
         });
-        string? savedPath = null;
+
+        var storageService = _container.Resolve<StorageService>();
+
         try
         {
             // Starting of download
             var streamManifest = await VideoService.GetVideoManifest(_url);
 
-            savedPath = await InternalDownloadProcess(isAudio, streamManifest, audioFilePath, progressHandler,
+            var savedPath = await InternalDownloadProcess(isAudio, streamManifest, audioFilePath, progressHandler,
                 videoFilePath);
 
             ProgressInfo = "Done";
@@ -117,27 +115,23 @@ public partial class QueuingContentCardViewModel : BaseViewModel
                     ? "Cannot be determined"
                     : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length)
             ));
-
             UnitOfWork.Complete();
+            storageService.AddToDownloadHistory(new DownloadedContentCardViewModel(
+                _container,
+                Title,
+                FileType,
+                savedPath is null
+                    ? "Cannot be determined"
+                    : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length),
+                savedPath,
+                Duration,
+                ThumbnailUrl
+            ));
         }
         finally
         {
-            BuilderServices.Resolve<StorageService>().RemoveFromQueue(this);
-            Application.Current.Dispatcher.InvokeAsync(() =>
-            {
-                BuilderServices.Resolve<MediaClippexViewModel>()
-                    .DownloadedVideoCardViewModels
-                    .Insert(0, new DownloadedVideoCardViewModel(
-                        Title,
-                        FileType,
-                        savedPath is null
-                            ? "Cannot be determined"
-                            : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length),
-                        savedPath,
-                        Duration,
-                        ThumbnailUrl
-                    ));
-            });
+            storageService.RemoveFromQueue(this);
+            UnitOfWork.Dispose();
         }
     }
 
@@ -151,7 +145,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             var audioStreamInfo = VideoService.GetAudioOnlyStream(streamManifest, _selectedQuality);
 
             await VideoService.DownloadAudioOnly(audioStreamInfo, audioFilePath, progressHandler,
-                _cancellationTokenSource.Token);
+                CancellationTokenSource.Token);
             savedPath = $"{audioFilePath}.mp3";
         }
         else
@@ -159,7 +153,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             var audioStreamInfo = streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate();
             var videoStreamInfo = VideoService.GetVideoOnlyStreamInfo(streamManifest, _selectedQuality);
             await VideoService.DownloadMuxed(audioStreamInfo, videoStreamInfo, videoFilePath, progressHandler,
-                _cancellationTokenSource.Token);
+                CancellationTokenSource.Token);
             savedPath = $"{videoFilePath}.{videoStreamInfo.Container}";
         }
 

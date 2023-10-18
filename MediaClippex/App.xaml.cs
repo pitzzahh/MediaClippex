@@ -1,32 +1,51 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
+using MediaClippex.MVVM.View;
 using MediaClippex.MVVM.ViewModel;
-using MediaClippex.Services;
-using Russkyc.AttachedUtilities.FileStreamExtensions;
+using Russkyc.DependencyInjection.Helpers;
 using Russkyc.DependencyInjection.Implementations;
 
 namespace MediaClippex;
 
-/// <summary>
-///     Interaction logic for App.xaml
-/// </summary>
 public partial class App
 {
-    public App()
+    protected override async void OnStartup(StartupEventArgs e)
     {
-        var ffmpegFile = Path.Combine(AppContext.BaseDirectory, "ffmpeg.exe");
-        if (!File.Exists(ffmpegFile))
+        try
         {
-            Process.Start(Path.Combine(AppContext.BaseDirectory, "Launcher.exe"));
-            Current.Shutdown();
-        }
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments =
+                    $"-ExecutionPolicy Bypass -File \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DownloadFFmpeg.ps1")}\"",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true
+            };
+            var process = new Process { StartInfo = processStartInfo };
+            process.Start();
+            await process.WaitForExitAsync();
 
-        BuilderServices.BuildWithContainer(BuildContainer.ConfigureServices());
-        var versionFilePath = Path.Combine(AppContext.BaseDirectory, "app.version");
-        if (!File.Exists(versionFilePath))
+            var servicesContainer = new ServicesCollection()
+                .AddServices()
+                .AddServicesFromReferenceAssemblies()
+                .Build();
+
+            servicesContainer.Resolve<MainView>().Show();
+
+            var homeViewModel = servicesContainer.Resolve<HomeViewModel>();
+            homeViewModel.GetQueuingVideos();
+            homeViewModel.GetDownloadedVideos();
+            base.OnStartup(e);
+        }
+        catch (Exception ex)
         {
-            versionFilePath.StreamWrite(CheckUpdateViewModel.ReadCurrentVersion());
+            MessageBox.Show($"Error downloading FFmpeg: {ex.Message}", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            Current.Shutdown(7);
+            Environment.Exit(7);
         }
     }
 }
