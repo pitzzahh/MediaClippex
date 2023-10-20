@@ -34,7 +34,6 @@ public partial class HomeViewModel : BaseViewModel
     [ObservableProperty] private bool _isProgressIndeterminate;
     [ObservableProperty] private bool _isResolved;
 
-    private bool _nightMode = true;
 
     [ObservableProperty] private ObservableCollection<PreviewCardViewModel> _previewCardViewModels = new();
     [ObservableProperty] private string? _progressInfo;
@@ -51,23 +50,10 @@ public partial class HomeViewModel : BaseViewModel
     public HomeViewModel(IServicesContainer container)
     {
         _container = container;
-        NightMode = SettingsService.IsDarkModeEnabledByDefault();
     }
 
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    public bool NightMode
-    {
-        get => _nightMode;
-        // ReSharper disable once PropertyCanBeMadeInitOnly.Global
-        // ReSharper disable once UnusedMember.Global
-        set
-        {
-            _nightMode = value;
-            OnPropertyChanged();
-            ThemeManager.Instance.SetBaseTheme(NightMode ? "Dark" : "Light");
-        }
-    }
+
 
     [RelayCommand]
     private async Task Resolve()

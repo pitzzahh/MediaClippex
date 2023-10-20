@@ -1,29 +1,31 @@
-﻿<UserControl x:Class="MediaClippex.MVVM.View.Pages.AboutView"
+﻿<UserControl x:Class="MediaClippex.MVVM.View.Pages.SettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             Background="{DynamicResource bg-000}"
+             xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
-             xmlns:wpf="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
-             d:DataContext="{d:DesignInstance viewModel:AboutViewModel, IsDesignTimeCreatable=True}"
-             mc:Ignorable="d">
-
+             Background="{DynamicResource bg-000}"
+             d:DataContext="{d:DesignInstance viewModel:MainViewModel, IsDesignTimeCreatable=True}"
+             mc:Ignorable="d"
+             Height="450" Width="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    </UserControl.Resources>
+    </UserControl.Resources> 
 
     <Grid Style="{DynamicResource FadeInFromBottomAnimation}">
 
         <StackPanel>
-            <TextBlock Text="MediaClippex"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontWeight="Bold"
-                       FontSize="26"
-                       Margin="0 50 0 30"
-                       Foreground="{DynamicResource fg-000}" />
+           <StackPanel Orientation="Horizontal">
+               <TextBlock Text="Settings"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          FontWeight="Bold"
+                          FontSize="20"
+                          Margin="0 50 0 30"
+                          Foreground="{DynamicResource fg-000}" />
+           </StackPanel>
 
             <TextBlock Text="Simple youtube downloader, download playlists, videos and audios in just simple steps."
                        VerticalAlignment="Center"
@@ -46,7 +48,7 @@
                     Width="150"
                                              Command="{Binding CheckForUpdateCommand}"
                                              IsEnabled="{Binding !IsUpdating}"
-                                             Icon="{wpf:MaterialIconExt Kind=Restore}" />
+                                             Icon="{materialIcons:MaterialIconExt Kind=Restore}" />
 
                 <moderncontrols:ModernProgressbar Margin="0 10"
                                                   Width="500"

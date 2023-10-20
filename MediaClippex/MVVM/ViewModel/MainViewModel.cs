@@ -2,6 +2,7 @@
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MediaClippex.Services;
 using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
@@ -17,6 +18,7 @@ public partial class MainViewModel : BaseViewModel
     [ObservableProperty] private bool _isHome;
     [ObservableProperty] private bool _isNightMode;
     private int _selectedIndex;
+    private bool _nightMode = true;
     [ObservableProperty] private ObservableCollection<string> _themes = new();
 
     public MainViewModel(IServicesContainer container)
@@ -29,8 +31,23 @@ public partial class MainViewModel : BaseViewModel
         SelectedIndex = 3;
         IsHome = true;
         Context = _container.Resolve<HomeViewModel>();
+        NightMode = SettingsService.IsDarkModeEnabledByDefault();
     }
 
+    // ReSharper disable once MemberCanBePrivate.Global
+    public bool NightMode
+    {
+        get => _nightMode;
+        // ReSharper disable once PropertyCanBeMadeInitOnly.Global
+        // ReSharper disable once UnusedMember.Global
+        set
+        {
+            _nightMode = value;
+            OnPropertyChanged();
+            ThemeManager.Instance.SetBaseTheme(NightMode ? "Dark" : "Light");
+        }
+    }
+    
     // ReSharper disable once MemberCanBePrivate.Global
     public int SelectedIndex
     {
@@ -56,6 +73,15 @@ public partial class MainViewModel : BaseViewModel
 
     [RelayCommand]
     private void NavigateToAbout() // violates dry, will fix soon (also violates dry, the comment)
+    {
+        var aboutViewModel = _container.Resolve<AboutViewModel>();
+        if (Context == aboutViewModel) return;
+        IsHome = false;
+        Context = aboutViewModel;
+    }
+    
+    [RelayCommand]
+    private void NavigateToSettings() // violates dry, will fix soon (also violates dry, the comment)
     {
         var aboutViewModel = _container.Resolve<AboutViewModel>();
         if (Context == aboutViewModel) return;

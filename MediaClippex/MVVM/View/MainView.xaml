@@ -23,6 +23,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <moderncontrols:ModernRadioButton Grid.Column="1"
@@ -40,8 +41,16 @@
                                               IsEnabled="{Binding IsHome, UpdateSourceTrigger=PropertyChanged}"
                                               Command="{Binding NavigateToAboutCommand}"
                                               Icon="{materialIcons:MaterialIconExt Kind=About}" />
+            
+            <moderncontrols:ModernRadioButton Grid.Column="3"
+                                              Margin="7,5,0,5"
+                                              Padding="4"
+                                              IsChecked="{Binding !IsHome, UpdateSourceTrigger=PropertyChanged}"
+                                              IsEnabled="{Binding IsHome, UpdateSourceTrigger=PropertyChanged}"
+                                              Command="{Binding NavigateToAboutCommand}"
+                                              Icon="{materialIcons:MaterialIconExt Kind=Settings}" />
 
-            <moderncontrols:ModernComboBox Grid.Column="3"
+            <moderncontrols:ModernComboBox Grid.Column="4"
                                            Width="90"
                                            Margin="5"
                                            Padding="5,5"
@@ -66,6 +75,5 @@
             </DataTemplate>
         </ContentControl.Resources>
     </ContentControl>
-
 
 </moderncontrols:ModernWindow>
