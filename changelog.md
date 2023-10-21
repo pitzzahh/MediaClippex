@@ -1,4 +1,8 @@
 ﻿# Changelog
+## Version 5.7.34
+- 🔄 Optimizations
+- ✨ Added separate page for settings
+___
 ## Version 5.6.34 (Breaking changes)
 - 🔄 Optimizations
 - ✨ New UI Look
