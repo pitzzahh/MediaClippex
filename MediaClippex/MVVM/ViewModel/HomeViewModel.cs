@@ -9,9 +9,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
 using MediaClippex.Services;
-using MediaClippex.Services.Settings.Interfaces;
-using Microsoft.Win32;
-using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
 using Russkyc.DependencyInjection.Interfaces;
@@ -36,9 +33,6 @@ public partial class HomeViewModel : BaseViewModel
     [ObservableProperty] private bool _isProcessing;
     [ObservableProperty] private bool _isProgressIndeterminate;
     [ObservableProperty] private bool _isResolved;
-
-    private bool _nightMode = true;
-
     [ObservableProperty] private ObservableCollection<PreviewCardViewModel> _previewCardViewModels = new();
     [ObservableProperty] private string? _progressInfo;
 
@@ -52,30 +46,9 @@ public partial class HomeViewModel : BaseViewModel
     [ObservableProperty] private string _title = "MediaClippex ";
     [ObservableProperty] private string? _url;
 
-    public HomeViewModel(IServicesContainer container, ISettings settings)
+    public HomeViewModel(IServicesContainer container)
     {
         _container = container;
-        NightMode = settings.IsDarkMode();
-        SystemEvents.UserPreferenceChanged += (_, e) =>
-        {
-            if (e.Category != UserPreferenceCategory.General) return;
-            NightMode = settings.IsDarkMode();
-        };
-    }
-
-
-    // ReSharper disable once MemberCanBePrivate.Global
-    public bool NightMode
-    {
-        get => _nightMode;
-        // ReSharper disable once PropertyCanBeMadeInitOnly.Global
-        // ReSharper disable once UnusedMember.Global
-        set
-        {
-            _nightMode = value;
-            OnPropertyChanged();
-            ThemeManager.Instance.SetBaseTheme(NightMode ? "Dark" : "Light");
-        }
     }
 
     [RelayCommand]
