@@ -4,10 +4,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
 using MediaClippex.Services;
+using MediaClippex.Services.Settings.Interfaces;
+using Microsoft.Win32;
 using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
@@ -43,15 +46,21 @@ public partial class HomeViewModel : BaseViewModel
     private ObservableCollection<QueuingContentCardViewModel> _queuingContentCardViewModels = new();
 
     private IReadOnlyList<PlaylistVideo>? _readOnlyList;
+    [ObservableProperty] private ScrollViewer? _scrollViewer = new();
     [ObservableProperty] private bool _showPreview;
     [ObservableProperty] private string? _status;
     [ObservableProperty] private string _title = "MediaClippex ";
     [ObservableProperty] private string? _url;
 
-    public HomeViewModel(IServicesContainer container)
+    public HomeViewModel(IServicesContainer container, ISettings settings)
     {
         _container = container;
-        NightMode = SettingsService.IsDarkModeEnabledByDefault();
+        NightMode = settings.IsDarkMode();
+        SystemEvents.UserPreferenceChanged += (_, e) =>
+        {
+            if (e.Category != UserPreferenceCategory.General) return;
+            NightMode = settings.IsDarkMode();
+        };
     }
 
 
@@ -94,6 +103,7 @@ public partial class HomeViewModel : BaseViewModel
 
         try
         {
+            ScrollViewer?.ScrollToTop();
             if (IsPlaylist)
             {
                 PreviewCardViewModels.Clear();
@@ -110,7 +120,7 @@ public partial class HomeViewModel : BaseViewModel
                 ShowPreview = true;
                 IsProgressIndeterminate = false;
 
-                foreach (var playlistVideo in _readOnlyList)
+                foreach (var playlistVideo in _readOnlyList.Distinct())
                     PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
                         _container,
                         playlistVideo.Title,
