@@ -35,11 +35,19 @@ public partial class AboutViewModel : BaseViewModel
         {
             CheckUpdateButtonContent = "Checking for update...";
             var status = await _updater.CheckForUpdates();
+            IsLatestVersion = status is UpdateStatus.NotAvailable or UpdateStatus.NoAsset or UpdateStatus.Error;
             switch (status)
             {
                 case UpdateStatus.Available:
-                    MessageBox.Show("New update available. Update to a new version", "Update available",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    var result = MessageBox.Show("New update available. Update to a new version", "Update available",
+                        MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        IsUpdating = true;
+                        CurrentVersion = $"New version after installation: {_updater.GetLatestVersion()}";
+                        await _updater.PerformUpdate(new Progress<double>(val => Progress = val * 100));
+                    }
+
                     break;
                 case UpdateStatus.NotAvailable:
                     MessageBox.Show("You have the latest version of the app", "No update", MessageBoxButton.OK,
@@ -56,12 +64,6 @@ public partial class AboutViewModel : BaseViewModel
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            IsLatestVersion = status is UpdateStatus.NotAvailable or UpdateStatus.NoAsset or UpdateStatus.Error;
-            if (IsLatestVersion) return;
-            IsUpdating = true;
-            CurrentVersion = $"New version after installation: {_updater.GetLatestVersion()}";
-            await _updater.PerformUpdate(new Progress<double>(val => Progress = val * 100));
         }
         catch (HttpRequestException e)
         {
