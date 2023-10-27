@@ -6,7 +6,6 @@ using Material.Icons;
 using Material.Icons.WPF;
 using MediaClippex.MVVM.Model;
 using MediaClippex.Services.Settings.Interfaces;
-using Microsoft.Win32;
 using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
@@ -31,11 +30,7 @@ public partial class SettingsViewModel : BaseViewModel
 
         NightMode = settings.IsDarkMode();
         ThemeManager.Instance.SetColorTheme(Themes[3].Color);
-        SystemEvents.UserPreferenceChanged += (_, e) =>
-        {
-            if (e.Category != UserPreferenceCategory.General) return;
-            NightMode = settings.IsDarkMode();
-        };
+        settings.ListenToThemeChange(NightMode);
     }
 
     // ReSharper disable once MemberCanBePrivate.Global

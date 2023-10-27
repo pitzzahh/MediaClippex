@@ -3,4 +3,5 @@
 public interface ISettings
 {
     bool IsDarkMode();
+    void ListenToThemeChange(bool data = false);
 }

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MediaClippex.Services.Settings.Interfaces;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
 using Russkyc.DependencyInjection.Interfaces;
@@ -12,9 +13,10 @@ public partial class MainViewModel : BaseViewModel
     private readonly IServicesContainer _container;
     [ObservableProperty] private BaseViewModel? _context;
 
-    public MainViewModel(IServicesContainer container)
+    public MainViewModel(IServicesContainer container, ISettings  settings)
     {
         _container = container;
+        settings.ListenToThemeChange();
         Context = _container.Resolve<HomeViewModel>();
     }
 

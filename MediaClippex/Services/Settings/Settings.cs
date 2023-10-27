@@ -1,5 +1,6 @@
 ﻿using MediaClippex.Services.Settings.Interfaces;
 using Microsoft.Win32;
+using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
 
@@ -21,5 +22,15 @@ public class Settings : ISettings
         {
             return false;
         }
+    }
+
+    public void ListenToThemeChange(bool data = false)
+    {
+        SystemEvents.UserPreferenceChanged += (_, e) =>
+        {
+            if (e.Category != UserPreferenceCategory.General) return;
+            data = IsDarkMode();
+            ThemeManager.Instance.SetBaseTheme(IsDarkMode() ? "Dark" : "Light");
+        };
     }
 }
