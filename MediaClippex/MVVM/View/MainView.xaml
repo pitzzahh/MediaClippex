@@ -43,15 +43,6 @@
                                               Padding="4"
                                               Command="{Binding NavigateToSettingsCommand}"
                                               Icon="{materialIcons:MaterialIconExt Kind=Settings}" />
-
-            <moderncontrols:ModernComboBox Grid.Column="4"
-                                           Width="90"
-                                           Margin="5"
-                                           Padding="5,5"
-                                           CornerRadius="5"
-                                           Icon="{materialIcons:MaterialIconExt Kind=Theme}"
-                                           ItemsSource="{Binding Themes, UpdateSourceTrigger=PropertyChanged}"
-                                           SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
     </moderncontrols:ModernWindow.TitleBarTemplate>
 
