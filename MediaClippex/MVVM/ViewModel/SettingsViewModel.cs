@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Material.Icons;
 using Material.Icons.WPF;
+using MediaClippex.MVVM.Model;
 using MediaClippex.Services.Settings.Interfaces;
 using Microsoft.Win32;
 using org.russkyc.moderncontrols.Helpers;
@@ -16,20 +17,20 @@ namespace MediaClippex.MVVM.ViewModel;
 // ReSharper disable once ClassNeverInstantiated.Global
 public partial class SettingsViewModel : BaseViewModel
 {
-    [ObservableProperty] private string? _color;
     [ObservableProperty] private bool _isNightMode;
     private bool _nightMode = true;
     [ObservableProperty] private MaterialIcon? _themeIcon;
-    [ObservableProperty] private ObservableCollection<string> _themes = new();
+    [ObservableProperty] private ObservableCollection<ColorData> _themes = new();
 
     public SettingsViewModel(ISettings settings)
     {
         ThemeManager.Instance
             .GetColorThemes()
             .ToList()
-            .ForEach(Themes.Add);
-        NightMode = settings.IsDarkMode();
+            .ForEach(e => Themes.Add(new ColorData { Color = e }));
 
+        NightMode = settings.IsDarkMode();
+        ThemeManager.Instance.SetColorTheme(Themes[3].Color);
         SystemEvents.UserPreferenceChanged += (_, e) =>
         {
             if (e.Category != UserPreferenceCategory.General) return;
