@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace MediaClippex.Services;
@@ -74,11 +72,6 @@ public static class StringService
         return YoutubePlaylistRegex().Match(url).Success;
     }
 
-    public static string FixFileName(string fileName)
-    {
-        return Path.GetInvalidFileNameChars()
-            .Aggregate(fileName, (current, invalidChar) => current.Replace(invalidChar, '_'));
-    }
 
     private static Regex YoutubeUrlRegex()
     {

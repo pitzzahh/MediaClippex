@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace MediaClippex.Helpers;
 
@@ -13,5 +14,11 @@ public static class FileHelper
     public static void DeleteBatch(IEnumerable<string> paths, bool checkIfExists = true)
     {
         foreach (var path in paths) Delete(path, checkIfExists);
+    }
+
+    public static string FixFileName(string fileName)
+    {
+        return Path.GetInvalidFileNameChars()
+            .Aggregate(fileName, (current, invalidChar) => current.Replace(invalidChar, '_'));
     }
 }
