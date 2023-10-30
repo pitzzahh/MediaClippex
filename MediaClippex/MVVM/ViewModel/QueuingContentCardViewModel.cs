@@ -79,7 +79,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
 
     private async Task DownloadProcess(bool isAudio)
     {
-        var fixedFileName = $"{StringService.FixFileName(Title)}";
+        var fixedFileName = $"{FileHelper.FixFileName(Title)}";
 
         var videoFilePath = Path.Combine(DirectoryHelper.GetVideoSavingDirectory(), fixedFileName);
         var audioFilePath = Path.Combine(DirectoryHelper.GetAudioSavingDirectory(), fixedFileName);
