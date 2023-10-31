@@ -76,16 +76,13 @@ public partial class SettingsViewModel : BaseViewModel
         foreach (var video in videosRepository.GetAll())
         {
             videosRepository.Remove(video);
-            _homeViewModel.DownloadedVideoCardViewModels.Remove(
-                _homeViewModel.DownloadedVideoCardViewModels
-                    .First(e => e.Title == video.Title && e.Path == video.Path && e.FileSize == video.FileSize)
-            );
             if (includeFiles) await Task.Run(() => FileHelper.Delete(video.Path));
         }
 
         if (_unitOfWork.Complete() == fileCount)
         {
-            _homeViewModel.HasDownloadHistory = _homeViewModel.DownloadedVideoCardViewModels.Count > 0;
+            _homeViewModel.DownloadedVideoCardViewModels.Clear();
+            _homeViewModel.HasDownloadHistory = false;
             MessageBox.Show("All data cleared successfully!", "Success", MessageBoxButton.OK,
                 MessageBoxImage.Information);
         }
