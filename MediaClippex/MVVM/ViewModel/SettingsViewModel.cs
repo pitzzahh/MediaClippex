@@ -36,9 +36,7 @@ public partial class SettingsViewModel : BaseViewModel
             .GetColorThemes()
             .ToList()
             .ForEach(e => Themes.Add(new ColorData { Color = e }));
-
         NightMode = settings.IsDarkMode();
-        ThemeManager.Instance.SetColorTheme(Themes[3].Color);
         settings.ListenToThemeChange(NightMode);
     }
 
@@ -62,7 +60,7 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private static void ChangeColor(string color)
+    public static void ChangeColor(string color)
     {
         ThemeManager.Instance.SetColorTheme(color);
     }
