@@ -20,6 +20,8 @@ namespace MediaClippex.MVVM.ViewModel;
 public partial class QueuingContentCardViewModel : BaseViewModel
 {
     private readonly IServicesContainer _container;
+    private readonly bool _isPartOfPlaylist;
+    private readonly string _playListTitle;
     private readonly string _selectedQuality;
     private readonly string _url;
     public readonly CancellationTokenSource CancellationTokenSource = new();
@@ -35,7 +37,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
 
     public QueuingContentCardViewModel(IServicesContainer container, string title, string duration, string thumbnailUrl,
         string url,
-        string selectedQuality, bool isAudio = false)
+        string selectedQuality, bool isAudio = false, bool isPartOfPlaylist = false, string playListTitle = "")
     {
         _container = container;
         Title = title;
@@ -43,6 +45,8 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         ThumbnailUrl = thumbnailUrl;
         _url = url;
         _selectedQuality = selectedQuality;
+        _isPartOfPlaylist = isPartOfPlaylist;
+        _playListTitle = playListTitle;
         IsProcessing = true;
         FileType = isAudio ? "Audio" : "Video";
         UnitOfWork = _container.Resolve<IUnitOfWork>();
@@ -81,8 +85,14 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     {
         var fixedFileName = $"{FileHelper.FixFileName(Title)}";
 
-        var videoFilePath = Path.Combine(DirectoryHelper.GetVideoSavingDirectory(), fixedFileName);
-        var audioFilePath = Path.Combine(DirectoryHelper.GetAudioSavingDirectory(), fixedFileName);
+        var playListPath = DirectoryHelper.GetPlaylistSavingDirectory(_playListTitle);
+        var videoFilePath = _isPartOfPlaylist
+            ? Path.Combine(playListPath, fixedFileName)
+            : Path.Combine(DirectoryHelper.GetVideoSavingDirectory(), fixedFileName);
+        var audioFilePath = _isPartOfPlaylist
+            ? Path.Combine(playListPath, fixedFileName)
+            : Path.Combine(DirectoryHelper.GetAudioSavingDirectory(), fixedFileName);
+
         ProgressInfo = "Downloading";
         IsProcessing = true;
         var progressHandler = new Progress<double>(p =>
