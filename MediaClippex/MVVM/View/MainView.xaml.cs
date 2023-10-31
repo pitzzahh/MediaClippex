@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using MediaClippex.DB.Core;
@@ -28,35 +29,38 @@ public partial class MainView
 
     protected override void OnClosing(CancelEventArgs e)
     {
-        var unitOfWork = _container.Resolve<IUnitOfWork>();
-        var queuingContents = unitOfWork.QueuingContentRepository.GetAll().ToList();
-        var queuingContentsCount = queuingContents.Count;
-        var hasQueue = queuingContentsCount > 0;
-        if (hasQueue)
+        if (File.Exists(Path.Combine(AppContext.BaseDirectory, "data.db")))
         {
-            var messageBoxResult = MessageBox.Show(
-                $"You have {queuingContentsCount} remaining queue.\nSave queue? the queue will re-download upon next launch",
-                "Notice",
-                MessageBoxButton.YesNo, MessageBoxImage.Information);
-
-            var queuingContentCardViewModels =
-                _container.Resolve<HomeViewModel>().QueuingContentCardViewModels.ToList();
-            var storageService = _container.Resolve<StorageService>();
-
-            if (messageBoxResult is MessageBoxResult.Yes)
+            var unitOfWork = _container.Resolve<IUnitOfWork>();
+            var queuingContents = unitOfWork.QueuingContentRepository.GetAll().ToList();
+            var queuingContentsCount = queuingContents.Count;
+            var hasQueue = queuingContentsCount > 0;
+            if (hasQueue)
             {
-                foreach (var queuingContent in queuingContents)
-                    queuingContent.Paused = true;
-                CancelDownloadingVideos(queuingContentCardViewModels, storageService);
-            }
-            else
-            {
-                foreach (var queuingContent in queuingContents)
-                    unitOfWork.QueuingContentRepository.Remove(queuingContent);
-                CancelDownloadingVideos(queuingContentCardViewModels, storageService, true);
-            }
+                var messageBoxResult = MessageBox.Show(
+                    $"You have {queuingContentsCount} remaining queue.\nSave queue? the queue will re-download upon next launch",
+                    "Notice",
+                    MessageBoxButton.YesNo, MessageBoxImage.Information);
 
-            unitOfWork.Complete();
+                var queuingContentCardViewModels =
+                    _container.Resolve<HomeViewModel>().QueuingContentCardViewModels.ToList();
+                var storageService = _container.Resolve<StorageService>();
+
+                if (messageBoxResult is MessageBoxResult.Yes)
+                {
+                    foreach (var queuingContent in queuingContents)
+                        queuingContent.Paused = true;
+                    CancelDownloadingVideos(queuingContentCardViewModels, storageService);
+                }
+                else
+                {
+                    foreach (var queuingContent in queuingContents)
+                        unitOfWork.QueuingContentRepository.Remove(queuingContent);
+                    CancelDownloadingVideos(queuingContentCardViewModels, storageService, true);
+                }
+
+                unitOfWork.Complete();
+            }
         }
 
         Application.Current.Shutdown();
