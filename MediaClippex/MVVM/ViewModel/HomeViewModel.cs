@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
+using MediaClippex.Helpers;
 using MediaClippex.Services;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
@@ -40,7 +40,6 @@ public partial class HomeViewModel : BaseViewModel
     private ObservableCollection<QueuingContentCardViewModel> _queuingContentCardViewModels = new();
 
     private IReadOnlyList<PlaylistVideo>? _readOnlyList;
-    [ObservableProperty] private ScrollViewer? _scrollViewer = new();
     [ObservableProperty] private bool _showPreview;
     [ObservableProperty] private string? _status;
     [ObservableProperty] private string _title = "MediaClippex ";
@@ -76,12 +75,12 @@ public partial class HomeViewModel : BaseViewModel
 
         try
         {
-            ScrollViewer?.ScrollToTop();
             if (IsPlaylist)
             {
                 PreviewCardViewModels.Clear();
                 _readOnlyList = await VideoService.GetPlaylistVideos(Url);
-
+                var playlistInfo = await VideoService.GetPlaylistInfo(Url);
+                var playListTitle = FileHelper.FixFileName(playlistInfo.Title);
                 if (_readOnlyList.Count == 0)
                 {
                     MessageBox.Show("Playlist not found.", "Cannot resolve", MessageBoxButton.OK,
@@ -100,7 +99,9 @@ public partial class HomeViewModel : BaseViewModel
                         StringService.ConvertToTimeFormat(playlistVideo.Duration.GetValueOrDefault()),
                         playlistVideo.Author.ChannelTitle,
                         playlistVideo.Thumbnails.GetWithHighestResolution().Url,
-                        playlistVideo.Url
+                        playlistVideo.Url,
+                        true,
+                        playListTitle
                     ));
             }
             else

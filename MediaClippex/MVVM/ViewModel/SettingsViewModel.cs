@@ -1,14 +1,19 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Material.Icons;
 using Material.Icons.WPF;
+using MediaClippex.DB.Core;
+using MediaClippex.Helpers;
 using MediaClippex.MVVM.Model;
 using MediaClippex.Services.Settings.Interfaces;
 using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
+using Russkyc.DependencyInjection.Interfaces;
 
 namespace MediaClippex.MVVM.ViewModel;
 
@@ -16,13 +21,17 @@ namespace MediaClippex.MVVM.ViewModel;
 // ReSharper disable once ClassNeverInstantiated.Global
 public partial class SettingsViewModel : BaseViewModel
 {
+    private readonly HomeViewModel _homeViewModel;
+    private readonly IUnitOfWork _unitOfWork;
     [ObservableProperty] private bool _isNightMode;
     private bool _nightMode = true;
     [ObservableProperty] private MaterialIcon? _themeIcon;
     [ObservableProperty] private ObservableCollection<ColorData> _themes = new();
 
-    public SettingsViewModel(ISettings settings)
+    public SettingsViewModel(IServicesContainer container, ISettings settings, IUnitOfWork unitOfWork)
     {
+        _unitOfWork = unitOfWork;
+        _homeViewModel = container.Resolve<HomeViewModel>();
         ThemeManager.Instance
             .GetColorThemes()
             .ToList()
@@ -56,5 +65,30 @@ public partial class SettingsViewModel : BaseViewModel
     private static void ChangeColor(string color)
     {
         ThemeManager.Instance.SetColorTheme(color);
+    }
+
+    [RelayCommand]
+    private async void ClearData(bool includeFiles)
+    {
+        var videosRepository = _unitOfWork.VideosRepository;
+        var fileCount = videosRepository.GetAll().Count();
+
+        foreach (var video in videosRepository.GetAll())
+        {
+            videosRepository.Remove(video);
+            if (includeFiles) await Task.Run(() => FileHelper.Delete(video.Path));
+        }
+
+        if (_unitOfWork.Complete() == fileCount)
+        {
+            _homeViewModel.DownloadedVideoCardViewModels.Clear();
+            _homeViewModel.HasDownloadHistory = false;
+            MessageBox.Show("All data cleared successfully!", "Success", MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+        else
+        {
+            MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }

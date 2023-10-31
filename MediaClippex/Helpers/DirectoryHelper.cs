@@ -6,11 +6,9 @@ namespace MediaClippex.Helpers;
 // TODO: refactor this, check the directories on first app launch rather than per download.
 public static class DirectoryHelper
 {
-    private const string AppDownloadsDirectory = "MediaClippex";
-
     private static readonly string MainSavingDirectory =
         Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
-            AppDownloadsDirectory);
+            "MediaClippex");
 
     public static string GetVideoSavingDirectory()
     {
@@ -24,6 +22,17 @@ public static class DirectoryHelper
         }
 
         return videoSavingDirectory;
+    }
+
+    public static string GetPlaylistSavingDirectory(string playlistTitle = "")
+    {
+        CreateMainDirectoryIfNotPresent();
+
+        var playlistSavingDirectory = Path.Combine(Path.Combine(MainSavingDirectory, "Playlists"), playlistTitle);
+
+        if (!Directory.Exists(playlistSavingDirectory)) Directory.CreateDirectory(playlistSavingDirectory);
+
+        return playlistSavingDirectory;
     }
 
     public static string GetAudioSavingDirectory()

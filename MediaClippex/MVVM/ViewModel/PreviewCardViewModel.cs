@@ -21,6 +21,8 @@ public partial class PreviewCardViewModel : BaseViewModel
 {
     private readonly List<string> _audioQualities = new();
     private readonly IServicesContainer _container;
+    private readonly bool _isPartOfPlaylist;
+    private readonly string _playListTitle;
     private readonly string? _url;
     private readonly List<string> _videoQualities = new();
     [ObservableProperty] private string? _author;
@@ -28,16 +30,14 @@ public partial class PreviewCardViewModel : BaseViewModel
     [ObservableProperty] private string? _duration;
     private bool _isAudioOnly;
     [ObservableProperty] private bool _isResolved;
-
     [ObservableProperty] private ObservableCollection<string> _qualities = new();
-
     [ObservableProperty] private string? _quality = "Quality";
     private string _selectedQuality = string.Empty;
     [ObservableProperty] private string? _thumbnailUrl;
     [ObservableProperty] private string? _title;
 
     public PreviewCardViewModel(IServicesContainer container, string? title, string? duration, string? author,
-        string? thumbnailUrl, string? url)
+        string? thumbnailUrl, string? url, bool isPartOfPlaylist = false, string playListTitle = "")
     {
         _container = container;
         _title = title;
@@ -45,6 +45,8 @@ public partial class PreviewCardViewModel : BaseViewModel
         _author = author;
         _thumbnailUrl = thumbnailUrl;
         _url = url;
+        _isPartOfPlaylist = isPartOfPlaylist;
+        _playListTitle = playListTitle;
         Application.Current.Dispatcher.InvokeAsync(async () =>
         {
             if (_url == null) return;
@@ -161,7 +163,9 @@ public partial class PreviewCardViewModel : BaseViewModel
                 "https://media.istockphoto.com/id/1147544806/vector/no-thumbnail-image-vector-graphic.jpg?s=170667a&w=0&k=20&c=-r15fTq303g-Do1h-F1jLdxddwkg4ZTtkdQK1XP2sFk=",
                 _url,
                 SelectedQuality,
-                IsAudioOnly
+                IsAudioOnly,
+                _isPartOfPlaylist,
+                _playListTitle
             ));
 
             // Adding to QueuingContent Table
