@@ -2,20 +2,17 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "MediaClippex"
-#define MyAppVersion "1.2.13.37"
 #define MyAppPublisher "Peter John Arao"
-#define MyAppURL "https://araopj.tech"
-#define MyAppExeName "Launcher.exe"
-#define MyRealAppExeName "MediaClippex.exe"
+#define MyAppURL "https://github.com/pitzzahh/MediaClippex"
+#define MyAppExeName "MediaClippex.exe"
+#define MyRealAppExeName MyAppExeName
 #define MyAppAssocName MyAppName + ""
 #define MyAppAssocExt ".exe"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
-#define MyAppIconURL "C:\Users\pitzzahh\RiderProjects\MediaClippex\Launcher\Resources\Icon.ico"
+#define MyAppIconURL "MediaClippex\Resources\Icon.ico"
 
 [Setup]
-; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
-; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{9A8E2508-4CB3-4762-89D6-78AC8E85141C}
+AppId={#GeneratedAppId}  
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName}
@@ -26,18 +23,18 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 ChangesAssociations=yes
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\pitzzahh\RiderProjects\MediaClippex\LICENSE
+LicenseFile=LICENSE
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
-OutputDir=D:\MEDIACLIPPEX\output
-OutputBaseFilename=MediaClippexSetup
+OutputDir={#InstallerOutputDir}
+OutputBaseFilename={#SetupFileName}
 SetupIconFile={#MyAppIconURL}
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 VersionInfoOriginalFileName={#MyAppVersion}
-VersionInfoVersion={#MyAppVersion}
 UninstallDisplayIcon={#MyAppIconURL}
+SetupMutex=SetupMutex{#SetupSetting("AppId")}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -71,8 +68,7 @@ Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\MEDIACLIPPEX\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\MEDIACLIPPEX\win-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: {#SourceFiles}; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
@@ -88,4 +84,3 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
-
