@@ -1,4 +1,7 @@
 ﻿# Changelog
+## Version 5.8.35
+- 🔄 Test workflow
+___
 ## Version 5.8.34
 - 🔄 Optimizations
 - ✨ Added ability to clear downloaded data (history or include downloaded files)
