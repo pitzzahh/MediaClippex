@@ -24,6 +24,8 @@ ___
   <img src="preview.gif" alt="App Preview" />
 </div>
 
+___
+
 ## Features
 - Download videos, shorts, audios from YouTube.
 - Extract audio from video.
@@ -34,13 +36,15 @@ ___
 - **Download a playlist. (NEW)**
 - **Lists all the resolved content and choose which to download. (NEW)**
 - ~~Pause and resume downloads.~~ (Coming soon, or not)
-
+___
+## Contributors
+___
 ## Usage
 
 1. Download the setup [here](https://github.com/pitzzahh/MediaClippex/releases/download/5.6.34/MediaClippex.Setup.exe).
 2. Install the setup.
 3. Run the `MediaClippex` app.
-6. Enter the video URL of the media you want to download.
-
+4. Enter the video URL of the media you want to download.
+___
 ## Quick links
 - [MediaClippex Setup](https://github.com/pitzzahh/MediaClippex/releases/download/5.6.34/MediaClippex.Setup.exe).
