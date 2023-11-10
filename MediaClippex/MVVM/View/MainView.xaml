@@ -29,6 +29,7 @@
             <moderncontrols:ModernRadioButton Grid.Column="1"
                                               Margin="5,5,0,5"
                                               Padding="4"
+                                              IsChecked="True"
                                               Command="{Binding NavigateToHomeCommand}"
                                               Icon="{materialIcons:MaterialIconExt Kind=Home}" />
 
