@@ -7,7 +7,9 @@ on:
 env:
   PROJECT_PATH: "MediaClippex/MediaClippex.csproj"
   DOTNET_VERSION: "net6.0-windows"
-  FILE_NAME: "mediaclippex-standalone-${{ github.ref_name }}.zip"
+  PROJECT_NAME: "MediaClippex"
+  UPDATE_ASSET_FILE: "mediaclippex-standalone-${{ github.ref_name }}.zip"
+  SETUP_FILE_NAME: "MediaClippex Setup"
 
 jobs:
   deploy:
@@ -27,16 +29,35 @@ jobs:
       - name: Publish the project
         run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 --self-contained -p:PublishReadyToRun=true -p:PublishSingleFile=true -p:DeleteExistingFiles=true
 
+      - name: Generate AppId
+        id: generate_appid
+        run: |
+          generated_appid=$(powershell -command "[guid]::NewGuid().ToString()")
+          echo "::set-output name=appid::$generated_appid"
+        shell: bash
+
+      - name: Build the installer
+        run: |
+          "%programfiles(x86)%\Inno Setup 6\iscc.exe" "/DMyAppVersion={{${{ github.ref_name }}}" "/DGeneratedAppId=${{ steps.generate_appid.outputs.appid }}" "/DInstallerOutputDir=${{ github.workspace }}/${{ env.PROJECT_NAME }}/Output" "/DSourceFiles=${{ github.workspace }}\${{ env.PROJECT_NAME }}\bin\Release\${{ env.DOTNET_VERSION }}\win-x64\publish\*" "/DSetupFileName=${{ env.SETUP_FILE_NAME }}" "installer_script.iss"
+        shell: cmd
+
+      - name: Upload the installer as an artifact
+        uses: actions/upload-artifact@v2
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          path: ${{ github.workspace }}/${{ env.PROJECT_NAME }}/Output/${{ env.SETUP_FILE_NAME }}.exe
+          name: ${{ env.SETUP_FILE_NAME }}
+
       - name: Zip Files
         run: |
-          Compress-Archive -Path ${{ github.workspace }}/MediaClippex/bin/Release/${{ env.DOTNET_VERSION }}/win-x64/publish/* -DestinationPath ${{ github.workspace }}/MediaClippex/${{ env.FILE_NAME }}
+          Compress-Archive -Path ${{ github.workspace }}\${{ env.PROJECT_NAME }}\bin\Release\${{ env.DOTNET_VERSION }}\win-x64\publish\* -DestinationPath ${{ github.workspace }}/${{ env.PROJECT_NAME }}/${{ env.UPDATE_ASSET_FILE }}
 
       - name: Deploy Update File
         id: deploy_artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: MediaClippex-Update
-          path: ${{ github.workspace }}/MediaClippex/${{ env.FILE_NAME }}
+          name: Fossa-Update
+          path: ${{ github.workspace }}/${{ env.PROJECT_NAME }}/${{ env.UPDATE_ASSET_FILE }}
 
       - name: Create Release
         id: create_release
@@ -54,6 +75,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/MediaClippex/${{ env.FILE_NAME }}
-          asset_name: ${{ env.FILE_NAME }}
+          asset_path: ${{ github.workspace }}/${{ env.PROJECT_NAME }}/${{ env.UPDATE_ASSET_FILE }}
+          asset_name: ${{ env.UPDATE_ASSET_FILE }}
           asset_content_type: application/zip
+
+      - name: Upload Installer
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: "${{ github.workspace }}/${{ env.PROJECT_NAME }}/Output/${{ env.SETUP_FILE_NAME }}.exe"
+          asset_name: ${{ env.SETUP_FILE_NAME }}.exe
+          asset_content_type: application/octet-stream
