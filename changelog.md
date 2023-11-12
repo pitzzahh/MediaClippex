@@ -1,4 +1,7 @@
 ﻿# Changelog
+## Version 5.9.36
+- 🔥 Fixed default download path
+___
 ## Version 5.9.35
 - 🔄 Optimizations
 - ✨ Added ability to change download path
