@@ -1,4 +1,8 @@
 ﻿# Changelog
+## Version 5.9.37
+- ✨ Fixed download button not showing video download file size
+-  🔥 Removed unused pause button
+___
 ## Version 5.9.36
 - 🔥 Fixed default download path
 ___
