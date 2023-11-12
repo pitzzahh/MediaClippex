@@ -9,8 +9,6 @@ using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
 using MediaClippex.Helpers;
 using MediaClippex.Services;
-using MediaClippex.Services.Settings.Interfaces;
-using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
 using Russkyc.DependencyInjection.Interfaces;
@@ -35,6 +33,7 @@ public partial class HomeViewModel : BaseViewModel
     [ObservableProperty] private bool _isProcessing;
     [ObservableProperty] private bool _isProgressIndeterminate;
     [ObservableProperty] private bool _isResolved;
+
     [ObservableProperty] private ObservableCollection<PreviewCardViewModel> _previewCardViewModels = new();
     [ObservableProperty] private string? _progressInfo;
 
@@ -44,13 +43,11 @@ public partial class HomeViewModel : BaseViewModel
     private IReadOnlyList<PlaylistVideo>? _readOnlyList;
     [ObservableProperty] private bool _showPreview;
     [ObservableProperty] private string? _status;
-    [ObservableProperty] private string _title = "MediaClippex ";
     [ObservableProperty] private string? _url;
 
-    public HomeViewModel(IServicesContainer container, ISettings settings)
+    public HomeViewModel(IServicesContainer container)
     {
         _container = container;
-        ThemeManager.Instance.SetBaseTheme(settings.IsDarkMode() ? "Dark" : "Light");
     }
 
     [RelayCommand]
