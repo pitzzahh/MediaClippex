@@ -70,14 +70,13 @@
                     <ProgressBar
                         IsIndeterminate="{Binding IsProgressIndeterminate}"
                         Background="{DynamicResource primary-default}"
-                        Foreground="{DynamicResource inverted-lighten-3}"
                         BorderBrush="Transparent" />
-                    
-                    <TextBlock HorizontalAlignment="Center"
+
+                    <TextBlock Text="{Binding ProgressInfo}"
+                               HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource fg-000}"
-                               FontWeight="Medium"
-                               Text="{Binding ProgressInfo}" />
+                               FontWeight="Medium" />
                 </Grid>
 
                 <!-- Download Preview -->

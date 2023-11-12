@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Material.Icons;
@@ -14,6 +15,7 @@ using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
 using Russkyc.DependencyInjection.Interfaces;
+using MessageBox = System.Windows.MessageBox;
 
 namespace MediaClippex.MVVM.ViewModel;
 
@@ -21,8 +23,10 @@ namespace MediaClippex.MVVM.ViewModel;
 // ReSharper disable once ClassNeverInstantiated.Global
 public partial class SettingsViewModel : BaseViewModel
 {
-    private readonly HomeViewModel _homeViewModel;
+    private readonly IServicesContainer _container;
+    private readonly ISettings _settings;
     private readonly IUnitOfWork _unitOfWork;
+    [ObservableProperty] private string _downloadPath = string.Empty;
     [ObservableProperty] private bool _isNightMode;
     private bool _nightMode = true;
     [ObservableProperty] private MaterialIcon? _themeIcon;
@@ -30,13 +34,15 @@ public partial class SettingsViewModel : BaseViewModel
 
     public SettingsViewModel(IServicesContainer container, ISettings settings, IUnitOfWork unitOfWork)
     {
+        _container = container;
+        _settings = settings;
         _unitOfWork = unitOfWork;
-        _homeViewModel = container.Resolve<HomeViewModel>();
         ThemeManager.Instance
             .GetColorThemes()
             .ToList()
             .ForEach(e => Themes.Add(new ColorData { Color = e }));
         NightMode = settings.IsDarkMode();
+        DownloadPath = settings.DownloadPath();
         settings.ListenToThemeChange(NightMode);
     }
 
@@ -60,9 +66,27 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    public static void ChangeColor(string color)
+    private void ChangeColor(string color)
     {
         ThemeManager.Instance.SetColorTheme(color);
+        _settings.ColorTheme(true, color);
+    }
+
+    [RelayCommand]
+    private void ChangeDownloadPath()
+    {
+        var folderBrowserDialog = new FolderBrowserDialog
+        {
+            SelectedPath = DownloadPath,
+            ShowNewFolderButton = true
+        };
+
+        if (folderBrowserDialog.ShowDialog() != DialogResult.OK) return;
+
+        _settings.DownloadPath(true, folderBrowserDialog.SelectedPath);
+        DownloadPath = _settings.DownloadPath();
+        MessageBox.Show("Download path changed successfully!", "Success", MessageBoxButton.OK,
+            MessageBoxImage.Information);
     }
 
     [RelayCommand]
@@ -79,8 +103,9 @@ public partial class SettingsViewModel : BaseViewModel
 
         if (_unitOfWork.Complete() == fileCount)
         {
-            _homeViewModel.DownloadedVideoCardViewModels.Clear();
-            _homeViewModel.HasDownloadHistory = false;
+            var homeViewModel = _container.Resolve<HomeViewModel>();
+            homeViewModel.DownloadedVideoCardViewModels.Clear();
+            homeViewModel.HasDownloadHistory = false;
             MessageBox.Show("All data cleared successfully!", "Success", MessageBoxButton.OK,
                 MessageBoxImage.Information);
         }

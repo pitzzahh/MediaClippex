@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaClippex.Services.Settings.Interfaces;
@@ -18,33 +18,17 @@ public partial class MainViewModel : BaseViewModel
     public MainViewModel(IServicesContainer container, ISettings settings)
     {
         _container = container;
-        settings.ListenToThemeChange();
-        SettingsViewModel.ChangeColor(ThemeManager.Instance.GetColorThemes().ToList()[3]);
-        Context = _container.Resolve<HomeViewModel>();
+        ThemeManager.Instance.SetBaseTheme(settings.IsDarkMode() ? "Dark" : "Light");
+        ThemeManager.Instance.SetColorTheme(settings.ColorTheme());
+        Navigate(typeof(HomeViewModel));
     }
 
     [RelayCommand]
-    private void NavigateToHome() // violates dry principle, will fix soon
+    private void Navigate(object parameter)
     {
-        var viewModel = _container.Resolve<HomeViewModel>();
-        if (Context == viewModel) return;
-        Context = viewModel;
-    }
-
-    [RelayCommand]
-    private void NavigateToAbout() // violates dry principle, will fix soon (also violates dry principle, the comment)
-    {
-        var viewModel = _container.Resolve<AboutViewModel>();
-        if (Context == viewModel) return;
-        Context = viewModel;
-    }
-
-    [RelayCommand]
-    private void
-        NavigateToSettings() // violates dry principle, will fix soon (also violates dry principle, the comment)
-    {
-        var viewModel = _container.Resolve<SettingsViewModel>();
-        if (Context == viewModel) return;
-        Context = viewModel;
+        if (parameter is not Type type) return;
+        var viewModel = _container.Resolve(type);
+        if (viewModel == null || Context == viewModel) return;
+        Context = (BaseViewModel?)viewModel;
     }
 }

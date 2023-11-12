@@ -1,59 +1,40 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using MediaClippex.Services.Settings.Interfaces;
+using Russkyc.DependencyInjection.Attributes;
+using Russkyc.DependencyInjection.Enums;
 
 namespace MediaClippex.Helpers;
 
-// TODO: refactor this, check the directories on first app launch rather than per download.
-public static class DirectoryHelper
+[Service(Scope.Singleton)]
+// ReSharper disable once ClassNeverInstantiated.Global
+public class DirectoryHelper
 {
-    private static readonly string MainSavingDirectory =
-        Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
-            "MediaClippex");
+    private readonly ISettings _settings;
 
-    public static string GetVideoSavingDirectory()
+    public DirectoryHelper(ISettings settings)
     {
-        CreateMainDirectoryIfNotPresent();
-
-        var videoSavingDirectory = Path.Combine(MainSavingDirectory, "Videos");
-
-        if (!Directory.Exists(videoSavingDirectory))
-        {
-            Directory.CreateDirectory(videoSavingDirectory);
-        }
-
-        return videoSavingDirectory;
+        _settings = settings;
     }
 
-    public static string GetPlaylistSavingDirectory(string playlistTitle = "")
+    public string GetVideoSavingDirectory()
     {
-        CreateMainDirectoryIfNotPresent();
-
-        var playlistSavingDirectory = Path.Combine(Path.Combine(MainSavingDirectory, "Playlists"), playlistTitle);
-
-        if (!Directory.Exists(playlistSavingDirectory)) Directory.CreateDirectory(playlistSavingDirectory);
-
-        return playlistSavingDirectory;
+        return CreateDirectoryIfNotPresent(Path.Combine(_settings.DownloadPath(), "Videos"));
     }
 
-    public static string GetAudioSavingDirectory()
+    public string GetPlaylistSavingDirectory(string playlistTitle = "")
     {
-        CreateMainDirectoryIfNotPresent();
-
-        var audioSavingDirectory = Path.Combine(MainSavingDirectory, "Audios");
-
-        if (!Directory.Exists(audioSavingDirectory))
-        {
-            Directory.CreateDirectory(audioSavingDirectory);
-        }
-
-        return audioSavingDirectory;
+        return CreateDirectoryIfNotPresent(Path.Combine(_settings.DownloadPath(), "Playlists", playlistTitle));
     }
 
-    private static void CreateMainDirectoryIfNotPresent()
+    public string GetAudioSavingDirectory()
     {
-        if (!Directory.Exists(MainSavingDirectory))
-        {
-            Directory.CreateDirectory(MainSavingDirectory);
-        }
+        return CreateDirectoryIfNotPresent(Path.Combine(_settings.DownloadPath(), "Audios"));
+    }
+
+    public static string CreateDirectoryIfNotPresent(string directory)
+    {
+        if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+
+        return directory;
     }
 }
