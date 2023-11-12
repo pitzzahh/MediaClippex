@@ -24,6 +24,8 @@ ___
   <img src="preview.gif" alt="App Preview" />
 </div>
 
+## Contributors
+
 ## Features
 - Download videos, shorts, audios from YouTube.
 - Extract audio from video.
@@ -34,8 +36,6 @@ ___
 - **Download a playlist. (NEW)**
 - **Lists all the resolved content and choose which to download. (NEW)**
 - ~~Pause and resume downloads.~~ (Coming soon, or not)
-
-## Contributors
 
 ## Usage
 
