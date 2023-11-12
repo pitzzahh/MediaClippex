@@ -1,11 +1,9 @@
-﻿<div align="center">
+<div style="text-align: center;">
   <h1>MediaClippex.</h1>
   <img src="https://raw.githubusercontent.com/pitzzahh/MediaClippex/main/MediaClippex/Resources/Icon.ico" alt="Banner" width="120" />
   <br>  
   <b>Youtube downloader, download playlist, videos, and audios in just simple steps</b>
 </div>
-
-___
 
 [![.github/workflows/deploy-mediaclippex.yml](https://github.com/pitzzahh/MediaClippex/actions/workflows/deploy-mediaclippex.yml/badge.svg)](https://github.com/pitzzahh/MediaClippex/actions/workflows/deploy-mediaclippex.yml)
 ![GitHub Issues](https://img.shields.io/github/issues/pitzzahh/MediaClippex)
@@ -20,11 +18,9 @@ ___
 ![Repo size](https://img.shields.io/github/repo-size/pitzzahh/MediaClippex)
 ![Lines of code](https://img.shields.io/tokei/lines/github/pitzzahh/MediaClippex?label=lines%20of%20code)
 
-<div align="center">
+<div style="text-align: center;">
   <img src="preview.gif" alt="App Preview" />
 </div>
-
-___
 
 ## Features
 - Download videos, shorts, audios from YouTube.
@@ -36,9 +32,9 @@ ___
 - **Download a playlist. (NEW)**
 - **Lists all the resolved content and choose which to download. (NEW)**
 - ~~Pause and resume downloads.~~ (Coming soon, or not)
-___
+
 ## Contributors
-___
+
 ## Usage
 
 1. Download the setup in the latest release [here](https://github.com/pitzzahh/MediaClippex/releases/latest).

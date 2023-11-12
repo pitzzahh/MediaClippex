@@ -30,7 +30,7 @@ public class Settings : ISettings
         {
             if (e.Category != UserPreferenceCategory.General) return;
             data = IsDarkMode();
-            ThemeManager.Instance.SetBaseTheme(IsDarkMode() ? "Dark" : "Light");
+            ThemeManager.Instance.SetBaseTheme(data ? "Dark" : "Light");
         };
     }
 }
