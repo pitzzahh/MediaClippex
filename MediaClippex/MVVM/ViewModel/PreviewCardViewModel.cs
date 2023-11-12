@@ -98,7 +98,6 @@ public partial class PreviewCardViewModel : BaseViewModel
         if (string.IsNullOrEmpty(_url)) return;
         var manifest = await VideoService.GetVideoManifest(_url);
         var video = await VideoService.GetVideo(_url);
-        if (!video.Duration.HasValue) return;
         DownloadButtonContent = IsAudioOnly
             ? $"Download [{VideoService.GetAudioFileSizeFormatted(manifest, video, SelectedQuality)}]"
             : $"Download [{VideoService.GetVideoFileSizeFormatted(manifest, video, SelectedQuality)}]";
