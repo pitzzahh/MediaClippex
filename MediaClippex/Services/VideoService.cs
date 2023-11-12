@@ -74,7 +74,7 @@ public static class VideoService
     {
         if (!video.Duration.HasValue) return string.Empty;
         var duration = video.Duration.Value.TotalSeconds;
-        var fileSize = (long)(GetAudioOnlyStream(manifest, selectedQuality).Bitrate.BitsPerSecond +
+        var fileSize = (long)(manifest.GetAudioStreams().GetWithHighestBitrate().Bitrate.BitsPerSecond +
                               GetVideoOnlyStreamInfo(manifest, selectedQuality).Bitrate.BitsPerSecond * duration / 8);
         return StringService.ConvertBytesToFormattedString(fileSize);
     }
