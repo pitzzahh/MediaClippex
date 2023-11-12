@@ -10,18 +10,9 @@
              d:DataContext="{d:DesignInstance viewModel:SettingsViewModel, IsDesignTimeCreatable=True}"
              mc:Ignorable="d">
 
-    <Grid Style="{DynamicResource FadeInFromBottomAnimation}" Width="700">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <StackPanel Style="{DynamicResource FadeInFromBottomAnimation}"
+                VerticalAlignment="Top"
+                Width="700">
 
         <TextBlock Text="Settings"
                    HorizontalAlignment="Center"
@@ -31,7 +22,7 @@
                    Margin="0 50 0 30"
                    Foreground="{DynamicResource fg-000}" />
 
-        <Grid Grid.Row="2">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -53,15 +44,11 @@
                 IsChecked="{Binding NightMode}" />
         </Grid>
 
-        <Separator Grid.Row="3" Margin="0 10"
+        <Separator Margin="0 10"
                    Background="{DynamicResource primary-default}" />
 
         <!-- Show the color grid here -->
-        <Grid Grid.Row="4">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
+        <StackPanel>
 
             <TextBlock Text="Color"
                        VerticalAlignment="Center"
@@ -70,7 +57,7 @@
                        HorizontalAlignment="Left"
                        Foreground="{DynamicResource fg-000}" />
 
-            <ItemsControl Grid.Row="1" HorizontalAlignment="Center" ItemsSource="{Binding Themes}">
+            <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding Themes}">
                 <ItemsControl.ItemContainerStyle>
                     <Style>
                         <Setter Property="FrameworkElement.Margin" Value="5" />
@@ -93,12 +80,42 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </Grid>
+        </StackPanel>
 
-        <Separator Grid.Row="5" Margin="0 10"
+        <Separator Margin="0 10"
                    Background="{DynamicResource primary-default}" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="6">
+            <StackPanel>
+                <TextBlock Text="Download Path"
+                           FontWeight="Bold"
+                           FontSize="16"
+                           HorizontalAlignment="Left"
+                           Foreground="{DynamicResource fg-000}" />
+                <TextBlock FontSize="11"
+                           Text="{Binding DownloadPath}"
+                           HorizontalAlignment="Left"
+                           Foreground="{DynamicResource fg-000}" />
+            </StackPanel>
+
+            <moderncontrols:ModernButton
+                Content="Change"
+                Grid.Column="3"
+                Margin="3,3,0,3"
+                Padding="5,3"
+                Icon="{materialIcons:MaterialIconExt Kind=FolderDownload}"
+                Command="{Binding ChangeDownloadPathCommand}" />
+        </Grid>
+        <Separator Margin="0 10"
+                   Background="{DynamicResource primary-default}" />
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -115,7 +132,7 @@
                            Foreground="{DynamicResource danger}" />
                 <TextBlock FontSize="11"
                            HorizontalAlignment="Left"
-                           Foreground="{DynamicResource inverted-darken-3}">
+                           Foreground="{DynamicResource fg-000}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
@@ -151,5 +168,5 @@
                 CommandParameter="{Binding ElementName=IncludeFilesSwitch, Path=IsChecked}" />
         </Grid>
 
-    </Grid>
+    </StackPanel>
 </UserControl>
