@@ -20,9 +20,11 @@ namespace MediaClippex.MVVM.ViewModel;
 public partial class QueuingContentCardViewModel : BaseViewModel
 {
     private readonly IServicesContainer _container;
+    private readonly DirectoryHelper _directoryHelper;
     private readonly bool _isPartOfPlaylist;
     private readonly string _playListTitle;
     private readonly string _selectedQuality;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly string _url;
     public readonly CancellationTokenSource CancellationTokenSource = new();
     [ObservableProperty] private bool _canCancelDownload = true;
@@ -49,11 +51,10 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         _playListTitle = playListTitle;
         IsProcessing = true;
         FileType = isAudio ? "Audio" : "Video";
-        UnitOfWork = _container.Resolve<IUnitOfWork>();
+        _unitOfWork = _container.Resolve<IUnitOfWork>();
+        _directoryHelper = _container.Resolve<DirectoryHelper>();
         Task.Run(() => DownloadProcess(isAudio));
     }
-
-    private IUnitOfWork UnitOfWork { get; }
 
     [RelayCommand]
     private void PauseDownload()
@@ -62,10 +63,10 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         {
             Task.Run(() =>
             {
-                UnitOfWork.QueuingContentRepository.Find(e => e.Title.Equals(Title))
+                _unitOfWork.QueuingContentRepository.Find(e => e.Title.Equals(Title))
                     .First()
                     .Paused = true;
-                Paused = UnitOfWork.Complete() == 1;
+                Paused = _unitOfWork.Complete() == 1;
                 ProgressInfo = Paused ? "Paused" : "In Progress";
             });
         }
@@ -85,13 +86,13 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     {
         var fixedFileName = $"{FileHelper.FixFileName(Title)}";
 
-        var playListPath = DirectoryHelper.GetPlaylistSavingDirectory(_playListTitle);
+        var playListPath = _directoryHelper.GetPlaylistSavingDirectory(_playListTitle);
         var videoFilePath = _isPartOfPlaylist
             ? Path.Combine(playListPath, fixedFileName)
-            : Path.Combine(DirectoryHelper.GetVideoSavingDirectory(), fixedFileName);
+            : Path.Combine(_directoryHelper.GetVideoSavingDirectory(), fixedFileName);
         var audioFilePath = _isPartOfPlaylist
             ? Path.Combine(playListPath, fixedFileName)
-            : Path.Combine(DirectoryHelper.GetAudioSavingDirectory(), fixedFileName);
+            : Path.Combine(_directoryHelper.GetAudioSavingDirectory(), fixedFileName);
 
         ProgressInfo = "Downloading";
         IsProcessing = true;
@@ -115,7 +116,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
 
             ProgressInfo = "Done";
 
-            UnitOfWork.VideosRepository.Add(new Video(
+            _unitOfWork.VideosRepository.Add(new Video(
                 ThumbnailUrl,
                 Title,
                 Duration,
@@ -125,7 +126,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
                     ? "Cannot be determined"
                     : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length)
             ));
-            UnitOfWork.Complete();
+            _unitOfWork.Complete();
             storageService.AddToDownloadHistory(new DownloadedContentCardViewModel(
                 _container,
                 Title,
@@ -141,7 +142,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         finally
         {
             storageService.RemoveFromQueue(this);
-            UnitOfWork.Dispose();
+            _unitOfWork.Dispose();
         }
     }
 
