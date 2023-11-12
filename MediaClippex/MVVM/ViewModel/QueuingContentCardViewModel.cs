@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,7 +23,6 @@ public partial class QueuingContentCardViewModel : BaseViewModel
     private readonly bool _isPartOfPlaylist;
     private readonly string _playListTitle;
     private readonly string _selectedQuality;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly string _url;
     public readonly CancellationTokenSource CancellationTokenSource = new();
     [ObservableProperty] private bool _canCancelDownload = true;
@@ -51,26 +49,12 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         _playListTitle = playListTitle;
         IsProcessing = true;
         FileType = isAudio ? "Audio" : "Video";
-        _unitOfWork = _container.Resolve<IUnitOfWork>();
+        UnitOfWork = _container.Resolve<IUnitOfWork>();
         _directoryHelper = _container.Resolve<DirectoryHelper>();
         Task.Run(() => DownloadProcess(isAudio));
     }
 
-    [RelayCommand]
-    private void PauseDownload()
-    {
-        if (!Paused)
-        {
-            Task.Run(() =>
-            {
-                _unitOfWork.QueuingContentRepository.Find(e => e.Title.Equals(Title))
-                    .First()
-                    .Paused = true;
-                Paused = _unitOfWork.Complete() == 1;
-                ProgressInfo = Paused ? "Paused" : "In Progress";
-            });
-        }
-    }
+    private IUnitOfWork UnitOfWork { get; }
 
     [RelayCommand]
     private void CancelDownload()
@@ -116,7 +100,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
 
             ProgressInfo = "Done";
 
-            _unitOfWork.VideosRepository.Add(new Video(
+            UnitOfWork.VideosRepository.Add(new Video(
                 ThumbnailUrl,
                 Title,
                 Duration,
@@ -126,7 +110,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
                     ? "Cannot be determined"
                     : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length)
             ));
-            _unitOfWork.Complete();
+            UnitOfWork.Complete();
             storageService.AddToDownloadHistory(new DownloadedContentCardViewModel(
                 _container,
                 Title,
@@ -142,7 +126,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
         finally
         {
             storageService.RemoveFromQueue(this);
-            _unitOfWork.Dispose();
+            UnitOfWork.Dispose();
         }
     }
 
