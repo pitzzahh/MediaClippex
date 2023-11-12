@@ -9,6 +9,8 @@ using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
 using MediaClippex.Helpers;
 using MediaClippex.Services;
+using MediaClippex.Services.Settings.Interfaces;
+using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
 using Russkyc.DependencyInjection.Interfaces;
@@ -45,9 +47,10 @@ public partial class HomeViewModel : BaseViewModel
     [ObservableProperty] private string _title = "MediaClippex ";
     [ObservableProperty] private string? _url;
 
-    public HomeViewModel(IServicesContainer container)
+    public HomeViewModel(IServicesContainer container, ISettings settings)
     {
         _container = container;
+        ThemeManager.Instance.SetBaseTheme(settings.IsDarkMode() ? "Dark" : "Light");
     }
 
     [RelayCommand]
