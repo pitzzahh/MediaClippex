@@ -5,6 +5,8 @@
   <b>Youtube downloader, download playlist, videos, and audios in just simple steps</b>
 </div>
 
+___
+
 [![.github/workflows/deploy-mediaclippex.yml](https://github.com/pitzzahh/MediaClippex/actions/workflows/deploy-mediaclippex.yml/badge.svg)](https://github.com/pitzzahh/MediaClippex/actions/workflows/deploy-mediaclippex.yml)
 ![GitHub Issues](https://img.shields.io/github/issues/pitzzahh/MediaClippex)
 ![Forks](https://img.shields.io/github/forks/pitzzahh/MediaClippex)
