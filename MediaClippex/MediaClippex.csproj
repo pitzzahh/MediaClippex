@@ -24,8 +24,10 @@
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
         <PackageReference Include="Material.Icons.WPF" Version="2.0.0" />
+        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10" />
         <PackageReference Include="Onova" Version="2.6.10"/>
+        <PackageReference Include="Russkyc.Configuration" Version="1.0.1"/>
         <PackageReference Include="Russkyc.DependencyInjection" Version="2.1.0"/>
         <PackageReference Include="Russkyc.ModernControls.WPF" Version="2.2.3"/>
         <PackageReference Include="YoutubeExplode" Version="6.3.2" />
@@ -42,6 +44,9 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Resource>
         <None Update="DownloadFFmpeg.ps1">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="config.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
