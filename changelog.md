@@ -1,6 +1,8 @@
 ﻿# Changelog
 ## Version 5.9.35
 - 🔄 Optimizations
+- ✨ Added ability to change download path
+- ✨ Added ability to save color theme
 ___
 ## Version 5.8.35
 - 🔄 Test workflow
