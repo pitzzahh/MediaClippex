@@ -1,4 +1,8 @@
-﻿using MediaClippex.Services.Settings.Interfaces;
+﻿using System;
+using System.IO;
+using MediaClippex.Helpers;
+using MediaClippex.Services.Config.Interfaces;
+using MediaClippex.Services.Settings.Interfaces;
 using Microsoft.Win32;
 using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Attributes;
@@ -9,6 +13,13 @@ namespace MediaClippex.Services.Settings;
 [Service(Scope.Singleton, Registration.AsInterfaces)]
 public class Settings : ISettings
 {
+    private readonly IConfig _config;
+
+    public Settings(IConfig config)
+    {
+        _config = config;
+    }
+
     public bool IsDarkMode()
     {
         try
@@ -22,6 +33,24 @@ public class Settings : ISettings
         {
             return false;
         }
+    }
+
+    public string ColorTheme(bool change = false, string colorTheme = "")
+    {
+        if (change) _config.ColorTheme = colorTheme;
+
+        return _config.ColorTheme;
+    }
+
+    public string DownloadPath(bool change = false, string downloadPath = "")
+    {
+        if (change) _config.DownloadPath = downloadPath;
+        var path = _config.DownloadPath;
+        return Path.GetFullPath(Path.GetFullPath(path.Contains("%USERPROFILE%")
+            ? Environment.ExpandEnvironmentVariables(path)
+            : Path.Combine(path, DirectoryHelper.CreateDirectoryIfNotPresent("MediaClippex")
+            ))
+        );
     }
 
     public void ListenToThemeChange(bool data = false)
