@@ -37,4 +37,10 @@ public class DirectoryHelper
 
         return directory;
     }
+
+
+    public static bool IsDirectoryWritable(string path)
+    {
+        return Directory.Exists(path) && !new FileInfo(path).IsReadOnly;
+    }
 }
