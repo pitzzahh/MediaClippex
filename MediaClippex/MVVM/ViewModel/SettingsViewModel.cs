@@ -82,6 +82,12 @@ public partial class SettingsViewModel : BaseViewModel
         };
 
         if (folderBrowserDialog.ShowDialog() != DialogResult.OK) return;
+        if (!DirectoryHelper.IsDirectoryWritable(folderBrowserDialog.SelectedPath))
+        {
+            MessageBox.Show("The selected directory is not writable!", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            return;
+        }
 
         _settings.DownloadPath(true, folderBrowserDialog.SelectedPath);
         DownloadPath = _settings.DownloadPath();
