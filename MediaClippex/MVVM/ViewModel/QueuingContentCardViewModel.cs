@@ -100,7 +100,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
 
             ProgressInfo = "Done";
 
-            UnitOfWork.VideosRepository.Add(new Video(
+            var entity = new Video(
                 ThumbnailUrl,
                 Title,
                 Duration,
@@ -109,18 +109,17 @@ public partial class QueuingContentCardViewModel : BaseViewModel
                 savedPath is null
                     ? "Cannot be determined"
                     : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length)
-            ));
+            );
+            UnitOfWork.VideosRepository.Add(entity);
             UnitOfWork.Complete();
             storageService.AddToDownloadHistory(new DownloadedContentCardViewModel(
                 _container,
-                Title,
-                FileType,
-                savedPath is null
-                    ? "Cannot be determined"
-                    : StringService.ConvertBytesToFormattedString(new FileInfo(savedPath).Length),
-                savedPath,
-                Duration,
-                ThumbnailUrl
+                entity.Title,
+                entity.FileType,
+                entity.FileSize,
+                entity.Path,
+                entity.Duration,
+                entity.ThumbnailUrl
             ));
         }
         finally
