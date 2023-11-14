@@ -151,8 +151,7 @@ public partial class SettingsViewModel : BaseViewModel
             await Task.Run(() => _container.Resolve<HomeViewModel>().GetDownloadedVideos());
         }
 
-        if (Directory.Exists(oldPath) && Directory.GetFiles(oldPath).Length == 0 &&
-            Directory.GetDirectories(oldPath).Length == 0) Directory.Delete(oldPath, true);
+        if (Directory.Exists(oldPath) && !Directory.EnumerateFiles(oldPath).Any()) Directory.Delete(oldPath, true);
         MessageBox.Show("Download path changed successfully!", "Success", MessageBoxButton.OK,
             MessageBoxImage.Information);
     }
