@@ -87,6 +87,13 @@ public partial class SettingsViewModel : BaseViewModel
         };
         var directoryHelper = _container.Resolve<DirectoryService>();
         if (folderBrowserDialog.ShowDialog() != DialogResult.OK) return;
+        if (Path.Combine(folderBrowserDialog.SelectedPath, "MediaClippex") == _settings.DownloadPath())
+        {
+            MessageBox.Show("You can't change the download path to the same path!", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return;
+        }
+
         var oldPath = _settings.DownloadPath();
         _settings.DownloadPath(true, folderBrowserDialog.SelectedPath);
         DownloadPath = _settings.DownloadPath();
@@ -151,7 +158,8 @@ public partial class SettingsViewModel : BaseViewModel
             await Task.Run(() => _container.Resolve<HomeViewModel>().GetDownloadedVideos());
         }
 
-        if (Directory.Exists(oldPath) && !Directory.EnumerateFiles(oldPath).Any()) Directory.Delete(oldPath, true);
+        if (Directory.Exists(oldPath) && !Directory.EnumerateFiles(oldPath).Any() &&
+            !DirectoryService.IsSubdirectory(oldPath, DownloadPath)) Directory.Delete(oldPath, true);
         MessageBox.Show("Download path changed successfully!", "Success", MessageBoxButton.OK,
             MessageBoxImage.Information);
     }
