@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,6 +11,7 @@ using Material.Icons.WPF;
 using MediaClippex.DB.Core;
 using MediaClippex.Helpers;
 using MediaClippex.MVVM.Model;
+using MediaClippex.Services.Helpers;
 using MediaClippex.Services.Settings.Interfaces;
 using org.russkyc.moderncontrols.Helpers;
 using Russkyc.DependencyInjection.Attributes;
@@ -41,9 +43,9 @@ public partial class SettingsViewModel : BaseViewModel
             .GetColorThemes()
             .ToList()
             .ForEach(e => Themes.Add(new ColorData { Color = e }));
-        NightMode = settings.IsDarkMode();
-        DownloadPath = settings.DownloadPath();
-        settings.ListenToThemeChange(NightMode);
+        NightMode = _settings.IsDarkMode();
+        DownloadPath = _settings.DownloadPath();
+        _settings.ListenToThemeChange(NightMode);
     }
 
     // ReSharper disable once MemberCanBePrivate.Global
@@ -73,16 +75,16 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private void ChangeDownloadPath()
+    private async Task ChangeDownloadPath(bool moveStuff)
     {
         var folderBrowserDialog = new FolderBrowserDialog
         {
             SelectedPath = DownloadPath,
             ShowNewFolderButton = true
         };
-
+        var directoryHelper = _container.Resolve<DirectoryService>();
         if (folderBrowserDialog.ShowDialog() != DialogResult.OK) return;
-        if (!DirectoryHelper.IsDirectoryWritable(folderBrowserDialog.SelectedPath))
+        if (!DirectoryService.IsDirectoryWritable(folderBrowserDialog.SelectedPath))
         {
             MessageBox.Show("The selected directory is not writable!", "Error", MessageBoxButton.OK,
                 MessageBoxImage.Error);
@@ -91,6 +93,44 @@ public partial class SettingsViewModel : BaseViewModel
 
         _settings.DownloadPath(true, folderBrowserDialog.SelectedPath);
         DownloadPath = _settings.DownloadPath();
+
+        if (moveStuff)
+        {
+            var videos = _unitOfWork.VideosRepository
+                .GetAll()
+                .ToList();
+            videos.ForEach(e =>
+            {
+                if (e.Path == null || e.Title == null) return;
+
+                var fixedFileName = $"{FileHelper.FixFileName(e.Title)}";
+
+                var isPartOfPlaylist = e.Path.Contains("Playlists");
+
+                var playlistTitle = new DirectoryInfo(e.Path).Parent!.Name;
+
+                var videoFilePath = isPartOfPlaylist
+                    ? Path.Combine(directoryHelper.GetPlaylistSavingDirectory(playlistTitle), fixedFileName)
+                    : Path.Combine(directoryHelper.GetVideoSavingDirectory(), fixedFileName);
+
+                var audioFilePath = isPartOfPlaylist
+                    ? Path.Combine(directoryHelper.GetPlaylistSavingDirectory(playlistTitle), fixedFileName)
+                    : Path.Combine(directoryHelper.GetAudioSavingDirectory(), fixedFileName);
+                var dest = e.FileType == "Audio"
+                    ? $"{audioFilePath}{Path.GetExtension(e.Path)}"
+                    : $"{videoFilePath}{Path.GetExtension(e.Path)}";
+                File.Move(e.Path, dest);
+                e.Path = dest;
+            });
+            await Task.Run(() => _container.Resolve<HomeViewModel>().GetDownloadedVideos());
+            if (moveStuff && _unitOfWork.Complete() == videos.Count)
+                MessageBox.Show("Download path changed successfully!", "Success", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            else
+                MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
         MessageBox.Show("Download path changed successfully!", "Success", MessageBoxButton.OK,
             MessageBoxImage.Information);
     }
