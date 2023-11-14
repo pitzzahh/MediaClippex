@@ -7,8 +7,8 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
-using MediaClippex.Helpers;
 using MediaClippex.Services;
+using MediaClippex.Services.Helpers;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
 using Russkyc.DependencyInjection.Interfaces;
@@ -80,7 +80,7 @@ public partial class HomeViewModel : BaseViewModel
                 PreviewCardViewModels.Clear();
                 _readOnlyList = await VideoService.GetPlaylistVideos(Url);
                 var playlistInfo = await VideoService.GetPlaylistInfo(Url);
-                var playListTitle = FileHelper.FixFileName(playlistInfo.Title);
+                var playListTitle = FileUtil.FixFileName(playlistInfo.Title);
                 if (_readOnlyList.Count == 0)
                 {
                     MessageBox.Show("Playlist not found.", "Cannot resolve", MessageBoxButton.OK,
