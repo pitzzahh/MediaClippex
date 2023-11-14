@@ -52,11 +52,8 @@ public class GithubUpdater : IUpdater
         var backupFilePath = Path.Combine(AppContext.BaseDirectory, "config.json.bak");
         FileUtil.Copy(configFilePath, backupFilePath, true);
         await _updateManager.PrepareUpdateAsync(_latestVersion, progress);
-        await Task.Run(() =>
-        {
-            _updateManager.LaunchUpdater(_latestVersion);
-            FileUtil.Copy(backupFilePath, configFilePath, true);
-        });
+        await Task.Run(() => _updateManager.LaunchUpdater(_latestVersion));
+        FileUtil.Copy(backupFilePath, configFilePath, true);
         Environment.Exit(0);
     }
 
