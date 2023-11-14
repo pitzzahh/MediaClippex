@@ -97,4 +97,10 @@ public partial class DownloadedContentCardViewModel : BaseViewModel
 
         return Task.CompletedTask;
     }
+
+    [RelayCommand]
+    private static void OpenDownloadPath(string path)
+    {
+        if (File.Exists(path)) Process.Start("explorer.exe", $"/select, \"{path}\"");
+    }
 }
