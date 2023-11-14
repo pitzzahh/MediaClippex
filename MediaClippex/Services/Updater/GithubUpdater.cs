@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using MediaClippex.Services.Helpers;
 using MediaClippex.Services.Updater.Interfaces;
 using Onova;
 using Onova.Services;
@@ -46,8 +48,15 @@ public class GithubUpdater : IUpdater
     public async Task PerformUpdate(IProgress<double> progress)
     {
         if (_latestVersion is null) return;
+        var configFilePath = Path.Combine(AppContext.BaseDirectory, "config.json");
+        var backupFilePath = Path.Combine(AppContext.BaseDirectory, "config.json.bak");
+        FileUtil.Copy(configFilePath, backupFilePath, true);
         await _updateManager.PrepareUpdateAsync(_latestVersion, progress);
-        await Task.Run(() => _updateManager.LaunchUpdater(_latestVersion));
+        await Task.Run(() =>
+        {
+            _updateManager.LaunchUpdater(_latestVersion);
+            FileUtil.Copy(backupFilePath, configFilePath, true);
+        });
         Environment.Exit(0);
     }
 
