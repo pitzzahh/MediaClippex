@@ -1,4 +1,4 @@
 ﻿# Patchy Changelog
-## Version 5.11.39
-- 🔥 Fixed old download path not being removed
-- ✨ Fixed download previews removed when playlist is resolved
+## Version 5.11.40
+- 🔥 Fixed config file not being backed up and restored
+- ✨ Added support for opening file location in explorer when clicking the downloaded file path
