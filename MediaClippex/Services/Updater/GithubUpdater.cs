@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -52,8 +53,9 @@ public class GithubUpdater : IUpdater
         var backupFilePath = Path.Combine(AppContext.BaseDirectory, "config.json.bak");
         FileUtil.Copy(configFilePath, backupFilePath, true);
         await _updateManager.PrepareUpdateAsync(_latestVersion, progress);
-        await Task.Run(() => _updateManager.LaunchUpdater(_latestVersion));
-        FileUtil.Copy(backupFilePath, configFilePath, true);
+        _updateManager.LaunchUpdater(_latestVersion, false);
+        var restored = FileUtil.Copy(backupFilePath, configFilePath, true);
+        if (restored) Process.Start(Path.Combine(AppContext.BaseDirectory, "MediaClippex.exe"));
         Environment.Exit(0);
     }
 
