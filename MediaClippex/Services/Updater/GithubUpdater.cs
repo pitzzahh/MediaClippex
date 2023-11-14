@@ -10,6 +10,7 @@ using Russkyc.DependencyInjection.Enums;
 namespace MediaClippex.Services.Updater;
 
 [Service(Scope.Singleton, Registration.AsInterfaces)]
+// ReSharper disable once ClassNeverInstantiated.Global
 public class GithubUpdater : IUpdater
 {
     private readonly IUpdateManager _updateManager = new UpdateManager(
