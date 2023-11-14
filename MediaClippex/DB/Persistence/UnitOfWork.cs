@@ -6,7 +6,7 @@ using Russkyc.DependencyInjection.Enums;
 
 namespace MediaClippex.DB.Persistence;
 
-[Service(Scope.Singleton, Registration.AsSelfAndInterfaces)]
+[Service(Scope.Transient, Registration.AsSelfAndInterfaces)]
 public class UnitOfWork : IUnitOfWork
 {
     private readonly MediaClippexDataContext _context;
