@@ -46,18 +46,19 @@ public partial class MainView
                     _container.Resolve<HomeViewModel>().QueuingContentCardViewModels.ToList();
                 var storageService = _container.Resolve<StorageService>();
 
-                if (messageBoxResult is MessageBoxResult.Yes)
+                var saveQueue = messageBoxResult is MessageBoxResult.Yes;
+                if (saveQueue)
                 {
                     foreach (var queuingContent in queuingContents)
                         queuingContent.Paused = true;
-                    CancelDownloadingVideos(queuingContentCardViewModels, storageService);
                 }
                 else
                 {
                     foreach (var queuingContent in queuingContents)
                         unitOfWork.QueuingContentRepository.Remove(queuingContent);
-                    CancelDownloadingVideos(queuingContentCardViewModels, storageService, true);
                 }
+
+                CancelDownloadingVideos(queuingContentCardViewModels, storageService, saveQueue);
 
                 unitOfWork.Complete();
             }

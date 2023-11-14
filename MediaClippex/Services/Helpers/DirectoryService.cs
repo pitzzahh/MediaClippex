@@ -3,15 +3,15 @@ using MediaClippex.Services.Settings.Interfaces;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
 
-namespace MediaClippex.Helpers;
+namespace MediaClippex.Services.Helpers;
 
 [Service(Scope.Singleton)]
 // ReSharper disable once ClassNeverInstantiated.Global
-public class DirectoryHelper
+public class DirectoryService
 {
     private readonly ISettings _settings;
 
-    public DirectoryHelper(ISettings settings)
+    public DirectoryService(ISettings settings)
     {
         _settings = settings;
     }
@@ -36,5 +36,10 @@ public class DirectoryHelper
         if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
 
         return directory;
+    }
+
+    public static bool IsDirectoryWritable(string path)
+    {
+        return Directory.Exists(path) && !new FileInfo(path).IsReadOnly;
     }
 }

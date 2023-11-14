@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using MediaClippex.Helpers;
 using MediaClippex.Services.Config.Interfaces;
+using MediaClippex.Services.Helpers;
 using MediaClippex.Services.Settings.Interfaces;
 using Microsoft.Win32;
 using org.russkyc.moderncontrols.Helpers;
@@ -48,7 +48,7 @@ public class Settings : ISettings
         var path = _config.DownloadPath;
         return Path.GetFullPath(Path.GetFullPath(path.Contains("%USERPROFILE%")
             ? Environment.ExpandEnvironmentVariables(path)
-            : Path.Combine(path, DirectoryHelper.CreateDirectoryIfNotPresent("MediaClippex")
+            : Path.Combine(path, DirectoryService.CreateDirectoryIfNotPresent("MediaClippex")
             ))
         );
     }

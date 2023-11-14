@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using MediaClippex.MVVM.View;
 using MediaClippex.MVVM.ViewModel;
@@ -36,16 +37,16 @@ public partial class App
             servicesContainer.Resolve<MainView>().Show();
 
             var homeViewModel = servicesContainer.Resolve<HomeViewModel>();
-            homeViewModel.GetQueuingVideos();
-            homeViewModel.GetDownloadedVideos();
+            await Task.Run(() => homeViewModel.GetQueuingVideos());
+            await Task.Run(() => homeViewModel.GetDownloadedVideos());
             base.OnStartup(e);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error downloading FFmpeg: {ex.Message}", "Error", MessageBoxButton.OK,
+            MessageBox.Show(ex.Message, "Something went wrong during startup", MessageBoxButton.OK,
                 MessageBoxImage.Error);
-            Current.Shutdown(7);
-            Environment.Exit(7);
+            Current.Shutdown(ex.HResult);
+            Environment.Exit(ex.HResult);
         }
     }
 }
