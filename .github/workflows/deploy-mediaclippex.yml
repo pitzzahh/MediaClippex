@@ -38,7 +38,7 @@ jobs:
 
       - name: Build the installer
         run: |
-          "%programfiles(x86)%\Inno Setup 6\iscc.exe" "/DMyAppVersion={{${{ github.ref_name }}}" "/DGeneratedAppId=${{ steps.generate_appid.outputs.appid }}" "/DInstallerOutputDir=${{ github.workspace }}/${{ env.PROJECT_NAME }}/Output" "/DSourceFiles=${{ github.workspace }}\${{ env.PROJECT_NAME }}\bin\Release\${{ env.DOTNET_VERSION }}\win-x64\publish\*" "/DSetupFileName=${{ env.SETUP_FILE_NAME }}" "installer_script.iss"
+          "%programfiles(x86)%\Inno Setup 6\iscc.exe" "/DMyAppVersion=${{ github.ref_name }}" "/DGeneratedAppId=${{ steps.generate_appid.outputs.appid }}" "/DInstallerOutputDir=${{ github.workspace }}/${{ env.PROJECT_NAME }}/Output" "/DSourceFiles=${{ github.workspace }}\${{ env.PROJECT_NAME }}\bin\Release\${{ env.DOTNET_VERSION }}\win-x64\publish\*" "/DSetupFileName=${{ env.SETUP_FILE_NAME }}" "installer_script.iss"
         shell: cmd
 
       - name: Upload the installer as an artifact
