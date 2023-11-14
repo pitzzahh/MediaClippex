@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +11,6 @@ using CommunityToolkit.Mvvm.Input;
 using Material.Icons;
 using Material.Icons.WPF;
 using MediaClippex.DB.Core;
-using MediaClippex.Helpers;
 using MediaClippex.MVVM.Model;
 using MediaClippex.Services.Helpers;
 using MediaClippex.Services.Settings.Interfaces;
@@ -29,8 +30,10 @@ public partial class SettingsViewModel : BaseViewModel
     private readonly ISettings _settings;
     private readonly IUnitOfWork _unitOfWork;
     [ObservableProperty] private string _downloadPath = string.Empty;
+    [ObservableProperty] private bool _isMovingFiles;
     [ObservableProperty] private bool _isNightMode;
     private bool _nightMode = true;
+    [ObservableProperty] private double _progress;
     [ObservableProperty] private MaterialIcon? _themeIcon;
     [ObservableProperty] private ObservableCollection<ColorData> _themes = new();
 
@@ -84,30 +87,25 @@ public partial class SettingsViewModel : BaseViewModel
         };
         var directoryHelper = _container.Resolve<DirectoryService>();
         if (folderBrowserDialog.ShowDialog() != DialogResult.OK) return;
-        if (!DirectoryService.IsDirectoryWritable(folderBrowserDialog.SelectedPath))
-        {
-            MessageBox.Show("The selected directory is not writable!", "Error", MessageBoxButton.OK,
-                MessageBoxImage.Error);
-            return;
-        }
-
+        var oldPath = _settings.DownloadPath();
         _settings.DownloadPath(true, folderBrowserDialog.SelectedPath);
         DownloadPath = _settings.DownloadPath();
-
         if (moveStuff)
         {
+            IsMovingFiles = true;
             var videos = _unitOfWork.VideosRepository
                 .GetAll()
                 .ToList();
-            videos.ForEach(e =>
+
+            foreach (var video in videos)
             {
-                if (e.Path == null || e.Title == null) return;
+                if (video.Path == null || video.Title == null) return;
 
-                var fixedFileName = $"{FileHelper.FixFileName(e.Title)}";
+                var fixedFileName = $"{FileUtil.FixFileName(video.Title)}";
 
-                var isPartOfPlaylist = e.Path.Contains("Playlists");
+                var isPartOfPlaylist = video.Path.Contains("Playlists");
 
-                var playlistTitle = new DirectoryInfo(e.Path).Parent!.Name;
+                var playlistTitle = new DirectoryInfo(video.Path).Parent!.Name;
 
                 var videoFilePath = isPartOfPlaylist
                     ? Path.Combine(directoryHelper.GetPlaylistSavingDirectory(playlistTitle), fixedFileName)
@@ -116,21 +114,45 @@ public partial class SettingsViewModel : BaseViewModel
                 var audioFilePath = isPartOfPlaylist
                     ? Path.Combine(directoryHelper.GetPlaylistSavingDirectory(playlistTitle), fixedFileName)
                     : Path.Combine(directoryHelper.GetAudioSavingDirectory(), fixedFileName);
-                var dest = e.FileType == "Audio"
-                    ? $"{audioFilePath}{Path.GetExtension(e.Path)}"
-                    : $"{videoFilePath}{Path.GetExtension(e.Path)}";
-                File.Move(e.Path, dest);
-                e.Path = dest;
-            });
+                var dest = video.FileType == "Audio"
+                    ? $"{audioFilePath}{Path.GetExtension(video.Path)}"
+                    : $"{videoFilePath}{Path.GetExtension(video.Path)}";
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        File.Move(video.Path, dest);
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        MessageBox.Show(ex.Message, "The selected directory is not writable!", MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Something went wrong moving files!", MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
+                });
+                video.Path = dest;
+                Progress += 1;
+            }
+
+            if (_unitOfWork.Complete() == 0)
+            {
+                MessageBox.Show("Files moved but outcomes are not met!", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
+
+            IsMovingFiles = false;
+            Progress = 0;
+            _unitOfWork.Dispose();
             await Task.Run(() => _container.Resolve<HomeViewModel>().GetDownloadedVideos());
-            if (moveStuff && _unitOfWork.Complete() == videos.Count)
-                MessageBox.Show("Download path changed successfully!", "Success", MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-            else
-                MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            return;
         }
 
+        if (Directory.Exists(oldPath) && Directory.GetFiles(oldPath).Length == 0 &&
+            Directory.GetDirectories(oldPath).Length == 0) Directory.Delete(oldPath, true);
         MessageBox.Show("Download path changed successfully!", "Success", MessageBoxButton.OK,
             MessageBoxImage.Information);
     }
@@ -144,11 +166,12 @@ public partial class SettingsViewModel : BaseViewModel
         foreach (var video in videosRepository.GetAll())
         {
             videosRepository.Remove(video);
-            if (includeFiles) await Task.Run(() => FileHelper.Delete(video.Path));
+            if (includeFiles) await Task.Run(() => FileUtil.Delete(video.Path));
         }
 
         if (_unitOfWork.Complete() == fileCount)
         {
+            _unitOfWork.Dispose();
             var homeViewModel = _container.Resolve<HomeViewModel>();
             homeViewModel.DownloadedVideoCardViewModels.Clear();
             homeViewModel.HasDownloadHistory = false;
@@ -159,5 +182,16 @@ public partial class SettingsViewModel : BaseViewModel
         {
             MessageBox.Show("Something went wrong!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    [RelayCommand]
+    private void OpenDownloadPath()
+    {
+        if (Directory.Exists(DownloadPath))
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = DownloadPath,
+                UseShellExecute = true
+            });
     }
 }
