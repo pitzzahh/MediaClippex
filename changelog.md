@@ -1,5 +1,4 @@
-﻿# Changelog
-## Version 5.11.38
-- 🔥 Fixed moving files bug when download path is changed
-- ✨ Ability to open download path by clicking the path in settings
-- 🔄 Optimizations
+﻿# Patchy Changelog
+## Version 5.11.39
+- 🔥 Fixed old download path not being removed
+- ✨ Fixed download previews removed when playlist is resolved
