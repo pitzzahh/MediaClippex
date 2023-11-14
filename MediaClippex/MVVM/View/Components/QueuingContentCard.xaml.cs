@@ -1,4 +1,4 @@
-﻿namespace MediaClippex.Components;
+﻿namespace MediaClippex.MVVM.View.Components;
 
 public partial class QueuingContentCard
 {
