@@ -9,6 +9,7 @@ using Russkyc.DependencyInjection.Interfaces;
 namespace MediaClippex.Services;
 
 [Service(Scope.Singleton)]
+// ReSharper disable once ClassNeverInstantiated.Global
 public class StorageService
 {
     private readonly IServicesContainer _container;
