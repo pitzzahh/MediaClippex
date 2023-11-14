@@ -7,11 +7,11 @@ namespace MediaClippex.Services.Helpers;
 
 [Service(Scope.Singleton)]
 // ReSharper disable once ClassNeverInstantiated.Global
-public class DirectoryHelper
+public class DirectoryService
 {
     private readonly ISettings _settings;
 
-    public DirectoryHelper(ISettings settings)
+    public DirectoryService(ISettings settings)
     {
         _settings = settings;
     }
