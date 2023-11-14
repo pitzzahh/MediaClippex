@@ -1,28 +1,4 @@
 ﻿# Changelog
-## Version 5.9.37
-- ✨ Fixed download button not showing video download file size
--  🔥 Removed unused pause button
-___
-## Version 5.9.36
-- 🔥 Fixed default download path
-___
-## Version 5.9.35
+## Version 5.10.37
+- ✨ Added ability to also move files to new download path
 - 🔄 Optimizations
-- ✨ Added ability to change download path
-- ✨ Added ability to save color theme
-___
-## Version 5.8.35
-- 🔄 Test workflow
-___
-## Version 5.8.34
-- 🔄 Optimizations
-- ✨ Added ability to clear downloaded data (history or include downloaded files)
-- ✨ Playlist downloads are now in their respective playlist directory
-___
-## Version 5.7.34
-- 🔄 Optimizations
-- ✨ Added separate page for settings
-___
-## Version 5.6.34 (Breaking changes)
-- 🔄 Optimizations
-- ✨ New UI Look
