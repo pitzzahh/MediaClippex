@@ -23,13 +23,13 @@ public static class FileUtil
             .Aggregate(fileName, (current, invalidChar) => current.Replace(invalidChar, '_'));
     }
 
-    public static bool Copy(string source, string destination)
+    public static bool Copy(string source, string destination, bool overwrite = false)
     {
         try
         {
             if (File.Exists(source))
             {
-                File.Copy(source, destination, true);
+                File.Copy(source, destination, overwrite);
                 return true;
             }
         }
