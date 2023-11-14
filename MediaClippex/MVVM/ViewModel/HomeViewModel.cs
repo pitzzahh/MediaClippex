@@ -77,7 +77,6 @@ public partial class HomeViewModel : BaseViewModel
         {
             if (IsPlaylist)
             {
-                PreviewCardViewModels.Clear();
                 _readOnlyList = await VideoService.GetPlaylistVideos(Url);
                 var playlistInfo = await VideoService.GetPlaylistInfo(Url);
                 var playListTitle = FileUtil.FixFileName(playlistInfo.Title);
