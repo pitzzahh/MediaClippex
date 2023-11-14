@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using MediaClippex.Services.Settings.Interfaces;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
@@ -40,6 +41,31 @@ public class DirectoryService
 
     public static bool IsDirectoryWritable(string path)
     {
-        return Directory.Exists(path) && !new FileInfo(path).IsReadOnly;
+        var testFilePath = Path.Combine(path, $"{Guid.NewGuid()}");
+        try
+        {
+            File.WriteAllText(testFilePath, "");
+            File.Delete(testFilePath);
+            return true;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return false;
+        }
+    }
+
+    public static bool IsSubdirectory(string basePath, string path)
+    {
+        var baseDirectory = new DirectoryInfo(basePath);
+        var directory = new DirectoryInfo(path);
+
+        while (directory.Parent != null)
+        {
+            if (directory.Parent.FullName.Equals(baseDirectory.FullName, StringComparison.OrdinalIgnoreCase))
+                return true;
+            directory = directory.Parent;
+        }
+
+        return false;
     }
 }
