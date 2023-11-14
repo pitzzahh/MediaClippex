@@ -1,4 +1,4 @@
 ﻿# Patchy Changelog
-## Version 5.11.40
-- 🔥 Fixed config file not being backed up and restored
-- ✨ Added support for opening file location in explorer when clicking the downloaded file path
+## Version 5.11.41
+- 🔥 Fixed issue where the downloaded files is deleted when the new download path is a sub directory of the old download path.
+- 🔥 Fixed issue where the user config is overwritten by an update.
