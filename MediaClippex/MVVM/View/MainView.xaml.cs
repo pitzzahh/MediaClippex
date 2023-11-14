@@ -61,6 +61,7 @@ public partial class MainView
                 CancelDownloadingVideos(queuingContentCardViewModels, storageService, saveQueue);
 
                 unitOfWork.Complete();
+                unitOfWork.Dispose();
             }
         }
 

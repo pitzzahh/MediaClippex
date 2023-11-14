@@ -6,7 +6,6 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
-using MediaClippex.Helpers;
 using MediaClippex.MVVM.Model;
 using MediaClippex.Services;
 using MediaClippex.Services.Helpers;
@@ -67,7 +66,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
 
     private async Task DownloadProcess(bool isAudio)
     {
-        var fixedFileName = $"{FileHelper.FixFileName(Title)}";
+        var fixedFileName = $"{FileUtil.FixFileName(Title)}";
         var directoryHelper = _container.Resolve<DirectoryService>();
         var videoFilePath = _isPartOfPlaylist
             ? Path.Combine(directoryHelper.GetPlaylistSavingDirectory(_playListTitle), fixedFileName)
@@ -110,6 +109,7 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             );
             UnitOfWork.VideosRepository.Add(entity);
             UnitOfWork.Complete();
+            UnitOfWork.Dispose();
             storageService.AddToDownloadHistory(new DownloadedContentCardViewModel(
                 _container,
                 entity.Title,

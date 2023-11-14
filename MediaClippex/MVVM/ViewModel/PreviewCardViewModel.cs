@@ -147,6 +147,7 @@ public partial class PreviewCardViewModel : BaseViewModel
         }
 
         if (string.IsNullOrWhiteSpace(_url)) return;
+        var unitOfWork = _container.Resolve<IUnitOfWork>();
 
         try
         {
@@ -168,7 +169,6 @@ public partial class PreviewCardViewModel : BaseViewModel
             ));
 
             // Adding to QueuingContent Table
-            var unitOfWork = _container.Resolve<IUnitOfWork>();
             unitOfWork.QueuingContentRepository.Add(
                 new QueuingContent(
                     Title ?? "404 Title Not Found",
@@ -196,6 +196,7 @@ public partial class PreviewCardViewModel : BaseViewModel
         {
             IsAudioOnly = false;
             IsResolved = false;
+            unitOfWork.Dispose();
         }
     }
 }

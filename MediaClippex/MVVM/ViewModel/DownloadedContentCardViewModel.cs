@@ -87,6 +87,7 @@ public partial class DownloadedContentCardViewModel : BaseViewModel
             var homeViewModel = _container.Resolve<HomeViewModel>();
             homeViewModel.DownloadedVideoCardViewModels.Remove(this);
             homeViewModel.HasDownloadHistory = homeViewModel.DownloadedVideoCardViewModels.Count > 0;
+            unitOfWork.Dispose();
         }
         catch (Exception e)
         {
