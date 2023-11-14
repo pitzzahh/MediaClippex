@@ -3,7 +3,7 @@ using MediaClippex.Services.Settings.Interfaces;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
 
-namespace MediaClippex.Helpers;
+namespace MediaClippex.Services.Helpers;
 
 [Service(Scope.Singleton)]
 // ReSharper disable once ClassNeverInstantiated.Global
@@ -37,7 +37,6 @@ public class DirectoryHelper
 
         return directory;
     }
-
 
     public static bool IsDirectoryWritable(string path)
     {
