@@ -56,7 +56,7 @@ jobs:
         id: deploy_artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Fossa-Update
+          name: MediaClippex-Update
           path: ${{ github.workspace }}/${{ env.PROJECT_NAME }}/${{ env.UPDATE_ASSET_FILE }}
 
       - name: Create Release
