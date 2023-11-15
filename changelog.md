@@ -1,4 +1,5 @@
 ﻿# Patchy Changelog
-## Version 5.11.41
-- 🔥 Fixed issue where the downloaded files is deleted when the new download path is a sub directory of the old download path.
-- 🔥 Fixed issue where the user config is overwritten by an update.
+## Version 5.11.42
+- 🔥 Fixed issue where the progress bar indicator is inaccurate when moving files
+- ✨ Added progress info when moving files
+- ✨ Replaced progress bar info when downloading files
