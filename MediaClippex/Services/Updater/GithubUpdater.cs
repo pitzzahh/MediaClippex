@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -49,13 +48,13 @@ public class GithubUpdater : IUpdater
     public async Task PerformUpdate(IProgress<double> progress)
     {
         if (_latestVersion is null) return;
-        var configFilePath = Path.Combine(AppContext.BaseDirectory, "config.json");
-        var backupFilePath = Path.Combine(AppContext.BaseDirectory, "config.json.bak");
-        FileUtil.Copy(configFilePath, backupFilePath, true);
+        FileUtil.Copy(
+            Path.Combine(AppContext.BaseDirectory, "config.json"),
+            Path.Combine(AppContext.BaseDirectory, "config.json.bak"),
+            true
+        );
         await _updateManager.PrepareUpdateAsync(_latestVersion, progress);
-        _updateManager.LaunchUpdater(_latestVersion, false);
-        var restored = FileUtil.Copy(backupFilePath, configFilePath, true);
-        if (restored) Process.Start(Path.Combine(AppContext.BaseDirectory, "MediaClippex.exe"));
+        _updateManager.LaunchUpdater(_latestVersion);
         Environment.Exit(0);
     }
 
