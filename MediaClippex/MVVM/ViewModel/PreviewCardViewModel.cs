@@ -16,7 +16,7 @@ using YoutubeExplode.Videos.Streams;
 
 namespace MediaClippex.MVVM.ViewModel;
 
-[Service(Scope.Singleton, Registration.AsInterfaces)]
+[Service(Scope.Transient, Registration.AsInterfaces)]
 public partial class PreviewCardViewModel : BaseViewModel
 {
     private readonly List<string> _audioQualities = new();
