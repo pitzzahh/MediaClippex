@@ -32,6 +32,7 @@ public partial class SettingsViewModel : BaseViewModel
     [ObservableProperty] private string _downloadPath = string.Empty;
     [ObservableProperty] private bool _isMovingFiles;
     [ObservableProperty] private bool _isNightMode;
+    [ObservableProperty] private string? _movingFilesInfo;
     private bool _nightMode = true;
     [ObservableProperty] private double _progress;
     [ObservableProperty] private MaterialIcon? _themeIcon;
@@ -143,6 +144,7 @@ public partial class SettingsViewModel : BaseViewModel
                 });
                 video.Path = dest;
                 Progress += (double)100 / videoCount;
+                MovingFilesInfo = $"{Progress:0.00}%";
             }
 
             IsMovingFiles = false;
