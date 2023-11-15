@@ -1,5 +1,4 @@
-﻿# Patchy Changelog
-## Version 5.11.42
-- 🔥 Fixed issue where the progress bar indicator is inaccurate when moving files
-- ✨ Added progress info when moving files
-- ✨ Replaced progress bar info when downloading files
+﻿# HotFix Changelog
+## Version 5.11.43
+- 🔥 Fixed issue where the app would not update
+- 🔥 Fixed issue where the config file would not be restored (experimental)
