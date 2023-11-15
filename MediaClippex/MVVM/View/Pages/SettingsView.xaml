@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
-    
+
     <StackPanel Style="{DynamicResource FadeInFromBottomAnimation}"
                 VerticalAlignment="Top">
 
@@ -168,12 +168,25 @@
                                          Command="{Binding ChangeDownloadPathCommand}"
                                          CommandParameter="{Binding ElementName=AlsoMoveFilesSwitch, Path=IsChecked}" />
 
-            <moderncontrols:ModernProgressbar
-                Visibility="{Binding IsMovingFiles, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Grid.Row="1" Grid.Column="0"
-                Grid.ColumnSpan="5"
-                Progress="{Binding Progress}"
-                Width="Auto" />
+            <Grid Grid.Row="1"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="5"
+                  Background="Transparent"
+                  Visibility="{Binding IsMovingFiles, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                <moderncontrols:ModernProgressbar
+                    Progress="{Binding Progress}"
+                    Width="Auto" />
+
+                <TextBlock
+                    Text="{Binding MovingFilesInfo}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{DynamicResource fg-000}"
+                    FontWeight="Medium" />
+            </Grid>
+
+
         </Grid>
         <Separator Margin="0 10"
                    Background="{DynamicResource primary-default}" />
