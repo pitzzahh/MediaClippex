@@ -75,14 +75,13 @@ public partial class QueuingContentCardViewModel : BaseViewModel
             ? Path.Combine(directoryHelper.GetPlaylistSavingDirectory(_playListTitle), fixedFileName)
             : Path.Combine(directoryHelper.GetAudioSavingDirectory(), fixedFileName);
 
-        ProgressInfo = "Downloading";
         IsProcessing = true;
         var progressHandler = new Progress<double>(p =>
         {
             Progress = p * 100;
+            ProgressInfo = $"{Progress:0.00}%";
             if (Progress <= 85) return;
             CanCancelDownload = false;
-            ProgressInfo = "Almost finished";
         });
 
         var storageService = _container.Resolve<StorageService>();
