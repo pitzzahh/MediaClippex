@@ -103,7 +103,7 @@ public partial class SettingsViewModel : BaseViewModel
             var videos = _unitOfWork.VideosRepository
                 .GetAll()
                 .ToList();
-
+            var videoCount = videos.Count;
             foreach (var video in videos)
             {
                 if (video.Path == null || video.Title == null) return;
@@ -142,23 +142,23 @@ public partial class SettingsViewModel : BaseViewModel
                     }
                 });
                 video.Path = dest;
-                Progress += 1;
-            }
-
-            if (_unitOfWork.Complete() == 0)
-            {
-                MessageBox.Show("Files moved but outcomes are not met!", "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                return;
+                Progress += (double)100 / videoCount;
             }
 
             IsMovingFiles = false;
             Progress = 0;
+            if (_unitOfWork.Complete() == 0)
+            {
+                MessageBox.Show("Something went wrong on our end!", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
+
             _unitOfWork.Dispose();
             await Task.Run(() => _container.Resolve<HomeViewModel>().GetDownloadedVideos());
         }
 
-        if (Directory.Exists(oldPath) && !Directory.EnumerateFiles(oldPath).Any() &&
+        if (Directory.Exists(oldPath) && !Directory.GetFiles(oldPath, "*.*", SearchOption.AllDirectories).Any() &&
             !DirectoryService.IsSubdirectory(oldPath, DownloadPath)) Directory.Delete(oldPath, true);
         MessageBox.Show("Download path changed successfully!", "Success", MessageBoxButton.OK,
             MessageBoxImage.Information);
