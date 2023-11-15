@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using MediaClippex.MVVM.View;
 using MediaClippex.MVVM.ViewModel;
+using MediaClippex.Services.Helpers;
 using Russkyc.DependencyInjection.Helpers;
 using Russkyc.DependencyInjection.Implementations;
 
@@ -16,6 +17,11 @@ public partial class App
     {
         try
         {
+            FileUtil.Copy(
+                Path.Combine(AppContext.BaseDirectory, "config.json.bak"),
+                Path.Combine(AppContext.BaseDirectory, "config.json"),
+                true
+            );
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
