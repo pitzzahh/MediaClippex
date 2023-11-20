@@ -7,6 +7,7 @@
 
 ___
 
+<a title="Downloads" target="_blank" href="https://github.com/pitzzahh/MediaClippex/releases"><img src="https://img.shields.io/github/downloads/pitzzahh/MediaClippex/total.svg?style=flat-square&color=blueviolet"></a>
 [![.github/workflows/deploy-mediaclippex.yml](https://github.com/pitzzahh/MediaClippex/actions/workflows/deploy-mediaclippex.yml/badge.svg)](https://github.com/pitzzahh/MediaClippex/actions/workflows/deploy-mediaclippex.yml)
 ![GitHub Issues](https://img.shields.io/github/issues/pitzzahh/MediaClippex)
 ![Forks](https://img.shields.io/github/forks/pitzzahh/MediaClippex)
