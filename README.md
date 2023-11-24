@@ -45,7 +45,6 @@ ___
 ## Contributors
 
 ## Usage
-
 1. Download the setup in the latest release [here](https://github.com/pitzzahh/MediaClippex/releases/latest).
 2. Install the setup.
 3. Run the `MediaClippex` app.
