@@ -7,6 +7,7 @@ using YoutubeExplode;
 using YoutubeExplode.Common;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Playlists;
+using YoutubeExplode.Search;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
 
@@ -19,6 +20,11 @@ public static class VideoService
     public static async Task<Video> GetVideo(string url)
     {
         return await Youtube.Videos.GetAsync(url);
+    }
+
+    public static async Task<IReadOnlyList<VideoSearchResult>> GetVideos(string url)
+    {
+        return await Youtube.Search.GetVideosAsync(url);
     }
 
     public static async Task<Playlist> GetPlaylistInfo(string url)

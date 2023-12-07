@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +12,6 @@ using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
 using Russkyc.DependencyInjection.Interfaces;
 using YoutubeExplode.Common;
-using YoutubeExplode.Playlists;
 
 namespace MediaClippex.MVVM.ViewModel;
 
@@ -32,6 +30,7 @@ public partial class HomeViewModel : BaseViewModel
     [ObservableProperty] private bool _isPlaylist;
     [ObservableProperty] private bool _isProcessing;
     [ObservableProperty] private bool _isProgressIndeterminate;
+    [ObservableProperty] private bool _isQuery;
     [ObservableProperty] private bool _isResolved;
 
     [ObservableProperty] private ObservableCollection<PreviewCardViewModel> _previewCardViewModels = new();
@@ -40,7 +39,6 @@ public partial class HomeViewModel : BaseViewModel
     [ObservableProperty]
     private ObservableCollection<QueuingContentCardViewModel> _queuingContentCardViewModels = new();
 
-    private IReadOnlyList<PlaylistVideo>? _readOnlyList;
     [ObservableProperty] private bool _showPreview;
     [ObservableProperty] private string? _status;
     [ObservableProperty] private string? _url;
@@ -59,7 +57,11 @@ public partial class HomeViewModel : BaseViewModel
             return;
         }
 
-        if (!StringService.IsYouTubeVideoUrl(Url) && !StringService.IsYouTubePlaylistUrl(Url))
+        var isYouTubeVideoUrl = StringService.IsYouTubeVideoUrl(Url);
+        var isYouTubePlaylistUrl = StringService.IsYouTubePlaylistUrl(Url);
+        IsQuery = !isYouTubeVideoUrl && !isYouTubePlaylistUrl;
+
+        if (!IsQuery)
         {
             MessageBox.Show("Please enter a valid YouTube URL.", "Warning", MessageBoxButton.OK,
                 MessageBoxImage.Warning);
@@ -67,20 +69,44 @@ public partial class HomeViewModel : BaseViewModel
             return;
         }
 
-        IsPlaylist = StringService.IsYouTubePlaylistUrl(Url);
-
+        IsPlaylist = isYouTubePlaylistUrl;
         ProgressInfo = "Processing URL...";
         IsProgressIndeterminate = true;
         IsProcessing = true;
 
         try
         {
-            if (IsPlaylist)
+            if (IsQuery)
             {
-                _readOnlyList = await VideoService.GetPlaylistVideos(Url);
+                var readOnlyList = await VideoService.GetVideos(Url);
+                if (readOnlyList.Count == 0)
+                {
+                    MessageBox.Show("No videos found", "Cannot resolve", MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                IsProcessing = false;
+                ShowPreview = true;
+                IsProgressIndeterminate = false;
+
+                foreach (var video in readOnlyList.Distinct().Take(20))
+                    PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
+                        _container,
+                        video.Title,
+                        StringService.ConvertToTimeFormat(video.Duration.GetValueOrDefault()),
+                        video.Author.ChannelTitle,
+                        video.Thumbnails.GetWithHighestResolution().Url,
+                        video.Url,
+                        true
+                    ));
+            }
+            else if (IsPlaylist)
+            {
+                var readOnlyList = await VideoService.GetPlaylistVideos(Url);
                 var playlistInfo = await VideoService.GetPlaylistInfo(Url);
                 var playListTitle = FileUtil.FixFileName(playlistInfo.Title);
-                if (_readOnlyList.Count == 0)
+                if (readOnlyList.Count == 0)
                 {
                     MessageBox.Show("Playlist not found.", "Cannot resolve", MessageBoxButton.OK,
                         MessageBoxImage.Information);
@@ -91,7 +117,7 @@ public partial class HomeViewModel : BaseViewModel
                 ShowPreview = true;
                 IsProgressIndeterminate = false;
 
-                foreach (var playlistVideo in _readOnlyList.Distinct())
+                foreach (var playlistVideo in readOnlyList.Distinct())
                     PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
                         _container,
                         playlistVideo.Title,
@@ -130,7 +156,7 @@ public partial class HomeViewModel : BaseViewModel
         }
         finally
         {
-            Url = "";
+            Url = IsQuery ? Url : "";
         }
     }
 
