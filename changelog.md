@@ -1,3 +1,3 @@
-﻿# Test Changelog
-## Version 5.11.44
-- 🔄 Test update
+﻿# Changelog
+## Version 5.12.44
+- ✨ Added ability to query directly from the app
