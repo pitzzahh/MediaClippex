@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using MediaClippex.DB.Core;
 using MediaClippex.Services;
 using MediaClippex.Services.Helpers;
+using MediaClippex.Services.Settings.Interfaces;
 using Russkyc.DependencyInjection.Attributes;
 using Russkyc.DependencyInjection.Enums;
 using Russkyc.DependencyInjection.Interfaces;
@@ -59,7 +60,8 @@ public partial class HomeViewModel : BaseViewModel
 
         var isYouTubeVideoUrl = StringService.IsYouTubeVideoUrl(Url);
         var isYouTubePlaylistUrl = StringService.IsYouTubePlaylistUrl(Url);
-        IsQuery = !isYouTubeVideoUrl && !isYouTubePlaylistUrl;
+
+        IsQuery = !isYouTubeVideoUrl || !isYouTubePlaylistUrl;
 
         if (!IsQuery)
         {
@@ -78,7 +80,8 @@ public partial class HomeViewModel : BaseViewModel
         {
             if (IsQuery)
             {
-                var readOnlyList = await VideoService.GetVideos(Url);
+                var settings = _container.Resolve<ISettings>();
+                var readOnlyList = await VideoService.GetVideos(Url, settings.QueryResultLimit());
                 if (readOnlyList.Count == 0)
                 {
                     MessageBox.Show("No videos found", "Cannot resolve", MessageBoxButton.OK,
@@ -86,11 +89,14 @@ public partial class HomeViewModel : BaseViewModel
                     return;
                 }
 
+                PreviewCardViewModels.Clear();
                 IsProcessing = false;
                 ShowPreview = true;
                 IsProgressIndeterminate = false;
 
-                foreach (var video in readOnlyList.Distinct().Take(20))
+                foreach (var video in readOnlyList.Distinct())
+                {
+                    await Task.Delay(700);
                     PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
                         _container,
                         video.Title,
@@ -100,6 +106,7 @@ public partial class HomeViewModel : BaseViewModel
                         video.Url,
                         true
                     ));
+                }
             }
             else if (IsPlaylist)
             {
@@ -113,11 +120,14 @@ public partial class HomeViewModel : BaseViewModel
                     return;
                 }
 
+                PreviewCardViewModels.Clear();
                 IsProcessing = false;
                 ShowPreview = true;
                 IsProgressIndeterminate = false;
 
                 foreach (var playlistVideo in readOnlyList.Distinct())
+                {
+                    await Task.Delay(700);
                     PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
                         _container,
                         playlistVideo.Title,
@@ -128,6 +138,7 @@ public partial class HomeViewModel : BaseViewModel
                         true,
                         playListTitle
                     ));
+                }
             }
             else
             {
