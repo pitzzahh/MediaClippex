@@ -1,8 +1,6 @@
-﻿using System.Windows.Controls;
+﻿namespace MediaClippex.MVVM.View.Pages;
 
-namespace MediaClippex.MVVM.View.Pages;
-
-public partial class SettingsView : UserControl
+public partial class SettingsView
 {
     public SettingsView()
     {
