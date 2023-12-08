@@ -4,4 +4,5 @@ public interface IConfig
 {
     string ColorTheme { get; set; }
     string DownloadPath { get; set; }
+    int QueryResultLimit { get; set; }
 }

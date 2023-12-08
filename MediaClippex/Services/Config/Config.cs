@@ -5,7 +5,7 @@ using Russkyc.DependencyInjection.Enums;
 
 namespace MediaClippex.Services.Config;
 
-[Service(Scope.Singleton, Registration.AsInterfaces)]
+[Service(Scope.Transient, Registration.AsInterfaces)]
 public class Config : ConfigProvider, IConfig
 {
     public Config() : base("config.json")
@@ -22,5 +22,11 @@ public class Config : ConfigProvider, IConfig
     {
         get => GetValue<string>(nameof(DownloadPath));
         set => SetValue(nameof(DownloadPath), value);
+    }
+
+    public int QueryResultLimit
+    {
+        get => GetValue<int>(nameof(QueryResultLimit));
+        set => SetValue(nameof(QueryResultLimit), value);
     }
 }
