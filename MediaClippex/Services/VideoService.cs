@@ -22,9 +22,9 @@ public static class VideoService
         return await Youtube.Videos.GetAsync(url);
     }
 
-    public static async Task<IReadOnlyList<VideoSearchResult>> GetVideos(string url)
+    public static async Task<IReadOnlyList<VideoSearchResult>> GetVideos(string url, int limit = 10)
     {
-        return await Youtube.Search.GetVideosAsync(url);
+        return await Youtube.Search.GetVideosAsync(url).CollectAsync(limit);
     }
 
     public static async Task<Playlist> GetPlaylistInfo(string url)
