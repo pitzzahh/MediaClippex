@@ -6,6 +6,7 @@
              xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
              xmlns:moderncontrols="clr-namespace:org.russkyc.moderncontrols;assembly=Russkyc.ModernControls.WPF"
              xmlns:viewModel="clr-namespace:MediaClippex.MVVM.ViewModel"
+             xmlns:converters="clr-namespace:MediaClippex.Converters"
              Background="{DynamicResource bg-000}"
              d:DataContext="{d:DesignInstance viewModel:SettingsViewModel, IsDesignTimeCreatable=True}"
              MinWidth="700"
@@ -13,6 +14,7 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:ButtonContentToTextBoxEnabledConverter x:Key="ButtonContentToTextBoxEnabledConverter" />
     </UserControl.Resources>
 
     <StackPanel Style="{DynamicResource FadeInFromBottomAnimation}"
@@ -85,6 +87,55 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
+
+        <Separator Margin="0 10"
+                   Background="{DynamicResource primary-default}" />
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Query results limit"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"
+                       FontSize="16"
+                       HorizontalAlignment="Center"
+                       Foreground="{DynamicResource fg-000}" />
+
+            <moderncontrols:ModernTextBox Grid.Column="3" Margin="3,3,0,3"
+                                          Placeholder="Limit"
+                                          x:Name="LimitTextBox"
+                                          Text="{Binding QueryResultLimit}"
+                                          Icon="{Binding ThemeIcon}"
+                                          IsEnabled="{Binding ElementName=QueryResultLimitButton, Path=Content, Mode=OneWay, Converter={StaticResource ButtonContentToTextBoxEnabledConverter}}" />
+
+            <moderncontrols:ModernToggleButton x:Name="QueryResultLimitButton" Grid.Column="4" Margin="3,3,0,3">
+                <moderncontrols:ModernToggleButton.Style>
+                    <!-- ReSharper disable once Xaml.StaticResourceNotResolved -->
+                    <Style TargetType="{x:Type moderncontrols:ModernToggleButton}"
+                           BasedOn="{StaticResource {x:Type moderncontrols:ModernToggleButton}}">
+                        <Setter Property="Content" Value="Change" />
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Content" Value="Save" />
+                                <Setter Property="Icon" Value="{materialIcons:MaterialIconExt Kind=ContentSave}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Command" Value="{Binding ChangeQueryResultLimitCommand}" />
+                                <Setter Property="CommandParameter"
+                                        Value="{Binding ElementName=LimitTextBox, Path=Text}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </moderncontrols:ModernToggleButton.Style>
+            </moderncontrols:ModernToggleButton>
+
+        </Grid>
 
         <Separator Margin="0 10"
                    Background="{DynamicResource primary-default}" />
