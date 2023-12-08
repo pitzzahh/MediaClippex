@@ -1,3 +1,4 @@
 ﻿# Changelog
-## Version 5.12.44
-- ✨ Added ability to query directly from the app
+## Version 5.13.44
+- ⚡ Improve performance of the main page
+- ✨ Added ability to change the number of results shown on searching.
