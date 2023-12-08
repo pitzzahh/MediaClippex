@@ -1,4 +1,5 @@
 ﻿{
   "colorTheme": "Teal",
-  "downloadPath": "%USERPROFILE%\\Downloads\\MediaClippex"
+  "downloadPath": "%USERPROFILE%\\Downloads\\MediaClippex",
+  "queryResultLimit": 10
 }
