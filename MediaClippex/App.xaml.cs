@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using MediaClippex.MVVM.View;
 using MediaClippex.MVVM.ViewModel;
-using MediaClippex.Services.Helpers;
+using MediaClippex.Services.Config.Interfaces;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Russkyc.DependencyInjection.Helpers;
 using Russkyc.DependencyInjection.Implementations;
 
@@ -17,11 +19,6 @@ public partial class App
     {
         try
         {
-            FileUtil.Copy(
-                Path.Combine(AppContext.BaseDirectory, "config.json.bak"),
-                Path.Combine(AppContext.BaseDirectory, "config.json"),
-                true
-            );
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
@@ -40,6 +37,18 @@ public partial class App
                 .AddServicesFromReferenceAssemblies()
                 .Build();
 
+            var backUpFilePath = Path.Combine(AppContext.BaseDirectory, "config.json.bak");
+
+            if (File.Exists(backUpFilePath))
+            {
+                var backupConfigJson = await File.ReadAllTextAsync(backUpFilePath);
+                var backupConfig = JsonConvert.DeserializeObject<JObject>(backupConfigJson)!;
+                var config = servicesContainer.Resolve<IConfig>();
+                config.ColorTheme = backupConfig["colorTheme"]!.ToString();
+                config.DownloadPath = backupConfig["downloadPath"]!.ToString();
+                File.Delete(backUpFilePath);
+            }
+
             servicesContainer.Resolve<MainView>().Show();
 
             var homeViewModel = servicesContainer.Resolve<HomeViewModel>();
@@ -49,7 +58,8 @@ public partial class App
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "Something went wrong during startup", MessageBoxButton.OK,
+            MessageBox.Show(string.IsNullOrEmpty(ex.Message) ? ex.ToString() : ex.Message,
+                "Something went wrong during startup", MessageBoxButton.OK,
                 MessageBoxImage.Error);
             Current.Shutdown(ex.HResult);
             Environment.Exit(ex.HResult);
