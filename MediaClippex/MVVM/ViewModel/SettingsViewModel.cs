@@ -12,6 +12,7 @@ using Material.Icons;
 using Material.Icons.WPF;
 using MediaClippex.DB.Core;
 using MediaClippex.MVVM.Model;
+using MediaClippex.Services;
 using MediaClippex.Services.Helpers;
 using MediaClippex.Services.Settings.Interfaces;
 using org.russkyc.moderncontrols.Helpers;
@@ -35,6 +36,7 @@ public partial class SettingsViewModel : BaseViewModel
     [ObservableProperty] private string? _movingFilesInfo;
     private bool _nightMode = true;
     [ObservableProperty] private double _progress;
+    [ObservableProperty] private int _queryResultLimit;
     [ObservableProperty] private MaterialIcon? _themeIcon;
     [ObservableProperty] private ObservableCollection<ColorData> _themes = new();
 
@@ -49,6 +51,7 @@ public partial class SettingsViewModel : BaseViewModel
             .ForEach(e => Themes.Add(new ColorData { Color = e }));
         NightMode = _settings.IsDarkMode();
         DownloadPath = _settings.DownloadPath();
+        QueryResultLimit = _settings.QueryResultLimit();
         _settings.ListenToThemeChange(NightMode);
     }
 
@@ -76,6 +79,19 @@ public partial class SettingsViewModel : BaseViewModel
     {
         ThemeManager.Instance.SetColorTheme(color);
         _settings.ColorTheme(true, color);
+    }
+
+    [RelayCommand]
+    private void ChangeQueryResultLimit(string limit)
+    {
+        if (!Validator.IsNumber(limit))
+        {
+            MessageBox.Show("Please enter a valid number!", "Error", MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            return;
+        }
+
+        _settings.QueryResultLimit(true, int.Parse(limit));
     }
 
     [RelayCommand]
