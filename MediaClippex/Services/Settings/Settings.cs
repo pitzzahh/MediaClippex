@@ -38,7 +38,6 @@ public class Settings : ISettings
     public string ColorTheme(bool change = false, string colorTheme = "")
     {
         if (change) _config.ColorTheme = colorTheme;
-
         return _config.ColorTheme;
     }
 
@@ -51,6 +50,12 @@ public class Settings : ISettings
             : Path.Combine(path, DirectoryService.CreateDirectoryIfNotPresent("MediaClippex")
             ))
         );
+    }
+
+    public int QueryResultLimit(bool change = false, int queryResultLimit = 30)
+    {
+        if (change) _config.QueryResultLimit = queryResultLimit;
+        return _config.QueryResultLimit;
     }
 
     public void ListenToThemeChange(bool data = false)
