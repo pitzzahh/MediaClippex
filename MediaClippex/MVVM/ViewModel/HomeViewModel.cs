@@ -178,13 +178,15 @@ public partial class HomeViewModel : BaseViewModel
 
         task.GetAwaiter().OnCompleted(() =>
         {
-            Application.Current.Dispatcher.InvokeAsync(() =>
+            Application.Current.Dispatcher.InvokeAsync(async () =>
             {
                 QueuingContentCardViewModels.Clear();
                 var queuingContents = task.Result;
                 HasQueue = queuingContents.Count > 0;
                 if (!HasQueue) return;
                 foreach (var video in queuingContents)
+                {
+                    await Task.Delay(700);
                     QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
                         _container,
                         video.Title,
@@ -193,6 +195,7 @@ public partial class HomeViewModel : BaseViewModel
                         video.Url,
                         video.SelectedQuality
                     ));
+                }
             });
         });
     }
@@ -202,7 +205,7 @@ public partial class HomeViewModel : BaseViewModel
         var task = Task.Run(() => _container.Resolve<IUnitOfWork>().VideosRepository.GetAll().Reverse().ToList());
         task.GetAwaiter().OnCompleted(() =>
         {
-            Application.Current.Dispatcher.InvokeAsync(() =>
+            Application.Current.Dispatcher.InvokeAsync(async () =>
             {
                 DownloadedVideoCardViewModels.Clear();
                 var videos = task.Result;
@@ -210,6 +213,8 @@ public partial class HomeViewModel : BaseViewModel
                 if (!HasDownloadHistory) return;
 
                 foreach (var video in videos)
+                {
+                    await Task.Delay(700);
                     DownloadedVideoCardViewModels.Add(new DownloadedContentCardViewModel(
                         _container,
                         video.Title,
@@ -219,6 +224,7 @@ public partial class HomeViewModel : BaseViewModel
                         video.Duration,
                         video.ThumbnailUrl
                     ));
+                }
             });
         });
     }
