@@ -61,9 +61,9 @@ public partial class HomeViewModel : BaseViewModel
         var isYouTubeVideoUrl = StringService.IsYouTubeVideoUrl(Url);
         var isYouTubePlaylistUrl = StringService.IsYouTubePlaylistUrl(Url);
 
-        IsQuery = !isYouTubeVideoUrl || !isYouTubePlaylistUrl;
+        IsQuery = !isYouTubeVideoUrl && !isYouTubePlaylistUrl;
 
-        if (!IsQuery)
+        if (!isYouTubeVideoUrl && !IsQuery)
         {
             MessageBox.Show("Please enter a valid YouTube URL.", "Warning", MessageBoxButton.OK,
                 MessageBoxImage.Warning);
@@ -103,8 +103,7 @@ public partial class HomeViewModel : BaseViewModel
                         StringService.ConvertToTimeFormat(video.Duration.GetValueOrDefault()),
                         video.Author.ChannelTitle,
                         video.Thumbnails.GetWithHighestResolution().Url,
-                        video.Url,
-                        true
+                        video.Url
                     ));
                 }
             }
