@@ -213,7 +213,7 @@ public partial class HomeViewModel : BaseViewModel
 
                 foreach (var video in videos)
                 {
-                    await Task.Delay(700);
+                    await Task.Delay(1000);
                     DownloadedVideoCardViewModels.Add(new DownloadedContentCardViewModel(
                         _container,
                         video.Title,
