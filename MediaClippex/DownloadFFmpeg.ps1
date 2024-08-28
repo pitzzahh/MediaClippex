@@ -15,7 +15,7 @@ $webClient = New-Object System.Net.WebClient
 
 try
 {
-    $webClient.DownloadFile("https://github.com/ffbinaries/ffbinaries-prebuilt/releases/download/v4.4.1/ffmpeg-4.4.1-win-64.zip", "$ffmpegFilePath.zip")
+    $webClient.DownloadFile("https://github.com/Tyrrrz/FFmpegBin/releases/latest/download/ffmpeg-windows-x64.zip", "$ffmpegFilePath.zip")
 }
 finally
 {
