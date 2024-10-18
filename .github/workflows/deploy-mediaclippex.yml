@@ -42,7 +42,7 @@ jobs:
         shell: cmd
 
       - name: Upload the installer as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: ${{ github.event_name != 'pull_request' }}
         with:
           path: ${{ github.workspace }}/${{ env.PROJECT_NAME }}/Output/${{ env.SETUP_FILE_NAME }}.exe
@@ -54,7 +54,7 @@ jobs:
 
       - name: Deploy Update File
         id: deploy_artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: MediaClippex-Update
           path: ${{ github.workspace }}/${{ env.PROJECT_NAME }}/${{ env.UPDATE_ASSET_FILE }}
