@@ -52,36 +52,36 @@ public partial class HomeViewModel : BaseViewModel
     [RelayCommand]
     private async Task Resolve()
     {
-        if (string.IsNullOrWhiteSpace(Url))
+        if (string.IsNullOrWhiteSpace(this.Url))
         {
             MessageBox.Show("Please enter a URL.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
-        var isYouTubeVideoUrl = StringService.IsYouTubeVideoUrl(Url);
-        var isYouTubePlaylistUrl = StringService.IsYouTubePlaylistUrl(Url);
+        var isYouTubeVideoUrl = StringService.IsYouTubeVideoUrl(this.Url);
+        var isYouTubePlaylistUrl = StringService.IsYouTubePlaylistUrl(this.Url);
 
-        IsQuery = !isYouTubeVideoUrl && !isYouTubePlaylistUrl;
+        this.IsQuery = !isYouTubeVideoUrl && !isYouTubePlaylistUrl;
 
-        if (!isYouTubeVideoUrl && !IsQuery)
+        if (isYouTubeVideoUrl && isYouTubePlaylistUrl && this.IsQuery)
         {
             MessageBox.Show("Please enter a valid YouTube URL.", "Warning", MessageBoxButton.OK,
                 MessageBoxImage.Warning);
-            Url = "";
+            this.Url = "";
             return;
         }
 
-        IsPlaylist = isYouTubePlaylistUrl;
-        ProgressInfo = "Processing URL...";
-        IsProgressIndeterminate = true;
-        IsProcessing = true;
+        this.IsPlaylist = isYouTubePlaylistUrl;
+        this.ProgressInfo = "Processing URL...";
+        this.IsProgressIndeterminate = true;
+        this.IsProcessing = true;
 
         try
         {
-            if (IsQuery)
+            if (this.IsQuery)
             {
                 var settings = _container.Resolve<ISettings>();
-                var readOnlyList = await VideoService.GetVideos(Url, settings.QueryResultLimit());
+                var readOnlyList = await VideoService.GetVideos(this.Url, settings.QueryResultLimit());
                 if (readOnlyList.Count == 0)
                 {
                     MessageBox.Show("No videos found", "Cannot resolve", MessageBoxButton.OK,
@@ -89,15 +89,15 @@ public partial class HomeViewModel : BaseViewModel
                     return;
                 }
 
-                PreviewCardViewModels.Clear();
-                IsProcessing = false;
-                ShowPreview = true;
-                IsProgressIndeterminate = false;
+                this.PreviewCardViewModels.Clear();
+                this.IsProcessing = false;
+                this.ShowPreview = true;
+                this.IsProgressIndeterminate = false;
 
                 foreach (var video in readOnlyList.Distinct())
                 {
                     await Task.Delay(700);
-                    PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
+                    this.PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
                         _container,
                         video.Title,
                         StringService.ConvertToTimeFormat(video.Duration.GetValueOrDefault()),
@@ -107,10 +107,10 @@ public partial class HomeViewModel : BaseViewModel
                     ));
                 }
             }
-            else if (IsPlaylist)
+            else if (this.IsPlaylist)
             {
-                var readOnlyList = await VideoService.GetPlaylistVideos(Url);
-                var playlistInfo = await VideoService.GetPlaylistInfo(Url);
+                var readOnlyList = await VideoService.GetPlaylistVideos(this.Url);
+                var playlistInfo = await VideoService.GetPlaylistInfo(this.Url);
                 var playListTitle = FileUtil.FixFileName(playlistInfo.Title);
                 if (readOnlyList.Count == 0)
                 {
@@ -119,15 +119,15 @@ public partial class HomeViewModel : BaseViewModel
                     return;
                 }
 
-                PreviewCardViewModels.Clear();
-                IsProcessing = false;
-                ShowPreview = true;
-                IsProgressIndeterminate = false;
+                this.PreviewCardViewModels.Clear();
+                this.IsProcessing = false;
+                this.ShowPreview = true;
+                this.IsProgressIndeterminate = false;
 
                 foreach (var playlistVideo in readOnlyList.Distinct())
                 {
                     await Task.Delay(700);
-                    PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
+                    this.PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
                         _container,
                         playlistVideo.Title,
                         StringService.ConvertToTimeFormat(playlistVideo.Duration.GetValueOrDefault()),
@@ -141,19 +141,19 @@ public partial class HomeViewModel : BaseViewModel
             }
             else
             {
-                var video = await VideoService.GetVideo(Url);
+                var video = await VideoService.GetVideo(this.Url);
 
-                IsProcessing = false;
-                ShowPreview = true;
-                IsProgressIndeterminate = false;
+                this.IsProcessing = false;
+                this.ShowPreview = true;
+                this.IsProgressIndeterminate = false;
 
-                PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
+                this.PreviewCardViewModels.Insert(0, new PreviewCardViewModel(
                     _container,
                     video.Title,
                     StringService.ConvertToTimeFormat(video.Duration.GetValueOrDefault()),
                     video.Author.ChannelTitle,
                     video.Thumbnails.GetWithHighestResolution().Url,
-                    Url
+                    this.Url
                 ));
             }
         }
@@ -161,12 +161,12 @@ public partial class HomeViewModel : BaseViewModel
         {
             MessageBox.Show($"Something went wrong resolving: {e.Message}", "Error", MessageBoxButton.OK,
                 MessageBoxImage.Error);
-            ShowPreview = false;
-            IsProcessing = false;
+            this.ShowPreview = false;
+            this.IsProcessing = false;
         }
         finally
         {
-            Url = IsQuery ? Url : "";
+            this.Url = this.IsQuery ? this.Url : "";
         }
     }
 
@@ -179,14 +179,14 @@ public partial class HomeViewModel : BaseViewModel
         {
             Application.Current.Dispatcher.InvokeAsync(async () =>
             {
-                QueuingContentCardViewModels.Clear();
+                this.QueuingContentCardViewModels.Clear();
                 var queuingContents = task.Result;
-                HasQueue = queuingContents.Count > 0;
-                if (!HasQueue) return;
+                this.HasQueue = queuingContents.Count > 0;
+                if (!this.HasQueue) return;
                 foreach (var video in queuingContents)
                 {
                     await Task.Delay(700);
-                    QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
+                    this.QueuingContentCardViewModels.Add(new QueuingContentCardViewModel(
                         _container,
                         video.Title,
                         video.Duration,
@@ -206,15 +206,15 @@ public partial class HomeViewModel : BaseViewModel
         {
             Application.Current.Dispatcher.InvokeAsync(async () =>
             {
-                DownloadedVideoCardViewModels.Clear();
+                this.DownloadedVideoCardViewModels.Clear();
                 var videos = task.Result;
-                HasDownloadHistory = videos.Count > 0;
-                if (!HasDownloadHistory) return;
+                this.HasDownloadHistory = videos.Count > 0;
+                if (!this.HasDownloadHistory) return;
 
                 foreach (var video in videos)
                 {
                     await Task.Delay(1000);
-                    DownloadedVideoCardViewModels.Add(new DownloadedContentCardViewModel(
+                    this.DownloadedVideoCardViewModels.Add(new DownloadedContentCardViewModel(
                         _container,
                         video.Title,
                         video.FileType,

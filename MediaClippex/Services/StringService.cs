@@ -75,7 +75,7 @@ public static class StringService
     private static Regex YoutubeUrlRegex()
     {
         return new Regex(
-            @"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:playlist\?list=|(?:embed|v|shorts|watch\?v=)|watch\?.+&v=)|youtu\.be\/)([^""&?\/\s]+)(?:&list=([^""&?\/\s]+))?",
+            @"https?:\/\/(www\.)?(m\.)?youtube\.com\/watch\?v=([^\s&]+)(?!.*\blist=)",
             RegexOptions.IgnoreCase
         );
     }
@@ -83,7 +83,7 @@ public static class StringService
     private static Regex YoutubePlaylistRegex()
     {
         return new Regex(
-            @"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/playlist\?list=|youtu\.be\/(?:.+?\/)?(?:playlist\?list=)?|youtube\.com\/(?:embed|v|shorts|watch\?v=|watch\?.+&v=))?([^""&?\/\s]+)",
+            @"https?:\/\/(www\.)?(m\.)?youtube\.com\/(watch\?v=[^\s&]+&list=|playlist\?list=)([^\s&]+)",
             RegexOptions.IgnoreCase
         );
     }

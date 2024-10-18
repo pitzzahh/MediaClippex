@@ -1,3 +1,3 @@
 ﻿# Changelog
-## Version 5.13.48.2
-- ✅ Fixed issue where playlist URL is mistaken as invalid URL
+## Version 5.13.49.5
+- ✅ Fixed issue where URLs are mistaken and cannot proceed
