@@ -1,3 +1,3 @@
 ﻿# Changelog
-## Version 5.13.49.3
-- ✅ Fixed issue where URL's are mistaken and cannot proceed
+## Version 5.13.49.5
+- ✅ Fixed issue where URLs are mistaken and cannot proceed
